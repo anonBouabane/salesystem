@@ -152,7 +152,17 @@ $header_click = "4";
 												<td><?php echo "$pt_id"; ?></td>
 												<td><?php echo "$pt_name"; ?></td>
 												<td><?php echo "$st_name"; ?></td>
+												<td>
+                                                    <div class="dropdown">
+                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                        </a>
 
+                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                            <a class="dropdown-item" href="edit-function.php?page=<?php echo $row4['pt_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="deletepage" data-dog='<?php echo $row4['pt_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
 
 											</tr>
 
@@ -204,6 +214,42 @@ $header_click = "4";
 			}, 'json')
 			return false;
 		});
+		// delete function
+        $(document).on("click", "#deletepage", function(e) {
+            e.preventDefault();
+            var id_r = $(this).data("dog");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-function.php",
+                dataType: "json",
+                data: {
+                    dog_id: id_r
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ເປີດນຳໃຊ້ສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'page-function.php';
+                            }, 1000);
+
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+
+
+
+            return false;
+        });
 	</script>
 
 	<!--  -->

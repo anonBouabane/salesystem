@@ -2,8 +2,11 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ສາຂາແຟນຊາຍ";
+$header_name = "ພະແນກ";
 $header_click = "4";
+
+$depart_id = $_GET['depart_id'];
+
 
 ?>
 
@@ -24,8 +27,11 @@ $header_click = "4";
 
 
 </head>
+
 <script src="../plugins/nprogress/nprogress.js"></script>
-<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script> <!-- jQuery -->
+
+
 
 
 <body class="navbar-fixed sidebar-fixed" id="body">
@@ -51,42 +57,37 @@ $header_click = "4";
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ສ້າງສາຂາ-ແຟນຊາຍ</h4>
+                                        <h4 class="text-dark">ສ້າງພະແນກ</h4>
+                                        <?php
+
+                                        //echo "$depart_id";
+                                        $newdp_rows = $conn->query(" SELECT  * 
+                                        FROM tbl_depart  where dp_id = '$depart_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                       
+                                        ?>
+
+
                                     </div>
-                                    <form method="post" id="addbranch">
+                                    <form method="post" id="editdepart">
+                                    <input type="hidden" class="form-control" id="dp_id" name="dp_id" value="<?php  echo $newdp_rows['dp_id']; ?>" required>
+                                             
+
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="firstName">ຊື່ສາຂາ-ແຟນຊາຍ</label>
-                                                    <input type="text" class="form-control" id="br_name" name="br_name" required>
-                                                </div>
-                                            </div>
 
-                                            <div class="form-group col-lg-6">
-                                                <label class="text-dark font-weight-medium">ປະເພດສາຂາ</label>
+                                            <div class="col-lg-12">
                                                 <div class="form-group">
-
-                                                    <select class=" form-control font" name="br_type" id="br_type">
-                                                        <option value=""> ເລືອກປະເພດ </option>
-                                                        <?php
-                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");
-                                                        $stmt5->execute();
-                                                        if ($stmt5->rowCount() > 0) {
-                                                            while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-                                                        ?>
-                                                                <option value="<?php echo $row5['brt_id']; ?>"> <?php echo $row5['brt_name']; ?></option>
-                                                        <?php
-                                                            }
-                                                        }
-                                                        ?>
-                                                    </select>
+                                                    <label for="firstName">ຊື່ພະແນກ</label>
+                                                    <input type="text" class="form-control" id="dp_name" name="dp_name" value="<?php  echo $newdp_rows['dp_name']; ?>" required>
                                                 </div>
                                             </div>
 
 
                                         </div>
+
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ</button>
                                         </div>
 
                                     </form>
@@ -112,11 +113,8 @@ $header_click = "4";
                             <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກທີ</th>
-                                        <th>ສາຂາ</th>
-                                        <th>ປະເພດ</th>
-                                        <th>ສະຖານະ</th>
-                                        <th>ວັນລົງທະບຽນ</th>
+                                        <th>ເລກລຳດັບ</th>
+                                        <th>ຊື່ພະແນກ</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -124,12 +122,10 @@ $header_click = "4";
 
 
                                     <?php
-                                    $stmt4 = $conn->prepare("SELECT  br_id,br_name,brt_name,
-                                    (case when br_status = 1 then 'ນຳໃຊ້' else 'ຫຍຸດນຳໃຊ້' end) as br_status,
-                                    date_register FROM tbl_branch a
-                                    left join tbl_branch_type b on a.br_type = b.brt_id
-                                    order by br_id desc
-                                    ");
+
+
+
+                                    $stmt4 = $conn->prepare(" select * from tbl_depart order by dp_id desc ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
@@ -140,25 +136,24 @@ $header_click = "4";
 
 
                                             <tr>
-                                                <td><?php echo $row4['br_id']; ?></td>
-                                                <td><?php echo $row4['br_name']; ?></td>
-                                                <td><?php echo $row4['brt_name']; ?></td>
-                                                <td><?php echo $row4['br_status']; ?></td>
-                                                <td><?php echo $row4['date_register']; ?></td>
+                                                <td><?php echo $row4['dp_id']; ?></td>
+                                                <td><?php echo $row4['dp_name']; ?></td>
+
+
+
                                                 <td>
                                                     <div class="dropdown">
                                                         <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-branch.php?branch_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delbranch" data-kai='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
-                                                            <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" href="edit-depart.php?depart_id=<?php echo $row4['dp_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" type="button" id="inactivestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ປິດນຳໃຊ້</a>
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
 
 
                                     <?php
@@ -182,37 +177,41 @@ $header_click = "4";
         </div>
     </div>
 
-
-
-
-
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // Add branch
-        $(document).on("submit", "#addbranch", function() {
-            $.post("../query/add-branch.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+        // update depart 
+        $(document).on("submit", "#editdepart", function() {
+            $.post("../query/edit-depart.php", $(this).serialize(), function(data) {
+                if (data.res == "failed") {
+                    Swal.fire(
+                        'ລົງທະບຽນຊ້ຳ',
+                        'ຜູ້ໃຊ້ນີ້ຖືກລົງທະບຽນແລ້ວ',
+                        'error'
+                    )
+                } else if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
+                        'edit done',
                         'success'
                     )
                     setTimeout(
                         function() {
-                            location.reload();
+                            window.location.href = 'depart.php';
                         }, 1000);
                 }
             }, 'json')
             return false;
         });
-        // ສະຄິບເອີ້ນໄຟຣລົບ
-        $(document).on("click", "#delbranch", function(e) {
+
+
+        // active user
+        $(document).on("click", "#activestaffuser", function(e) {
             e.preventDefault();
-            var id = $(this).data("kai");
+            var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-branch.php",
+                url: "../query/activestaffuser.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -222,13 +221,12 @@ $header_click = "4";
                     if (data.res == "success") {
                         Swal.fire(
                             'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'ເປີດນຳໃຊ້ສຳເລັດ',
                             'success'
                         )
                         setTimeout(
                             function() {
-                                //ໂຢນຫນ້າ
-                                window.location.href = 'branch.php';
+                                window.location.href = 'depart.php';
                             }, 1000);
 
                     }
@@ -243,6 +241,45 @@ $header_click = "4";
 
             return false;
         });
+
+
+        // inactive user
+        $(document).on("click", "#inactivestaffuser", function(e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/inactivestaffuser.php",
+                dataType: "json",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ປິດນຳໃຊ້ສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'depart.php';
+                            }, 1000);
+
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+
+
+
+            return false;
+        });
+        
     </script>
 
     <!--  -->

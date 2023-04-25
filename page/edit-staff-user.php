@@ -27,7 +27,7 @@ $us_id = $_GET['us_id'];
 
 <script src="../plugins/nprogress/nprogress.js"></script>
 <script type="text/javascript" src="../js/jquery.min.js"></script> <!-- jQuery -->
- 
+
 
 
 <body class="navbar-fixed sidebar-fixed" id="body">

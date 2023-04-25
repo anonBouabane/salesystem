@@ -228,29 +228,31 @@ $header_click = "2";
 
 
                                     <?php
-                                    $stmt4 = $conn->prepare(" 
-                                    SELECT or_id,or_bill_number,wh_name,a.date_register, os_name
-                                    FROM tbl_order_request a
-                                    left join tbl_warehouse b on a.wh_id = b.wh_id
-                                    left join tbl_order_status c on a.or_status = c.os_id
-                                    where a.br_id = '$id_users'
-                                    order by or_id desc
-                                    ");
+                                    $stmt4 = $conn->prepare("select * from tbl_order_request ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                    
- 
+                                            $po_id = $row4['po_id'];
+                                            $bill_number = $row4['bill_number'];
+                                            $items = $row4['items'];
+                                            $price_total = $row4['price_total'];
+                                            $status_transfer = $row4['status_transfer'];
+
+
+                                            if (empty($price_total)) {
+                                                $price_total = 0;
+                                            }
+
                                     ?>
 
 
 
                                             <tr>
-                                                <td><?php echo $row4['or_id']; ?></td>
-                                                <td><?php echo $row4['or_bill_number']; ?></td>
-                                                <td><?php echo $row4['wh_name']; ?></td>
-                                                <td><?php echo $row4['os_name']; ?></td>
-                                                <td><?php echo $row4['date_register']; ?></td> 
+                                                <td><?php echo "$po_id"; ?></td>
+                                                <td><?php echo "$bill_number"; ?></td>
+                                                <td><?php echo "$status_transfer"; ?></td>
+                                                <td><?php echo "$items"; ?></td>
+                                                <td><?php echo number_format("$price_total", 2, ",", ".") ?></td>
 
 
 
@@ -260,9 +262,9 @@ $header_click = "2";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-purchase-order.php?po_id=<?php echo  $row4['or_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="edit-purchase-order.php?po_id=<?php echo "$po_id"; ?>">ແກ້ໄຂ</a>
 
-                                                            <a class="dropdown-item" type="button" id="deletepo" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                            <a class="dropdown-item" type="button" id="deletepo" data-id='<?php echo $row4['po_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                         </div>
                                                     </div>
                                                 </td>

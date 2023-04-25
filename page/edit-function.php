@@ -2,9 +2,9 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ສາຂາແຟນຊາຍ";
+$header_name = "ຫນ້າຟັງຊັ້ນ";
 $header_click = "4";
-
+$page_id = $_GET['page'];
 ?>
 
 <!DOCTYPE html>
@@ -24,8 +24,11 @@ $header_click = "4";
 
 
 </head>
+
 <script src="../plugins/nprogress/nprogress.js"></script>
-<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script> <!-- jQuery -->
+
+
 
 
 <body class="navbar-fixed sidebar-fixed" id="body">
@@ -46,35 +49,40 @@ $header_click = "4";
                 <div class="content">
                     <div class="email-wrapper rounded border bg-white">
                         <div class="row no-gutters justify-content-center">
+                            <?php
 
+
+                            $cusrows = $conn->query(" SELECT  * FROM tbl_page_title  where pt_id = '$page_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
+
+                            ?>
 
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ສ້າງສາຂາ-ແຟນຊາຍ</h4>
+                                        <h4 class="text-dark">ຈັດການຫນ້າຟັງຊັ້ນ</h4>
+
                                     </div>
-                                    <form method="post" id="addbranch">
+                                    <form method="post" id="addpage">
+                                        <input type="hidden" class="form-control" id="pt_id" name="pt_id" value="<?php echo "$page_id"; ?>" required>
+
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label for="firstName">ຊື່ສາຂາ-ແຟນຊາຍ</label>
-                                                    <input type="text" class="form-control" id="br_name" name="br_name" required>
-                                                </div>
-                                            </div>
 
-                                            <div class="form-group col-lg-6">
-                                                <label class="text-dark font-weight-medium">ປະເພດສາຂາ</label>
-                                                <div class="form-group">
 
-                                                    <select class=" form-control font" name="br_type" id="br_type">
-                                                        <option value=""> ເລືອກປະເພດ </option>
+                                            <div class="form-group  col-lg-12">
+                                                <label class="text-dark font-weight-medium">ຫົວຂໍ້</label>
+                                                <div class="form-group">
+                                                    <select class=" form-control font" name="st_id" id="st_id">
+                                                        <option value=""> ເລືອກຫົວຂໍ້ </option>
                                                         <?php
-                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");
+                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_sub_title ");
                                                         $stmt5->execute();
                                                         if ($stmt5->rowCount() > 0) {
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-                                                        ?>
-                                                                <option value="<?php echo $row5['brt_id']; ?>"> <?php echo $row5['brt_name']; ?></option>
+                                                        ?> <option value="<?php echo $row5['st_id']; ?>"<?php if ($cusrows['st_id'] == $row5['st_id']) {
+                                                            echo "selected";
+                                                        } ?>> <?php echo $row5['st_name']; ?></option>
                                                         <?php
                                                             }
                                                         }
@@ -83,10 +91,16 @@ $header_click = "4";
                                                 </div>
                                             </div>
 
-
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="firstName">ຊື່ຫນ້າ</label>
+                                                    <input type="text" class="form-control" id="pt_name" name="pt_name" value="<?php echo $cusrows['pt_name'] ?>" required>
+                                                </div>
+                                            </div>
                                         </div>
+
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ</button>
                                         </div>
 
                                     </form>
@@ -112,53 +126,46 @@ $header_click = "4";
                             <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກທີ</th>
-                                        <th>ສາຂາ</th>
-                                        <th>ປະເພດ</th>
-                                        <th>ສະຖານະ</th>
-                                        <th>ວັນລົງທະບຽນ</th>
-                                        <th></th>
+                                        <th>ເລກລຳດັບ</th>
+                                        <th>ຊື່ຫນ້າ</th>
+                                        <th>ຫົວຂໍ້</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
 
                                     <?php
-                                    $stmt4 = $conn->prepare("SELECT  br_id,br_name,brt_name,
-                                    (case when br_status = 1 then 'ນຳໃຊ້' else 'ຫຍຸດນຳໃຊ້' end) as br_status,
-                                    date_register FROM tbl_branch a
-                                    left join tbl_branch_type b on a.br_type = b.brt_id
-                                    order by br_id desc
-                                    ");
+                                    $stmt4 = $conn->prepare("SELECT  pt_id,pt_name ,st_name
+									FROM tbl_page_title a
+									left join tbl_sub_title b on a.st_id = b.st_id order by pt_id desc ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-
+                                            $pt_id = $row4['pt_id'];
+                                            $pt_name = $row4['pt_name'];
+                                            $st_name = $row4['st_name'];
 
                                     ?>
 
 
 
                                             <tr>
-                                                <td><?php echo $row4['br_id']; ?></td>
-                                                <td><?php echo $row4['br_name']; ?></td>
-                                                <td><?php echo $row4['brt_name']; ?></td>
-                                                <td><?php echo $row4['br_status']; ?></td>
-                                                <td><?php echo $row4['date_register']; ?></td>
+                                                <td><?php echo "$pt_id"; ?></td>
+                                                <td><?php echo "$pt_name"; ?></td>
+                                                <td><?php echo "$st_name"; ?></td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-branch.php?branch_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delbranch" data-kai='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
-                                                            <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" href="edit-function.php?page=<?php echo $row4['pt_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="deletepage" data-dog='<?php echo $row4['pt_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
-                                            </tr>
 
+                                            </tr>
 
 
                                     <?php
@@ -182,53 +189,51 @@ $header_click = "4";
         </div>
     </div>
 
-
-
-
-
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // Add branch
-        $(document).on("submit", "#addbranch", function() {
-            $.post("../query/add-branch.php", $(this).serialize(), function(data) {
+        // ສະຄຣິບເອີ້ນໄຟຣແອັດ
+        $(document).on("submit", "#addpage", function() {
+            $.post("../query/edit-function.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂສຳເລັດ',
                         'success'
                     )
                     setTimeout(
                         function() {
+                            //ຣີເຟສຫນ້າ
                             location.reload();
                         }, 1000);
                 }
             }, 'json')
             return false;
         });
-        // ສະຄິບເອີ້ນໄຟຣລົບ
-        $(document).on("click", "#delbranch", function(e) {
+
+
+        // delete function
+        $(document).on("click", "#deletepage", function(e) {
             e.preventDefault();
-            var id = $(this).data("kai");
+            var id_r = $(this).data("dog");
             $.ajax({
                 type: "post",
-                url: "../query/delete-branch.php",
+                url: "../query/delete-function.php",
                 dataType: "json",
                 data: {
-                    id: id
+                    dog_id: id_r
                 },
                 cache: false,
                 success: function(data) {
                     if (data.res == "success") {
                         Swal.fire(
                             'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'ເປີດນຳໃຊ້ສຳເລັດ',
                             'success'
                         )
                         setTimeout(
                             function() {
-                                //ໂຢນຫນ້າ
-                                window.location.href = 'branch.php';
+                                window.location.href = 'page-function.php';
                             }, 1000);
 
                     }
@@ -244,6 +249,7 @@ $header_click = "4";
             return false;
         });
     </script>
+
 
     <!--  -->
 

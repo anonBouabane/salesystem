@@ -2,8 +2,8 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ສ້າງສິດ";
-$header_click = "3";
+$header_name = "ສີດເຂົ້າເຖີງຂໍ້ມູນ";
+$header_click = "4";
 
 ?>
 
@@ -152,6 +152,16 @@ $header_click = "3";
 												<td><?php echo "$r_id"; ?></td>
 												<td><?php echo "$role_name"; ?></td>
 												<td><?php echo $row4['rl_name']; ?></td>
+												<td>
+													<div class="dropdown">
+														<a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+														</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+															<a class="dropdown-item" href="edit-roles.php?newroles_id=<?php echo $row4['r_id']; ?>">ແກ້ໄຂ</a>
+															<a class="dropdown-item" type="button" id="deleteroles" data-mime='<?php echo $row4['r_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+															
+														</div>
+												</td>
 											</tr>
 
 
@@ -196,7 +206,42 @@ $header_click = "3";
 			}, 'json')
 			return false;
 		});
+		// delete-rolse
+		$(document).on("click", "#deleteroles", function(e) {
+			e.preventDefault();
+			var id_r = $(this).data("mime");
+			$.ajax({
+				type: "post",
+				url: "../query/delete-roles.php",
+				dataType: "json",
+				data: {
+					mek_id: id_r
+				},
+				cache: false,
+				success: function(data) {
+					if (data.res == "success") {
+						Swal.fire(
+							'ສຳເລັດ',
+							'ເປີດນຳໃຊ້ສຳເລັດ',
+							'success'
+						)
+						setTimeout(
+							function() {
+								window.location.href = 'roles.php';
+							}, 1000);
 
+					}
+				},
+				error: function(xhr, ErrorStatus, error) {
+					console.log(status.error);
+				}
+
+			});
+
+
+
+			return false;
+		});
 
 		// active user
 		$(document).on("click", "#activestaffuser", function(e) {

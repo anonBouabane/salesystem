@@ -265,7 +265,7 @@ $header_click = "2";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-item-detail.php?item_id=<?php echo "$item_id"; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="update-extract-item.php?item_id=<?php echo "$item_id"; ?>">ແກ້ໄຂ</a>
 
                                                             <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                         </div>
@@ -354,7 +354,7 @@ $header_click = "2";
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-item-data.php",
+                url: "../query/delete-extract-item.php",
                 dataType: "json",
                 data: {
                     id: id

@@ -5,6 +5,8 @@ include("../setting/conn.php");
 $header_name = "ສາຂາແຟນຊາຍ";
 $header_click = "4";
 
+$branch_id = $_GET['branch_id'];
+
 ?>
 
 <!DOCTYPE html>
@@ -47,18 +49,31 @@ $header_click = "4";
                     <div class="email-wrapper rounded border bg-white">
                         <div class="row no-gutters justify-content-center">
 
+                            <?php
+
+
+                            $cusrows = $conn->query(" SELECT  * FROM tbl_branch  where br_id = '$branch_id' ")->fetch(PDO::FETCH_ASSOC);
+
+                        
+
+                            ?>
+
 
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
                                         <h4 class="text-dark">ສ້າງສາຂາ-ແຟນຊາຍ</h4>
                                     </div>
-                                    <form method="post" id="addbranch">
+                                    <form id="editbranch">
+
+                                    <input type="hidden" class="form-control" id="id_branch" name="id_branch" value="<?php echo "$branch_id"; ?>" required>
+
+
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="firstName">ຊື່ສາຂາ-ແຟນຊາຍ</label>
-                                                    <input type="text" class="form-control" id="br_name" name="br_name" required>
+                                                    <input type="text" class="form-control" id="br_name" name="br_name" value="<?php echo $cusrows['br_name'] ?>" required>
                                                 </div>
                                             </div>
 
@@ -74,7 +89,9 @@ $header_click = "4";
                                                         if ($stmt5->rowCount() > 0) {
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                         ?>
-                                                                <option value="<?php echo $row5['brt_id']; ?>"> <?php echo $row5['brt_name']; ?></option>
+                                                                <option value="<?php echo $row5['brt_id']; ?>" <?php if ($cusrows['br_type'] == $row5['brt_id']) {
+                                                                                                                    echo "selected";
+                                                                                                                } ?>> <?php echo $row5['brt_name']; ?></option>
                                                         <?php
                                                             }
                                                         }
@@ -86,7 +103,7 @@ $header_click = "4";
 
                                         </div>
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຂໍ້ມູນ</button>
                                         </div>
 
                                     </form>
@@ -189,23 +206,26 @@ $header_click = "4";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // Add branch
-        $(document).on("submit", "#addbranch", function() {
-            $.post("../query/add-branch.php", $(this).serialize(), function(data) {
+        // ສະຄຣິບເອີ້ນໄຟຣແອັດ
+        $(document).on("submit", "#editbranch", function() {
+            $.post("../query/edit-branch.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂສຳເລັດ',
                         'success'
                     )
                     setTimeout(
                         function() {
+                            //ຣີເຟສຫນ້າ
                             location.reload();
                         }, 1000);
                 }
             }, 'json')
             return false;
         });
+
+
         // ສະຄິບເອີ້ນໄຟຣລົບ
         $(document).on("click", "#delbranch", function(e) {
             e.preventDefault();

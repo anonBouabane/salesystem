@@ -59,7 +59,7 @@ $header_click = "4";
                                     <form method="post" id="adddepart">
 
 
-                                        <div class="row"> 
+                                        <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
                                                     <label for="firstName">ພະແນກ</label>
@@ -97,7 +97,7 @@ $header_click = "4";
                                 <thead>
                                     <tr>
                                         <th>ເລກທີ</th>
-                                        <th>ພະແນກ</th> 
+                                        <th>ພະແນກ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -111,7 +111,7 @@ $header_click = "4";
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                             $dp_id = $row4['dp_id'];
-                                            $dp_name = $row4['dp_name']; 
+                                            $dp_name = $row4['dp_name'];
 
                                     ?>
 
@@ -119,7 +119,18 @@ $header_click = "4";
 
                                             <tr>
                                                 <td><?php echo "$dp_id"; ?></td>
-                                                <td><?php echo "$dp_name"; ?></td> 
+                                                <td><?php echo "$dp_name"; ?></td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                        </a>
+
+                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                            <a class="dropdown-item" href="edit-depart.php?depart_id=<?php echo $row4['dp_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="deletedepart" data-mek='<?php echo $row4['dp_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+
+                                                        </div>
+                                                </td>
                                             </tr>
 
 
@@ -166,6 +177,42 @@ $header_click = "4";
                         }, 1000);
                 }
             }, 'json')
+            return false;
+        });
+        // delete-depart
+        $(document).on("click", "#deletedepart", function(e) {
+            e.preventDefault();
+            var id_brt = $(this).data("mek");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-depart.php",
+                dataType: "json",
+                data: {
+                    kuy_id: id_brt
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ເປີດນຳໃຊ້ສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'depart.php';
+                            }, 1000);
+
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+
+
+
             return false;
         });
     </script>

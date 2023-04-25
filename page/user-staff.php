@@ -258,6 +258,7 @@ $header_click = "3";
 
 														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
 															<a class="dropdown-item" href="edit-staff-user.php?us_id=<?php echo "$usid"; ?>">ແກ້ໄຂ</a>
+															<a class="dropdown-item" type="button" id="deleteuser" data-mime='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
 															<a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
 															<a class="dropdown-item" type="button" id="inactivestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ປິດນຳໃຊ້</a>
 														</div>
@@ -313,7 +314,42 @@ $header_click = "3";
 			}, 'json')
 			return false;
 		});
+// delete-user
+$(document).on("click", "#deleteuser", function(e) {
+            e.preventDefault();
+            var id_brt = $(this).data("mime");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-user-staff.php",
+                dataType: "json",
+                data: {
+                    id: id_brt
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ເປີດນຳໃຊ້ສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'user-staff.php';
+                            }, 1000);
 
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+
+
+
+            return false;
+        });
 
 		// active user
 		$(document).on("click", "#activestaffuser", function(e) {
