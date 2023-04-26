@@ -267,7 +267,7 @@ $header_click = "2";
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item" href="edit-item-detail.php?item_id=<?php echo "$item_id"; ?>">ແກ້ໄຂ</a>
 
-                                                            <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                            <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo "$item_id"; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -348,46 +348,41 @@ $header_click = "2";
         });
 
 
-        // Delete item
-        $(document).on("click", "#deleteitem", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-item-data.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                window.location.href = 'add-item-detail.php';
-                            }, 1000);
+         // delete 
+         $(document).on("click", "#deleteitem", function(e) {
+                    e.preventDefault();
+                    var item_id = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-item-data.php",
+                        dataType: "json",
+                        data: {
+                            item_id: item_id
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລືບສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        window.location.href = 'extract-item-unit.php';
+                                    }, 1000);
 
-                    } else if (data.res == "used") {
-                        Swal.fire(
-                            'ນຳໃຊ້ແລ້ວ',
-                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
-                            'error'
-                        )
-                    }
+                            }
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
 
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
+                    });
 
-            });
-            return false;
-        });
+
+                    return false;
+                });
 
 
 

@@ -4,6 +4,7 @@ include("../setting/conn.php");
 
 $header_name = "ສາງສິນຄ້າ";
 $header_click = "4";
+$wh_id = $_GET['wh_id']
 
 ?>
 
@@ -82,17 +83,24 @@ $header_click = "4";
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ສ້າງສາງ</h4>
+                                        <h4 class="text-dark">ແກ້ໄຂສາງ</h4>
+                                        <?php
+                                        $wh_rows = $conn->query("SELECT * FROM tbl_warehouse where wh_id = '$wh_id' ") ->fetch(PDO::FETCH_ASSOC); 
+                                        
+                                        
+                                        ?>
+
                                     </div>
-                                    <form method="post" id="addwarehouse">
+                                    <form method="post" id="editwarehouse">
+                                    <input type="hidden" class="form-control" id="wh_id" name="wh_id"value="<?php echo $wh_rows['wh_id']; ?>" required>
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
                                                     <label for="firstName">ຊື່ສາງ</label>
-                                                    <input type="text" class="form-control" id="wharehouse_name" name="wharehouse_name" required>
+                                                    <input type="text" class="form-control" id="wh_name" name="wh_name" value="<?php echo $wh_rows['wh_name']; ?>" required>
                                                 </div>
                                             </div>
-
+                                            
 
 
 
@@ -107,14 +115,16 @@ $header_click = "4";
                                                     <div class="form-group">
 
                                                         <select class=" form-control font" name="wh_type" id="wh_type">
-                                                            <option value=""> ເລືອກປະເພດ </option>
+                                                            
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse_type ");
                                                             $stmt5->execute();
                                                             if ($stmt5->rowCount() > 0) {
                                                                 while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                             ?>
-                                                                    <option value="<?php echo $row5['wht_id']; ?>"> <?php echo $row5['wht_name']; ?></option>
+                                                                    <option value="<?php echo $row5['wht_id']; ?>" <?php if ($wh_rows['wh_type'] == $row5['wht_id']) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>> <?php echo $row5['wht_name']; ?></option>
                                                             <?php
                                                                 }
                                                             }
@@ -126,15 +136,17 @@ $header_click = "4";
                                                     <label class="text-dark font-weight-medium">ສາຂາ</label>
                                                     <div class="form-group">
 
-                                                        <select class=" form-control font" name="branch_id" id="branch_id">
-                                                            <option value=""> ເລືອກສາຂາ </option>
+                                                        <select class=" form-control font" name="br_id" id="br_id">
+                                                            
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");
                                                             $stmt5->execute();
                                                             if ($stmt5->rowCount() > 0) {
                                                                 while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                             ?>
-                                                                    <option value="<?php echo $row5['br_id']; ?>"> <?php echo $row5['br_name']; ?></option>
+                                                                    <option value="<?php echo $row5['br_id']; ?>" <?php if ($wh_rows['br_id'] == $row5['br_id']) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>> <?php echo $row5['br_name']; ?></option>
                                                             <?php
                                                                 }
                                                             }
@@ -150,10 +162,10 @@ $header_click = "4";
                                             <?php
                                             }
                                             ?>
-
+                                            
                                         </div>
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຂໍ້ມູນ</button>
                                         </div>
 
                                     </form>
@@ -181,8 +193,10 @@ $header_click = "4";
                                     <tr>
                                         <th>ເລກທີ</th>
                                         <th>ຊື່ສາງ</th>
-                                        <th>ສາຂາ</th>
                                         <th>ສະຖານະ</th>
+                                        <th>ປະເພດສາງ</th>
+                                        <th>ເລກໄອດີສາຂາ</th>
+                                        <th>ສ້າງໂດຍ</th>
                                         <th>ວັນລົງທະບຽນ</th>
                                         <th></th>
                                     </tr>
@@ -197,12 +211,9 @@ $header_click = "4";
                                         $syntax = "where br_id = '$br_id'";
                                     }
 
-                                    $stmt4 = $conn->prepare("select wh_id,wh_name,a.date_register,br_name,
-                                    (case when wh_status = 1 then 'ນຳໃຊ້' else 'ປິດແລ້ວ' end ) as wh_status
-                                    from tbl_warehouse a
-                                    left join tbl_branch b on a.br_id = b.br_id
-                                    $syntax 
-                                    order by wh_id desc 
+                                    $stmt4 = $conn->prepare("SELECT wh_id,wh_name,(CASE when wh_status = 1 then 'ເປີດນຳໃຊ້' else 'chose' end) 
+                                    as wh_status ,wht_name,br_name,user_name,a.date_register FROM tbl_warehouse a left join tbl_warehouse_type b 
+                                    on a.wh_type = b.wht_id LEFT join tbl_branch c on a.br_id = c.br_id left join tbl_user d on a.add_by = d.usid;
                                     ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
@@ -216,8 +227,10 @@ $header_click = "4";
                                             <tr>
                                                 <td><?php echo "$wh_id"; ?></td>
                                                 <td><?php echo $row4['wh_name']; ?></td>
-                                                <td><?php echo $row4['br_name']; ?></td>
                                                 <td><?php echo $row4['wh_status']; ?></td>
+                                                <td><?php echo $row4['wht_name']; ?></td>
+                                                <td><?php echo $row4['br_name']; ?></td>
+                                                <td><?php echo $row4['user_name']; ?></td>
                                                 <td><?php echo $row4['date_register']; ?></td>
                                                 <td>
                                                     <div class="dropdown">
@@ -264,17 +277,17 @@ $header_click = "4";
 
     <script>
         // Add staff user 
-        $(document).on("submit", "#addwarehouse", function() {
-            $.post("../query/add-warehouse.php", $(this).serialize(), function(data) {
+        $(document).on("submit", "#editwarehouse", function() {
+            $.post("../query/update-warehouse.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
                         'success'
                     )
                     setTimeout(
                         function() {
-                            location.reload();
+                            window.location.href = 'warehouse.php';
                         }, 1000);
                 }
             }, 'json')
@@ -315,8 +328,6 @@ $header_click = "4";
 
                     return false;
                 });
-    </script>
-
     </script>
 
     <!--  -->

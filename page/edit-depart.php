@@ -2,8 +2,9 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ພະແນກ";
+$header_name = "ຂໍ້ມູນພະແນກ";
 $header_click = "4";
+$dp_id = $_GET['dp_id'];
 
 ?>
 
@@ -51,26 +52,33 @@ $header_click = "4";
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ສ້າງສິດ</h4>
+                                        <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນພະແນກ</h4>
+                                        <?php
+                                        $depart_rows = $conn->query("SELECT * FROM tbl_depart where dp_id = '$dp_id' ") ->fetch(PDO::FETCH_ASSOC); 
+                                        
+                                        
+                                        ?>
 
 
 
                                     </div>
-                                    <form method="post" id="adddepart">
+                                    <form method="post" id="editdepart">
+
+                                    <input type="hidden" class="form-control" id="dp_id" name="dp_id" value="<?php echo $depart_rows['dp_id']; ?>" required>
 
 
-                                        <div class="row"> 
+                                        <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
                                                     <label for="firstName">ພະແນກ</label>
-                                                    <input type="text" class="form-control" id="depart_name" name="depart_name" required>
+                                                    <input type="text" class="form-control" id="dp_name" name="dp_name"value="<?php echo $depart_rows['dp_name']; ?>" required>
                                                 </div>
                                             </div>
 
 
                                         </div>
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ສ້າງພະແນກ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຊື່ພະແນກ</button>
                                         </div>
 
                                     </form>
@@ -97,7 +105,7 @@ $header_click = "4";
                                 <thead>
                                     <tr>
                                         <th>ເລກທີ</th>
-                                        <th>ພະແນກ</th> 
+                                        <th>ພະແນກ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -111,7 +119,7 @@ $header_click = "4";
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                             $dp_id = $row4['dp_id'];
-                                            $dp_name = $row4['dp_name']; 
+                                            $dp_name = $row4['dp_name'];
 
                                     ?>
 
@@ -119,7 +127,8 @@ $header_click = "4";
 
                                             <tr>
                                                 <td><?php echo "$dp_id"; ?></td>
-                                                <td><?php echo "$dp_name"; ?></td> 
+                                                <td><?php echo "$dp_name"; ?></td>
+
                                                 <td>
                                                     <div class="dropdown">
                                                         <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
@@ -133,7 +142,6 @@ $header_click = "4";
                                                     </div>
                                                 </td>
                                             </tr>
-
 
                                     <?php
                                         }
@@ -163,25 +171,27 @@ $header_click = "4";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // Add staff user 
-        $(document).on("submit", "#adddepart", function() {
-            $.post("../query/add-depart.php", $(this).serialize(), function(data) {
+        // edit
+        $(document).on("submit", "#editdepart", function() {
+            $.post("../query/update-depart.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
                         'success'
                     )
                     setTimeout(
                         function() {
-                            location.reload();
+                            window.location.href = 'depart.php';
                         }, 1000);
                 }
             }, 'json')
             return false;
         });
-         // delete 
-         $(document).on("click", "#deletedepart", function(e) {
+
+
+        // delete 
+        $(document).on("click", "#deletedepart", function(e) {
                     e.preventDefault();
                     var dp_id = $(this).data("id");
                     $.ajax({
@@ -216,7 +226,6 @@ $header_click = "4";
                     return false;
                 });
     </script>
-    
 
     <!--  -->
 

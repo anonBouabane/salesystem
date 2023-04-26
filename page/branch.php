@@ -151,8 +151,9 @@ $header_click = "4";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-staff-user.php?us_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="edit-branch.php?br_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
                                                             <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" type="button" id="deletebranch" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
                                                         </div>
                                                     </div>
                                                 </td>

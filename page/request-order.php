@@ -260,7 +260,7 @@ $header_click = "2";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-purchase-order.php?po_id=<?php echo  $row4['or_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="edit-purchase-order.php?or_id=<?php echo  $row4['or_id']; ?>">ແກ້ໄຂ</a>
 
                                                             <a class="dropdown-item" type="button" id="deletepo" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                         </div>

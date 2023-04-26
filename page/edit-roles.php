@@ -2,8 +2,10 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ສ້າງສິດ";
+$header_name = "ຂໍ້ມູນສິດເຂົ້າເຖິງຂໍ້ມູນ";
 $header_click = "3";
+$r_id = $_GET['r_id'];
+
 
 ?>
 
@@ -51,12 +53,16 @@ $header_click = "3";
 							<div class="col-xxl-12">
 								<div class="email-right-column  email-body p-4 p-xl-5">
 									<div class="email-body-head mb-5 ">
-										<h4 class="text-dark">ສ້າງສິດ</h4>
-
-
+										<h4 class="text-dark">ແກ້ໄຂສິດ</h4>
+                                        <?php
+                                        $roles_rows = $conn->query("SELECT * FROM tbl_roles where r_id = '$r_id' ") ->fetch(PDO::FETCH_ASSOC); 
+                                        
+                                        ?>
 
 									</div>
-									<form method="post" id="addrole">
+									<form method="post" id="editrole">
+                                    <input type="hidden" class="form-control" id="r_id" name="r_id" value="<?php echo $roles_rows['r_id']; ?>" required>
+
 
 
 										<div class="row">
@@ -64,7 +70,7 @@ $header_click = "3";
 											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="firstName">ຊື່ສິດ</label>
-													<input type="text" class="form-control" id="role_name" name="role_name" required>
+													<input type="text" class="form-control" id="role_name" name="role_name" value="<?php echo $roles_rows['role_name']; ?>" required>
 												</div>
 											</div>
 
@@ -73,19 +79,22 @@ $header_click = "3";
 												<div class="form-group">
 
 													<select class=" form-control font" name="role_level" id="role_level">
-														<option value=""> ເລືອກລະດັບ </option>
+														
 														<?php
 														$stmt5 = $conn->prepare(" SELECT * FROM tbl_role_level ");
 														$stmt5->execute();
 														if ($stmt5->rowCount() > 0) {
 															while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
 														?>
-																<option value="<?php echo $row5['rl_id']; ?>"> <?php echo $row5['rl_name']; ?></option>
+																<option value="<?php echo $row5['rl_id']; ?>" <?php if ($roles_rows['role_level'] == $row5['rl_id']) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>> <?php echo $row5['rl_name']; ?> </option>
 														<?php
 															}
 														}
 														?>
 													</select>
+													
 												</div>
 											</div>
 
@@ -100,7 +109,7 @@ $header_click = "3";
 
 
 										<div class="d-flex justify-content-end mt-6">
-											<button type="submit" class="btn btn-primary mb-2 btn-pill">ສ້າງສິດ</button>
+											<button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂສິດ</button>
 										</div>
 
 									</form>
@@ -191,61 +200,23 @@ $header_click = "3";
 	<?php include("../setting/calljs.php"); ?>
 
 	<script>
-		// Add staff user 
-		$(document).on("submit", "#addrole", function() {
-			$.post("../query/add-roles.php", $(this).serialize(), function(data) {
-				if (data.res == "success") {
-					Swal.fire(
-						'ສຳເລັດ',
-						'ເພິ່ມຜູ້ໃຊ້ສຳເລັດ',
-						'success'
-					)
-					setTimeout(
-						function() {
-							location.reload();
-						}, 1000);
-				}
-			}, 'json')
-			return false;
-		});
- 
-
-		// active user
-		$(document).on("click", "#activestaffuser", function(e) {
-			e.preventDefault();
-			var id = $(this).data("id");
-			$.ajax({
-				type: "post",
-				url: "../query/activestaffuser.php",
-				dataType: "json",
-				data: {
-					id: id
-				},
-				cache: false,
-				success: function(data) {
-					if (data.res == "success") {
-						Swal.fire(
-							'ສຳເລັດ',
-							'ເປີດນຳໃຊ້ສຳເລັດ',
-							'success'
-						)
-						setTimeout(
-							function() {
-								window.location.href = 'staff.php';
-							}, 1000);
-
-					}
-				},
-				error: function(xhr, ErrorStatus, error) {
-					console.log(status.error);
-				}
-
-			});
-
-
-
-			return false;
-		});
+		 // edit
+         $(document).on("submit", "#editrole", function() {
+            $.post("../query/update-roles.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+                    Swal.fire(
+                        'ສຳເລັດ',
+                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
+                        'success'
+                    )
+                    setTimeout(
+                        function() {
+                            window.location.href = 'roles.php';
+                        }, 1000);
+                }
+            }, 'json')
+            return false;
+        });
 		 // delete 
          $(document).on("click", "#deleteroles", function(e) {
                     e.preventDefault();
@@ -283,6 +254,44 @@ $header_click = "3";
                 });
 
 
+		// active user
+		$(document).on("click", "#activestaffuser", function(e) {
+			e.preventDefault();
+			var id = $(this).data("id");
+			$.ajax({
+				type: "post",
+				url: "../query/activestaffuser.php",
+				dataType: "json",
+				data: {
+					id: id
+				},
+				cache: false,
+				success: function(data) {
+					if (data.res == "success") {
+						Swal.fire(
+							'ສຳເລັດ',
+							'ເປີດນຳໃຊ້ສຳເລັດ',
+							'success'
+						)
+						setTimeout(
+							function() {
+								window.location.href = 'roles.php';
+							}, 1000);
+
+					}
+				},
+				error: function(xhr, ErrorStatus, error) {
+					console.log(status.error);
+				}
+
+			});
+
+
+
+			return false;
+		});
+
+
 		// inactive user
 		$(document).on("click", "#inactivestaffuser", function(e) {
 			e.preventDefault();
@@ -304,7 +313,7 @@ $header_click = "3";
 						)
 						setTimeout(
 							function() {
-								window.location.href = 'staff.php';
+								window.location.href = 'roles.php';
 							}, 1000);
 
 					}
