@@ -8,7 +8,7 @@ extract($_POST);
 
 
 $delExam = $conn->query(" update tbl_warehouse set 
-wh_name ='$wh_name',wh_status ='$wh_status',wh_type='$wh_type',add_by='$add_by',date_register='$date_register'  WHERE wh_id='$wh_id'  ");
+wh_name ='$wh_name',wh_type='$wh_type',br_id ='$br_id'  WHERE wh_id='$wh_id'  ");
 if ($delExam) {
     $res = array("res" => "success");
 } else {

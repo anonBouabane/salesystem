@@ -67,14 +67,14 @@ $header_click = "3";
 											<div class="col-lg-12">
 												<div class="form-group">
 													<label for="firstName">ຊື່ນາມສະກຸນພະນັກງານ</label>
-													<input type="text" class="form-control" id="staffname" name="staffname" required>
+													<input type="text" class="form-control" id="full_name" name="full_name" required>
 												</div>
 											</div>
 
 											<div class="col-lg-12">
 												<div class="form-group">
 													<label for="firstName">ຢູສເຊີ້</label>
-													<input type="text" class="form-control" id="staffuser" name="staffuser" required>
+													<input type="text" class="form-control" id="user_name" name="user_name" required>
 												</div>
 											</div>
 
@@ -177,7 +177,7 @@ $header_click = "3";
 					</div>
 				</div>
 
-			</div>
+			</div> 
 
 			<div class="content-wrapper">
 				<div class="content">
@@ -257,8 +257,8 @@ $header_click = "3";
 														</a>
 
 														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-															<a class="dropdown-item" href="edit-staff-user.php?us_id=<?php echo "$usid"; ?>">ແກ້ໄຂ</a>
-															<a class="dropdown-item" type="button" id="deleteuser" data-mime='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+															<a class="dropdown-item" href="edit-staff-user.php?usid=<?php echo "$usid"; ?>">ແກ້ໄຂ</a>
+															<a class="dropdown-item" type="button" id="deleteuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
 															<a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
 															<a class="dropdown-item" type="button" id="inactivestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ປິດນຳໃຊ້</a>
 														</div>
@@ -314,42 +314,43 @@ $header_click = "3";
 			}, 'json')
 			return false;
 		});
-// delete-user
-$(document).on("click", "#deleteuser", function(e) {
-            e.preventDefault();
-            var id_brt = $(this).data("mime");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-user-staff.php",
-                dataType: "json",
-                data: {
-                    id: id_brt
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ເປີດນຳໃຊ້ສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                window.location.href = 'user-staff.php';
-                            }, 1000);
+		 // delete 
+		 $(document).on("click", "#deleteuser", function(e) {
+                    e.preventDefault();
+                    var usid = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-user.php",
+                        dataType: "json",
+                        data: {
+                            usid: usid
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລືບສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        window.location.href = 'user-staff.php';
+                                    }, 1000);
 
-                    }
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
+                            }
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
 
-            });
+                    });
 
 
+                    return false;
+                });
 
-            return false;
-        });
+
 
 		// active user
 		$(document).on("click", "#activestaffuser", function(e) {

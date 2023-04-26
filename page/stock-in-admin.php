@@ -112,8 +112,7 @@ $header_click = "2";
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
                                     <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ </h2>
-
-
+                               
 
                                     <div class="form-group col-lg-12 mt-4">
                                         <div class="form-group">
@@ -182,7 +181,7 @@ $header_click = "2";
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
                                                                 <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
-                                                              
+
                                                                 <td>
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
@@ -231,13 +230,15 @@ $header_click = "2";
                     <div class="card card-default">
 
                         <div class="card-body">
-                            <h4 class="text-dark">ລາຍການເບີກເຄື່ອງສູ່ຫນ້າຮ້ານ</h4>
-                            <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                            <h4 class="text-dark">ລາຍການໂອນສິນຄ້າເຂົ້າສາງ</h4>
+                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>ເລກລຳດັບ</th>
+                                        <th>ຊື່ສາງ</th>
                                         <th>ບິນອ້າງອີງ</th>
-                                        <th>ຈຳນວນເບີກ</th>
+                                        <th>ຈຳນວນເພິີ່ມເຂົ້າ</th>
+                                        <th>ວັນທີ່</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -246,39 +247,33 @@ $header_click = "2";
                                     <?php
 
 
-                                    $stmt5 = $conn->prepare("  
-                                    SELECT a.db_id, db_bill ,count(item_id) as count_item
-                                    FROM tbl_deburse_bill a
-                                    left join tbl_stock_deburse_shop b on a.db_id = b.db_id
-                                    group by a.db_id, db_bill
-                                    order by  a.db_id desc");
+                                    $stmt5 = $conn->prepare(" select a.siw_id,siw_bill_number,a.date_register,count(siwd_id) as count_item,wh_name 
+                                    from tbl_stock_in_warehouse a
+                                    left join tbl_stock_in_warehouse_detail b on a.siw_id = b.siw_id
+                                    left join tbl_warehouse c on a.wh_id = c.wh_id
+                                    where a.add_by ='$id_users'
+                                    group by siw_id desc ");
                                     $stmt5->execute();
                                     $b = 1;
                                     if ($stmt5->rowCount() > 0) {
                                         while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-                                            $db_id = $row5['db_id'];
-                                            $db_bill = $row5['db_bill'];
-                                            $count_item = $row5['count_item'];
 
                                     ?>
 
-
-
                                             <tr>
                                                 <td><?php echo "$b"; ?></td>
-                                                <td><?php echo "$db_bill"; ?></td>
-                                                <td><?php echo "$count_item"; ?></td>
-
-
-
+                                                <td><?php echo $row5['wh_name']; ?></td>
+                                                <td><?php echo $row5['siw_bill_number']; ?></td>
+                                                <td><?php echo $row5['count_item']; ?></td>
+                                                <td><?php echo $row5['date_register']; ?></td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-scan-deburse-stock-to-shop.php?db_id=<?php echo "$db_id"; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="deletebilldeburse" data-id='<?php echo $row5['db_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                            <a class="dropdown-item" href="edit-stock-in-admin.php?siw_id=<?php echo $row5['siw_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="delstockin" data-id='<?php echo $row5['siw_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                         </div>
                                                     </div>
@@ -392,12 +387,12 @@ $header_click = "2";
 
 
         // Delete item
-        $(document).on("click", "#deletebilldeburse", function(e) {
+        $(document).on("click", "#delstockin", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-purchase-order.php",
+                url: "../query/delete-stock-in-admin.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -412,7 +407,7 @@ $header_click = "2";
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'scan-deburse-stock-to-shop.php';
+                                window.location.href = 'stock-in-admin.php';
                             }, 1000);
 
                     } else if (data.res == "used") {

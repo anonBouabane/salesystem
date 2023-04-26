@@ -7,10 +7,11 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
-update tbl_page_title set st_id ='$st_id',pt_name = '$pt_name' where pt_id = '$pt_id'  
-    
-    ");
+$insCourse = $conn->query(" 
+
+delete from tbl_item_data where item_id = '$item_id'
+ 
+");
 if ($insCourse) {
     $res = array("res" => "success");
 } else {

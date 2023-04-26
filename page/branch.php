@@ -151,9 +151,9 @@ $header_click = "4";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-branch.php?branch_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delbranch" data-kai='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+                                                            <a class="dropdown-item" href="edit-branch.php?br_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
                                                             <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" type="button" id="deletebranch" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -204,43 +204,6 @@ $header_click = "4";
                         }, 1000);
                 }
             }, 'json')
-            return false;
-        });
-        // ສະຄິບເອີ້ນໄຟຣລົບ
-        $(document).on("click", "#delbranch", function(e) {
-            e.preventDefault();
-            var id = $(this).data("kai");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-branch.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                //ໂຢນຫນ້າ
-                                window.location.href = 'branch.php';
-                            }, 1000);
-
-                    }
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
-
-            });
-
-
-
             return false;
         });
     </script>

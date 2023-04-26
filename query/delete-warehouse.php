@@ -7,11 +7,10 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
+$insCourse = $conn->query(" 
 
 delete from tbl_warehouse where wh_id = '$wh_id'
  
-    
     ");
 if ($insCourse) {
     $res = array("res" => "success");

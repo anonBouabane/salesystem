@@ -1,5 +1,5 @@
 <?php
-
+include("../setting/checksession.php");
 
 include("../setting/conn.php");
 
@@ -7,11 +7,9 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
-update tbl_roles set  role_name = '$role_name',role_level = '$role_level' where r_id = '$r_id'  
-    
-    ");
-if ($insCourse) {
+$delExam = $conn->query(" update tbl_branch set 
+br_name ='$br_name',br_type='$br_type'  WHERE br_id='$br_id'  ");
+if ($delExam) {
     $res = array("res" => "success");
 } else {
     $res = array("res" => "failed");

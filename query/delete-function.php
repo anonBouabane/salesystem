@@ -7,11 +7,10 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
+$insCourse = $conn->query(" 
 
-delete from tbl_page_title where pt_id = '$dog_id'
+delete from tbl_page_title where pt_id = '$pt_id'
  
-    
     ");
 if ($insCourse) {
     $res = array("res" => "success");

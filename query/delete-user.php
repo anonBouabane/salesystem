@@ -7,9 +7,10 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
-update tbl_depart set  dp_name = '$dp_name' where dp_id = '$dp_id'  
-    
+$insCourse = $conn->query(" 
+
+delete from tbl_user where usid = '$usid'
+ 
     ");
 if ($insCourse) {
     $res = array("res" => "success");

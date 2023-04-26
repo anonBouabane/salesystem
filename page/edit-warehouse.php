@@ -100,22 +100,7 @@ $wh_id = $_GET['wh_id']
                                                     <input type="text" class="form-control" id="wh_name" name="wh_name" value="<?php echo $wh_rows['wh_name']; ?>" required>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label class="text-dark font-weight-medium">ສະຖານະ</label>
-                                                    <div class="form-group">
-                                                    <select class="form-control font" name="wh_status" id="wh_status" required>
-                                                    <option value="1" <?php if ($wh_rows["wh_status"] == "1") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ນຳໃຊ້</option>
-                                                    <option value="2" <?php if ($wh_rows["wh_status"] == "2") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ປິດນຳໃຊ້</option>
-                                                    
-                                                    </select>
-                                                    
-                                                </div>
-                                            </div>
+                                            
 
 
 
@@ -177,19 +162,7 @@ $wh_id = $_GET['wh_id']
                                             <?php
                                             }
                                             ?>
-                                             <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="firstName">ສ້າງໂດຍ</label>
-                                                    <input type="hidden" class="form-control" id="add_by" name="add_by" value="<?php echo $wh_rows['add_by']; ?>" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label for="firstName">ວັນລົງທະບຽນ</label>
-                                                    <input type="hidden" class="form-control" id="date_register" name="date_register" value="<?php echo $wh_rows['date_register']; ?>" required>
-                                                </div>
-                                            </div>
-
+                                            
                                         </div>
                                         <div class="d-flex justify-content-end mt-6">
                                             <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຂໍ້ມູນ</button>
@@ -217,15 +190,15 @@ $wh_id = $_GET['wh_id']
 
                             <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                 <thead>
-                                <tr>
-                                        <th>id</th>
+                                    <tr>
+                                        <th>ເລກທີ</th>
                                         <th>ຊື່ສາງ</th>
                                         <th>ສະຖານະ</th>
                                         <th>ປະເພດສາງ</th>
-                                        <th>ສາຂາ</th>
+                                        <th>ເລກໄອດີສາຂາ</th>
                                         <th>ສ້າງໂດຍ</th>
                                         <th>ວັນລົງທະບຽນ</th>
-
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -240,7 +213,7 @@ $wh_id = $_GET['wh_id']
 
                                     $stmt4 = $conn->prepare("SELECT wh_id,wh_name,(CASE when wh_status = 1 then 'ເປີດນຳໃຊ້' else 'chose' end) 
                                     as wh_status ,wht_name,br_name,user_name,a.date_register FROM tbl_warehouse a left join tbl_warehouse_type b 
-                                    on a.wh_type = b.wht_id LEFT join tbl_branch c on a.br_id = c.br_id left join tbl_user d on a.add_by = d.usid; 
+                                    on a.wh_type = b.wht_id LEFT join tbl_branch c on a.br_id = c.br_id left join tbl_user d on a.add_by = d.usid;
                                     ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
@@ -252,7 +225,7 @@ $wh_id = $_GET['wh_id']
 
 
                                             <tr>
-                                            <td><?php echo $row4['wh_id']; ?></td>
+                                                <td><?php echo "$wh_id"; ?></td>
                                                 <td><?php echo $row4['wh_name']; ?></td>
                                                 <td><?php echo $row4['wh_status']; ?></td>
                                                 <td><?php echo $row4['wht_name']; ?></td>
@@ -305,7 +278,7 @@ $wh_id = $_GET['wh_id']
     <script>
         // Add staff user 
         $(document).on("submit", "#editwarehouse", function() {
-            $.post("../query/edit-warehouse.php", $(this).serialize(), function(data) {
+            $.post("../query/update-warehouse.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',

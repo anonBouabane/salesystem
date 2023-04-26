@@ -7,11 +7,10 @@ extract($_POST);
 
 
 
-$insCourse = $conn->query("
+$insCourse = $conn->query(" 
 
-delete from tbl_roles where r_id = '$mek_id'
+delete from tbl_roles where r_id = '$r_id'
  
-    
     ");
 if ($insCourse) {
     $res = array("res" => "success");

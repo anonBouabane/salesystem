@@ -1,4 +1,3 @@
-
 <?php 
 include("../setting/checksession.php");
 
@@ -7,15 +6,8 @@ include("../setting/conn.php");
 
  
 
-$updatesql = $conn->query(" 
-update tbl_branch set 
-
-br_name ='$br_name' , 
-br_type = '$br_type'  
-
-WHERE br_id='$id_branch'
-   ");
-if($updatesql)
+$delExam = $conn->query(" update tbl_depart set dp_name ='$dp_name'   WHERE dp_id='$dp_id'  ");
+if($delExam)
 {
 	$res = array("res" => "success");
 }
@@ -26,4 +18,4 @@ else
 
 
 	echo json_encode($res);
-?>
+ ?>

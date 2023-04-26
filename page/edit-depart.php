@@ -2,11 +2,9 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ພະແນກ";
+$header_name = "ຂໍ້ມູນພະແນກ";
 $header_click = "4";
-
-$depart_id = $_GET['depart_id'];
-
+$dp_id = $_GET['dp_id'];
 
 ?>
 
@@ -27,11 +25,8 @@ $depart_id = $_GET['depart_id'];
 
 
 </head>
-
 <script src="../plugins/nprogress/nprogress.js"></script>
-<script type="text/javascript" src="../js/jquery.min.js"></script> <!-- jQuery -->
-
-
+<script type="text/javascript" src="../js/jquery.min.js"></script>
 
 
 <body class="navbar-fixed sidebar-fixed" id="body">
@@ -57,37 +52,33 @@ $depart_id = $_GET['depart_id'];
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ສ້າງພະແນກ</h4>
+                                        <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນພະແນກ</h4>
                                         <?php
-
-                                        //echo "$depart_id";
-                                        $newdp_rows = $conn->query(" SELECT  * 
-                                        FROM tbl_depart  where dp_id = '$depart_id' ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                       
+                                        $depart_rows = $conn->query("SELECT * FROM tbl_depart where dp_id = '$dp_id' ") ->fetch(PDO::FETCH_ASSOC); 
+                                        
+                                        
                                         ?>
+
 
 
                                     </div>
                                     <form method="post" id="editdepart">
-                                    <input type="hidden" class="form-control" id="dp_id" name="dp_id" value="<?php  echo $newdp_rows['dp_id']; ?>" required>
-                                             
+
+                                    <input type="hidden" class="form-control" id="dp_id" name="dp_id" value="<?php echo $depart_rows['dp_id']; ?>" required>
+
 
                                         <div class="row">
-
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="firstName">ຊື່ພະແນກ</label>
-                                                    <input type="text" class="form-control" id="dp_name" name="dp_name" value="<?php  echo $newdp_rows['dp_name']; ?>" required>
+                                                    <label for="firstName">ພະແນກ</label>
+                                                    <input type="text" class="form-control" id="dp_name" name="dp_name"value="<?php echo $depart_rows['dp_name']; ?>" required>
                                                 </div>
                                             </div>
 
 
                                         </div>
-
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຊື່ພະແນກ</button>
                                         </div>
 
                                     </form>
@@ -113,33 +104,30 @@ $depart_id = $_GET['depart_id'];
                             <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກລຳດັບ</th>
-                                        <th>ຊື່ພະແນກ</th>
-                                        <th></th>
+                                        <th>ເລກທີ</th>
+                                        <th>ພະແນກ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
 
                                     <?php
-
-
-
-                                    $stmt4 = $conn->prepare(" select * from tbl_depart order by dp_id desc ");
+                                    $stmt4 = $conn->prepare("select dp_id,dp_name
+                                    from tbl_depart  
+                                    order by dp_id desc ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-
+                                            $dp_id = $row4['dp_id'];
+                                            $dp_name = $row4['dp_name'];
 
                                     ?>
 
 
 
                                             <tr>
-                                                <td><?php echo $row4['dp_id']; ?></td>
-                                                <td><?php echo $row4['dp_name']; ?></td>
-
-
+                                                <td><?php echo "$dp_id"; ?></td>
+                                                <td><?php echo "$dp_name"; ?></td>
 
                                                 <td>
                                                     <div class="dropdown">
@@ -147,14 +135,13 @@ $depart_id = $_GET['depart_id'];
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-depart.php?depart_id=<?php echo $row4['dp_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
-                                                            <a class="dropdown-item" type="button" id="inactivestaffuser" data-id='<?php echo $row4['usid']; ?>' class="btn btn-danger btn-sm">ປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" href="edit-depart.php?dp_id=<?php echo $row4['dp_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" type="button" id="deletedepart" data-id='<?php echo $row4['dp_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
 
                                     <?php
                                         }
@@ -177,22 +164,20 @@ $depart_id = $_GET['depart_id'];
         </div>
     </div>
 
+
+
+
+
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // update depart 
+        // edit
         $(document).on("submit", "#editdepart", function() {
-            $.post("../query/edit-depart.php", $(this).serialize(), function(data) {
-                if (data.res == "failed") {
-                    Swal.fire(
-                        'ລົງທະບຽນຊ້ຳ',
-                        'ຜູ້ໃຊ້ນີ້ຖືກລົງທະບຽນແລ້ວ',
-                        'error'
-                    )
-                } else if (data.res == "success") {
+            $.post("../query/update-depart.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'edit done',
+                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
                         'success'
                     )
                     setTimeout(
@@ -205,81 +190,41 @@ $depart_id = $_GET['depart_id'];
         });
 
 
-        // active user
-        $(document).on("click", "#activestaffuser", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/activestaffuser.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ເປີດນຳໃຊ້ສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                window.location.href = 'depart.php';
-                            }, 1000);
+        // delete 
+        $(document).on("click", "#deletedepart", function(e) {
+                    e.preventDefault();
+                    var dp_id = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-depart.php",
+                        dataType: "json",
+                        data: {
+                            dp_id: dp_id
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລືບສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        window.location.href = 'depart.php';
+                                    }, 1000);
 
-                    }
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
+                            }
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
 
-            });
-
-
-
-            return false;
-        });
+                    });
 
 
-        // inactive user
-        $(document).on("click", "#inactivestaffuser", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/inactivestaffuser.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ປິດນຳໃຊ້ສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                window.location.href = 'depart.php';
-                            }, 1000);
-
-                    }
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
-
-            });
-
-
-
-            return false;
-        });
-        
+                    return false;
+                });
     </script>
 
     <!--  -->

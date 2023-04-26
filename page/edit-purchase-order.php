@@ -2,9 +2,10 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຂໍ້ມູນສາຂາແຟນຊາຍ";
+$header_name = " ຂໍ້ມູນຂໍເບີກສິນຄ້າ";
 $header_click = "4";
-$br_id = $_GET['br_id']
+$or_id = $_GET['or_id'];
+
 
 ?>
 
@@ -52,57 +53,38 @@ $br_id = $_GET['br_id']
                             <div class="col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
                                     <div class="email-body-head mb-5 ">
-                                        <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນສາຂາ-ແຟນຊາຍ</h4>
-                                        <?php
-                                        $branch_rows = $conn->query("SELECT * FROM tbl_branch where br_id = '$br_id' ") ->fetch(PDO::FETCH_ASSOC); 
-                                        
+                                        <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນຂໍເບີກສິນຄ້າ</h4>
+                                    </div>
+                                    <?php
+                                        $order_rows = $conn->query("SELECT * FROM tbl_order_request where or_id = '$or_id' ") ->fetch(PDO::FETCH_ASSOC); 
                                         
                                         ?>
-                                    </div>
-                                    <form method="post" id="editbranch">
-                                    <input type="hidden" class="form-control" id="br_id" name="br_id"value="<?php echo $branch_rows['br_id']; ?>" required>
+                                    <form method="post" id="editorder">
                                         <div class="row">
+                                        <input type="hidden" class="form-control" id="or_id" name="or_id" value="<?php echo $order_rows['or_id']; ?>" required>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
-                                                    <label for="firstName">ຊື່ສາຂາ-ແຟນຊາຍ</label>
-                                                    <input type="text" class="form-control" id="br_name" name="br_name" value=" <?php echo $branch_rows['br_name']; ?>" required>
+                                                    <label for="firstName">ເລກບີນອໍເດີ</label>
+                                                    <input type="text" class="form-control" id="or_bill_number" name="or_bill_number" value="<?php echo $order_rows['or_bill_number']; ?>"  required>
                                                 </div>
                                             </div>
                                             
-                                            <!-- <div class="col-lg-6">
-                                                <div class="form-group">
-                                                    <label class="text-dark font-weight-medium">ສະຖານະ</label>
-                                                    <div class="form-group">
-                                                    <select class="form-control font" name="br_status" id="br_status" required>
-                                                    <option value="1" <?php if ($branch_rows["br_status"] == "1") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ນຳໃຊ້</option>
-                                                    <option value="2" <?php if ($branch_rows["br_status"] == "2") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ຢຸດບໍລິການ</option>
-                                                    
-                                                    </select>
-                                                    
-                                                </div>
-                                            </div> -->
 
                                             <div class="form-group col-lg-6">
-                                                <label class="text-dark font-weight-medium">ປະເພດສາຂາ</label>
+                                                <label class="text-dark font-weight-medium">ສາຂາ</label>
                                                 <div class="form-group">
 
-                                                    <select class=" form-control font" name="br_type" id="br_type">
-                                                        
+                                                    <select class=" form-control font" name="br_id" id="br_id">
+                                                    
                                                         <?php
-                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");
+                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");
                                                         $stmt5->execute();
                                                         if ($stmt5->rowCount() > 0) {
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                         ?>
-                                                                <option value="<?php echo $row5['brt_id']; ?>" <?php if ($branch_rows['br_type'] == $row5['brt_id']) {
-                                                                                                            echo "selected";
-                                                                                                        } ?>>
-                                                                    <?php echo $row5['brt_name']; ?></option>
-                                                               
+                                                                <option value="<?php echo $row5['br_id']; ?>" <?php if ($order_rows['br_id'] == $row5['br_id']) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>> <?php echo $row5['br_name']; ?></option>
                                                         <?php
                                                             }
                                                         }
@@ -110,7 +92,47 @@ $br_id = $_GET['br_id']
                                                     </select>
                                                 </div>
                                             </div>
-                                            <!-- <div class="form-group col-lg-6">
+                                            <div class="form-group col-lg-6">
+                                                <label class="text-dark font-weight-medium">ໄອດີສາງ</label>
+                                                <div class="form-group">
+
+                                                    <select class=" form-control font" name="wh_id" id="wh_id">
+                                                    
+                                                        <?php
+                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse ");
+                                                        $stmt5->execute();
+                                                        if ($stmt5->rowCount() > 0) {
+                                                            while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
+                                                        ?>
+                                                                <option value="<?php echo $row5['wh_id']; ?>" <?php if ($order_rows['wh_id'] == $row5['wh_id']) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>> <?php echo $row5['wh_name']; ?></option>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="text-dark font-weight-medium">ສະຖານະບິນ</label>
+                                                    <div class="form-group">
+                                                    <select class="form-control font" name="or_status" id="or_status" required>
+                                                    <option value="1" <?php if ($order_rows["or_status"] == "1") {
+                                                                                    echo "SELECTED";
+                                                                                } ?>>ກຳລັງສັງ</option>
+                                                    <option value="2" <?php if ($order_rows["or_status"] == "2") {
+                                                                                    echo "SELECTED";
+                                                                                } ?>>ເບີກຈ່າຍແລ້ວ</option>
+                                                    <option value="3" <?php if ($order_rows["or_status"] == "3") {
+                                                                                    echo "SELECTED";
+                                                                                } ?>>ຍົກເລີກ</option>
+                                                    </select>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-6">
                                                 <label class="text-dark font-weight-medium">ເລກໄອດີຜູ້ເພີ່ມຂໍ້ມູນ</label>
                                                 <div class="form-group">
 
@@ -122,7 +144,7 @@ $br_id = $_GET['br_id']
                                                         if ($stmt5->rowCount() > 0) {
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                         ?>
-                                                                <option value="<?php echo $row5['usid']; ?>" <?php if ($branch_rows['add_by'] == $row5['usid']) {
+                                                                <option value="<?php echo $row5['usid']; ?>" <?php if ($order_rows['add_by'] == $row5['usid']) {
                                                                                                                 echo "selected";
                                                                                                             } ?>> <?php echo $row5['user_name']; ?></option>
                                                         <?php
@@ -131,15 +153,14 @@ $br_id = $_GET['br_id']
                                                         ?>
                                                     </select>
                                                 </div>
-                                            </div> -->
+                                            </div>
                                             
-                                            
-                                            <!-- <div class="col-lg-6">
+                                            <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="firstName">ວັນລົງທະບຽນ</label>
-                                                    <input type="hidden" class="form-control" id="date_register" name="date_register" value=" <?php echo $branch_rows['date_register']; ?>" required>
+                                                    <input type="hidden" class="form-control" id="date_register" name="date_register" value="<?php echo $order_rows['date_register']; ?>" required>
                                                 </div>
-                                            </div> -->
+                                            </div>
 
 
                                         </div>
@@ -170,10 +191,11 @@ $br_id = $_GET['br_id']
                             <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກທີ</th>
-                                        <th>ສາຂາ</th>
-                                        <th>ສະຖານະ</th>
-                                        <th>ປະເພດ</th>
+                                        <th>ໄອດີສັັ່ງຂໍສິນຄ້າ</th>
+                                        <th>ເລກບີນອໍເດີ</th>
+                                        <th>ເລກໄອດີສາຂາ</th>
+                                        <th>ໄອດີສາງ</th>
+                                        <th>ສະຖານະບິນ</th>
                                         <th>ເລກໄອດີຜູ້ເພີ່ມຂໍ້ມູນ</th>
                                         <th>ວັນລົງທະບຽນ</th>
                                         <th></th>
@@ -181,13 +203,9 @@ $br_id = $_GET['br_id']
                                 </thead>
                                 <tbody>
 
-
-                                    <?php
-                                    $stmt4 = $conn->prepare("SELECT  br_id,br_name,brt_name,add_by,
-                                    (case when br_status = 1 then 'ນຳໃຊ້' else 'ຫຍຸດນຳໃຊ້' end) as br_status,
-                                    date_register FROM tbl_branch a
-                                    left join tbl_branch_type b on a.br_type = b.brt_id
-                                    order by br_id desc
+                                <?php
+                                    $stmt4 = $conn->prepare("SELECT * FROM tbl_order_request
+        
                                     ");
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
@@ -195,14 +213,16 @@ $br_id = $_GET['br_id']
 
 
                                     ?>
+                               
 
 
 
                                             <tr>
+                                                <td><?php echo $row4['or_id']; ?></td>
+                                                <td><?php echo $row4['or_bill_number']; ?></td>
                                                 <td><?php echo $row4['br_id']; ?></td>
-                                                <td><?php echo $row4['br_name']; ?></td>
-                                                <td><?php echo $row4['br_status']; ?></td>
-                                                <td><?php echo $row4['brt_name']; ?></td>
+                                                <td><?php echo $row4['wh_id']; ?></td>
+                                                <td><?php echo $row4['or_status']; ?></td>
                                                 <td><?php echo $row4['add_by']; ?></td>
                                                 <td><?php echo $row4['date_register']; ?></td>
                                                 <td>
@@ -211,21 +231,21 @@ $br_id = $_GET['br_id']
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-branch.php?br_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
-                                                            <a class="dropdown-item" type="button" id="deletebranch" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+                                                            <a class="dropdown-item" href="edit-order.php?or_id=<?php echo $row4['or_id']; ?>">ແກ້ໄຂ</a>
+                                                            
+                                                            <a class="dropdown-item" type="button" id="deleteorder" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
 
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
-
-
-                                    <?php
+                                            <?php
                                         }
                                     }
                                     ?>
+
+
+                                   
 
 
                                 </tbody>
@@ -250,9 +270,9 @@ $br_id = $_GET['br_id']
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // Add branch
-        $(document).on("submit", "#editbranch", function() {
-            $.post("../query/update-branch.php", $(this).serialize(), function(data) {
+       // edit ex
+       $(document).on("submit", "#editorder", function() {
+            $.post("../query/update-order.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
@@ -261,22 +281,22 @@ $br_id = $_GET['br_id']
                     )
                     setTimeout(
                         function() {
-                            window.location.href = 'branch.php';
+                            window.location.href = '2_2order.php';
                         }, 1000);
                 }
             }, 'json')
             return false;
         });
          // delete 
-         $(document).on("click", "#deletebranch", function(e) {
+         $(document).on("click", "#deleteorder", function(e) {
                     e.preventDefault();
-                    var br_id = $(this).data("id");
+                    var or_id = $(this).data("id");
                     $.ajax({
                         type: "post",
-                        url: "../query/delete-branch.php",
+                        url: "../query/delete-order.php",
                         dataType: "json",
                         data: {
-                            br_id: br_id
+                            or_id: or_id
                         },
                         cache: false,
                         success: function(data) {
@@ -288,7 +308,7 @@ $br_id = $_GET['br_id']
                                 )
                                 setTimeout(
                                     function() {
-                                        window.location.href = 'branch.php';
+                                        window.location.href = 'request-order.php';
                                     }, 1000);
 
                             }

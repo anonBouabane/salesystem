@@ -68,11 +68,11 @@ $header_click = "2";
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
                                                     <th>ເລກບິນຂໍ</th>
-                                                    <th>ຈຳນວນລາຍການຂໍ</th>
-                                                    <th>ຈຳນວນສິນຄ້າຂໍ</th>
+                                                    <th>ສາຂາ-ແຟນໄຊນ</th>
+                                                    <th>ວັນທີຂໍ</th>
                                                     <th>ເລກບິນເບີກ</th>
-                                                    <th>ຈຳນວນລາຍການເບີກ</th>
-                                                    <th>ຈຳນວນສິນຄ້າເບີກ</th>
+                                                    <th>ສະຖານະເບີກ</th>
+                                                    <th>ວັນທີເບີກ</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -80,28 +80,42 @@ $header_click = "2";
 
                                                 <?php
 
-
-                                                $stmt4 = $conn->prepare(" call stp_order_pre_stock_in(1);");
+                                                $i = 1;
+                                                $stmt4 = $conn->prepare(" SELECT  a.or_id,or_bill_number,br_name,a.date_register as date_request
+                                                ,apo_bill_number,aos_name,b.date_register as date_check
+                                                FROM tbl_order_request a
+                                                left join tbl_approve_order b on a.or_id = b.or_id
+                                                left join tbl_branch c on a.br_id = c.br_id
+                                                left join tbl_approve_order_status d on b.ar_status = d.aos_id ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                                        $po_id = $row4['po_id'];
-                                                        $bill_number = $row4['bill_number'];
-                                                        $item_order = $row4['item_order'];
-                                                        $order_value = $row4['order_value'];
-                                                        $item_stock_in = $row4['item_stock_in'];
-                                                        $price_total = $row4['price_total'];
+
+
+                                                        if (empty($row4['apo_bill_number'])) {
+                                                            $apo_bill_number = "ລໍຖ້າກວດສອບ";
+                                                            $aos_name = "ລໍຖ້າກວດສອບ";
+                                                            $date_check = "ລໍຖ້າກວດສອບ";
+                                                        } else {
+                                                            $apo_bill_number = $row4['apo_bill_number'];
+                                                            $aos_name = $row4['aos_name'];
+                                                            $date_check = $row4['date_check'];
+                                                        }
+
 
                                                 ?>
 
 
 
                                                         <tr>
-                                                            <td><?php echo "$po_id"; ?></td>
-                                                            <td><?php echo "$bill_number"; ?></td>
-                                                            <td><?php echo "$item_order"; ?></td>
-                                                            <td><?php echo "$item_stock_in / $order_value "; ?></td>
-                                                            <td><?php echo number_format("$price_total", 2, ",", ".") ?></td>
+
+                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['or_bill_number']; ?></td>
+                                                            <td><?php echo $row4['br_name']; ?></td>
+                                                            <td><?php echo $row4['date_request']; ?></td>
+                                                            <td><?php echo "$apo_bill_number"; ?></td>
+                                                            <td><?php echo "$aos_name"; ?></td>
+                                                            <td><?php echo "$date_check"; ?></td>
 
 
 
@@ -111,7 +125,7 @@ $header_click = "2";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="scan-into-stock.php?po_id=<?php echo "$po_id"; ?>">ສະແກນຮັບເຄື່ອງ</a>
+                                                                        <a class="dropdown-item" href="check-order-request.php?or_id=<?php echo $row4['or_id']; ?>">ກວດສອບ</a>
 
                                                                     </div>
                                                                 </div>
@@ -120,6 +134,8 @@ $header_click = "2";
 
 
                                                 <?php
+
+                                                        $i++;
                                                     }
                                                 }
                                                 $conn = null;
@@ -143,7 +159,7 @@ $header_click = "2";
                 </div>
 
             </div>
- 
+
 
             <?php include "footer.php"; ?>
         </div>

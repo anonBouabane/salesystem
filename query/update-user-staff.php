@@ -6,7 +6,10 @@ include("../setting/conn.php");
 
  
 
-$delExam = $conn->query(" update tbl_user_staff set role_id = '$r_id' , depart_id ='$dp_id'   WHERE usid='$us_id'  ");
+$delExam = $conn->query(" update tbl_user set 
+full_name ='$full_name' , user_name ='$user_name' ,   
+role_id ='$r_id', depart_id ='$dp_id' WHERE usid='$usid' ");
+
 if($delExam)
 {
 	$res = array("res" => "success");

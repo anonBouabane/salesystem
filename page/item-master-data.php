@@ -356,7 +356,7 @@ $header_click = "2";
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'add-item-detail.php';
+                                window.location.href = 'item-master-data.php';
                             }, 1000);
 
                     } else if (data.res == "used") {

@@ -4,6 +4,7 @@ include("../setting/conn.php");
 
 $header_name = "ຂໍ້ມູນສິນຄ້າ";
 $header_click = "2";
+$item_id = $_GET['item_id'];
 
 
 
@@ -56,13 +57,16 @@ $header_click = "2";
                             <div class="    ">
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
-                                        <h4 class="text-dark">ເພີ່ມຂໍ້ມູນສິນຄ້າ</h4>
+                                        <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນສິນຄ້າ</h4>
+                                        <?php
+                                        $item_rows = $conn->query("SELECT * FROM tbl_item_data where item_id = '$item_id' ")->fetch(PDO::FETCH_ASSOC);
 
-
-
+                                        ?>
 
                                     </div>
-                                    <form method="post" id="additemfrm">
+                                    
+                                    <form method="post" id="edititemfrm">
+                                        <input type="hidden" class="form-control" id="item_id" name="item_id" value="<?php echo $item_rows['item_id']; ?>" required>
 
 
 
@@ -83,7 +87,7 @@ $header_click = "2";
                                                     <div class="card-body">
                                                         <div class="input-states">
 
-                                                            <table class="" id="productTable">
+                                                            <table class="table" id="productTable">
 
                                                                 <tbody>
                                                                     <?php
@@ -98,17 +102,34 @@ $header_click = "2";
                                                                                     <div class="row p-2">
 
 
-                                                                                        <div class="col-lg-9">
+                                                                                        <div class="form-group  col-lg-5">
+                                                                                            <label class="text-dark font-weight-medium">ຊື່ສິນຄ້າ</label>
+
                                                                                             <div class="form-group">
-                                                                                                <label for="firstName">ຊື່ສິນຄ້າ</label>
-                                                                                                <select class="form-control" name="item_from[]" id="item_from<?php echo $x; ?>">
-                                                                                                    <option value="">ເລືອກສິນຄ້າ</option>
+                                                                                                <input type="text" step="any" name="item_name" id="item_name" value="<?php echo $item_rows['item_name']; ?>" required>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="form-group  col-lg-2">
+                                                                                            <label class="text-dark font-weight-medium">ບາໂຄດ</label>
+                                                                                            <div class="form-group">
+                                                                                                <input type="text" step="any" name="bar_code" id="bar_code" value="<?php echo $item_rows['barcode']; ?>" required>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="col-lg-2">
+                                                                                            <div class="form-group">
+                                                                                                <label for="firstName">ຫົວໜ່ວຍ</label>
+                                                                                                <select class="form-control" name="item_unit" id="item_unit">
+                                                                                                    
                                                                                                     <?php
-                                                                                                    $stmt3 = $conn->prepare("select * from tbl_item_data where ipt_id != '1' ");
-                                                                                                    $stmt3->execute();
-                                                                                                    if ($stmt3->rowCount() > 0) {
-                                                                                                        while ($row3 = $stmt3->fetch(PDO::FETCH_ASSOC)) {
-                                                                                                    ?> <option value="<?php echo $row2['item_id']; ?>"> <?php echo $row3['item_name']; ?></option>
+                                                                                                    $stmt2 = $conn->prepare(" SELECT * from tbl_item_pack_type  order by ipt_id  ");
+                                                                                                    $stmt2->execute();
+                                                                                                    if ($stmt2->rowCount() > 0) {
+                                                                                                        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                                                                                                    ?> <option value="<?php echo $row2['ipt_id']; ?>" <?php if ($item_rows['ipt_id'] == $row2['ipt_id']) {
+                                                                                                                                                            echo "selected";
+                                                                                                                                                        } ?>> <?php echo $row2['ipt_name']; ?></option>
                                                                                                     <?php
                                                                                                         }
                                                                                                     }
@@ -117,41 +138,9 @@ $header_click = "2";
                                                                                             </div>
                                                                                         </div>
 
-                                                                                        <?php
 
 
 
-                                                                                        $conn = null;
-                                                                                        include("../setting/conn.php");
-
-
-                                                                                        ?>
-
-                                                                                        <div class="form-group  col-lg-3">
-                                                                                            <label class="text-dark font-weight-medium">ຈຳນວນແຍກ</label>
-                                                                                            <div class="form-group">
-                                                                                                <input type="number" step="any" name="item_value[]" id="item_value<?php echo $x; ?>" autocomplete="off" class="form-control" />
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                        <div class="col-lg-9">
-                                                                                            <div class="form-group">
-                                                                                                <label for="firstName">ຊື່ສິນຄ້າແຍກ</label>
-                                                                                                <select class="form-control" name="item_to[]" id="item_to<?php echo $x; ?>">
-                                                                                                    <option value="">ເລືອກສິນຄ້າ</option>
-                                                                                                    <?php
-                                                                                                    $stmt3 = $conn->prepare("select * from tbl_item_data where ipt_id = '1'");
-                                                                                                    $stmt3->execute();
-                                                                                                    if ($stmt3->rowCount() > 0) {
-                                                                                                        while ($row3 = $stmt3->fetch(PDO::FETCH_ASSOC)) {
-                                                                                                    ?> <option value="<?php echo $row2['item_id']; ?>"> <?php echo $row3['item_name']; ?></option>
-                                                                                                    <?php
-                                                                                                        }
-                                                                                                    }
-                                                                                                    ?>
-                                                                                                </select>
-                                                                                            </div>
-                                                                                        </div>
 
 
                                                                                         <div class="col-lg-3">
@@ -166,6 +155,11 @@ $header_click = "2";
                                                                                             </div>
 
                                                                                         </div>
+
+
+
+
+
 
                                                                                     </div>
 
@@ -196,7 +190,7 @@ $header_click = "2";
 
 
                                         <div class="d-flex justify-content-end mt-6">
-                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເພີ່ມລະຫັດສິນຄ້າ</button>
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂລະຫັດສິນຄ້າ</button>
                                         </div>
 
                                     </form>
@@ -267,7 +261,7 @@ $header_click = "2";
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item" href="edit-item-detail.php?item_id=<?php echo "$item_id"; ?>">ແກ້ໄຂ</a>
 
-                                                            <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo "$item_id"; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+                                                            <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -307,82 +301,64 @@ $header_click = "2";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // add item Data 
-        $(document).on("submit", "#additemfrm", function() {
-            $.post("../query/add-item-data.php", $(this).serialize(), function(data) {
-                if (data.res == "existname") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        data.item_name.toUpperCase() + ' ຊື່ນີ້ມີການລົງທະບຽນແລ້ວ',
-                        'error'
-                    )
-                } else if (data.res == "existbarcode") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        data.bar_code_check.toUpperCase() + ' ບາດໂຄດມີການລົງທະບຽນແລ້ວ',
-                        'error'
-                    )
-                } else if (data.res == "invalid") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລາຍການທີ' + data.list_num.toUpperCase() + ' ບໍ່ສາມາດໃຫ້ຊື່ສິນຄ້າວ່າງໄດ້',
-                        'error'
-                    )
-                } else if (data.res == "success") {
-
+        $(document).on("submit", "#edititemfrm", function() {
+            $.post("../query/update-item-data.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ລົງທະບຽນລະຫັດສິນຄ້າສຳເລັດ',
+                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
                         'success'
                     )
-
                     setTimeout(
                         function() {
-                            location.reload();
+                            window.location.href = 'extract-item-unit.php';
                         }, 1000);
-
                 }
-            }, 'json');
-
+            }, 'json')
             return false;
         });
 
 
-         // delete 
-         $(document).on("click", "#deleteitem", function(e) {
-                    e.preventDefault();
-                    var item_id = $(this).data("id");
-                    $.ajax({
-                        type: "post",
-                        url: "../query/delete-item-data.php",
-                        dataType: "json",
-                        data: {
-                            item_id: item_id
-                        },
-                        cache: false,
-                        success: function(data) {
-                            if (data.res == "success") {
-                                Swal.fire(
-                                    'ສຳເລັດ',
-                                    'ລືບສຳເລັດ',
-                                    'success'
-                                )
-                                setTimeout(
-                                    function() {
-                                        window.location.href = 'extract-item-unit.php';
-                                    }, 1000);
+        // Delete item
+        $(document).on("click", "#deleteitem", function(e) {
+            e.preventDefault();
+            var item_id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-item-data.php",
+                dataType: "json",
+                data: {
+                    item_id: item_id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'item-master-data.php';
+                            }, 1000);
 
-                            }
-                        },
-                        error: function(xhr, ErrorStatus, error) {
-                            console.log(status.error);
-                        }
+                    } else if (data.res == "used") {
+                        Swal.fire(
+                            'ນຳໃຊ້ແລ້ວ',
+                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                            'error'
+                        )
+                    }
 
-                    });
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
 
-
-                    return false;
-                });
+            });
+            return false;
+        });
 
 
 
@@ -408,77 +384,7 @@ $header_click = "2";
             }
 
             $.ajax({
-                url: '../query/dropdown/dropdown_item_for_extract.php',
-                type: 'post',
-                dataType: 'json',
-                success: function(response) {
-                  
-
-
-
-                    var tr = '<tr id="row' + count + '" class="' + arrayNumber + '">' +
-
-
-                        '<td>' +
-                        '<div class="form-group">ລາຍການທີ: ' + count +
-                        '<div class="row p-2">' +
-
-
-
-
-                        '<div class="col-lg-9">' +
-                        '<div class="form-group">' +
-                        '<label for="firstName">ຫົວໜ່ວຍ</label>' +
-
-
-                        '<select class="form-control" name="item_from[]" id="item_from' + count + '" >' +
-                        '<option value="">ຫົວໜ່ວຍ</option>';
-                    $.each(response, function(index, value) {
-                        tr += '<option value="' + value[0] + '">' + value[1] + '</option>';
-                    });
-                    tr += '</select>' +
-
-                        '</div>' +
-                        '</div>' +
-
-
-                        '<div class="form-group  col-lg-3">' +
-                        '<label class="text-dark font-weight-medium">ບາໂຄດ</label>' +
-                        '<div class="form-group">' +
-                        '<input type="text" name="bar_code[]" id="bar_code' + count + '" autocomplete="off" class="form-control" />' +
-                        '</div>' +
-                        '</div>' +
-
-
-
-
-
-
-
-
-
-
-                        '</div>' +
-                        '</div>' +
-
-
-
-
-                        '</td>' +
-
-
-                        '</tr>';
-                    if (tableLength > 0) {
-                        $("#productTable tbody tr:last").after(tr);
-                    } else {
-                        $("#productTable tbody").append(tr);
-                    }
-
-                } // /success
-            }); // get the product data
-
-            $.ajax({
-                url: '../query/dropdown/dropdown_item_to_extract.php',
+                url: '../query/dropdown/dropdown_item_pack_type.php',
                 type: 'post',
                 dataType: 'json',
                 success: function(response) {
@@ -490,18 +396,29 @@ $header_click = "2";
 
 
                         '<td>' +
-                       
+                        '<div class="form-group">ລາຍການທີ: ' + count +
                         '<div class="row p-2">' +
 
-                      
- 
+                        '<div class="form-group  col-lg-5">' +
+                        '<label class="text-dark font-weight-medium">ຊື່ສິນຄ້າ</label>' +
+                        '<div class="form-group">' +
+                        '<input type="text" name="item_name[]" id="item_name' + count + '" autocomplete="off" class="form-control" />' +
+                        '</div>' +
+                        '</div>' +
 
-                        '<div class="col-lg-9">' +
+                        '<div class="form-group  col-lg-2">' +
+                        '<label class="text-dark font-weight-medium">ບາໂຄດ</label>' +
+                        '<div class="form-group">' +
+                        '<input type="text" name="bar_code[]" id="bar_code' + count + '" autocomplete="off" class="form-control" />' +
+                        '</div>' +
+                        '</div>' +
+
+                        '<div class="col-lg-2">' +
                         '<div class="form-group">' +
                         '<label for="firstName">ຫົວໜ່ວຍ</label>' +
 
 
-                        '<select class="form-control" name="item_to[]" id="item_to' + count + '" >' +
+                        '<select class="form-control" name="item_unit[]" id="item_unit' + count + '" >' +
                         '<option value="">ຫົວໜ່ວຍ</option>';
                     $.each(response, function(index, value) {
                         tr += '<option value="' + value[0] + '">' + value[1] + '</option>';
@@ -532,7 +449,7 @@ $header_click = "2";
 
 
                         '</div>' +
-                  
+                        '</div>' +
 
 
 
@@ -548,7 +465,7 @@ $header_click = "2";
                     }
 
                 } // /success
-            });
+            }); // get the product data
 
         } // /add row
 

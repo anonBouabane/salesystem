@@ -225,9 +225,9 @@ $header_click = "4";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                        <a class="dropdown-item" href="edit-warehouse.php?wh_id=<?php echo $row4['wh_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delwarehouse" data-wiwi='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm">ລົບ</a>
+                                                            <a class="dropdown-item" href="edit-warehouse.php?wh_id=<?php echo "$wh_id"; ?>">ແກ້ໄຂ</a>
                                                             <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
+                                                            <a class="dropdown-item" type="button" id="deletewarehouse" data-id='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -280,43 +280,43 @@ $header_click = "4";
             }, 'json')
             return false;
         });
-        // ສະຄິບເອີ້ນໄຟຣລົບ
-        $(document).on("click", "#delwarehouse", function(e) {
-            e.preventDefault();
-            var id = $(this).data("wiwi");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-warehouse.php",
-                dataType: "json",
-                data: {
-                    wh_id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                //ໂຢນຫນ້າ
-                                window.location.href = 'warehouse.php';
-                            }, 1000);
 
-                    }
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
+        $(document).on("click", "#deletewarehouse", function(e) {
+                    e.preventDefault();
+                    var wh_id = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-warehouse.php",
+                        dataType: "json",
+                        data: {
+                            wh_id: wh_id
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລືບສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        window.location.href = 'warehouse.php';
+                                    }, 1000);
 
-            });
+                            }
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
 
+                    });
 
 
-            return false;
-        });
+                    return false;
+                });
+    </script>
+
     </script>
 
     <!--  -->
