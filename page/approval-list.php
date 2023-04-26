@@ -120,7 +120,7 @@ $header_click = "2";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="scan-stock-warehouse-out.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
+                                                                        <a class="dropdown-item" href="select-warehouse-stock-out.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
 
                                                                     </div>
                                                                 </div>

@@ -218,7 +218,7 @@ $header_click = "2";
                                     <tr>
                                         <th>ເລກລຳດັບ</th>
                                         <th>ບິນອ້າງອີງ</th>
-                                        <th>ປະເພດລາຍການ</th>
+                                        <th>ສາຂາ</th>
                                         <th>ຈຳນວນສິນຄ້າ</th>
                                         <th>ລາຄາ</th>
                                         <th></th>
@@ -233,7 +233,7 @@ $header_click = "2";
                                     FROM tbl_order_request a
                                     left join tbl_warehouse b on a.wh_id = b.wh_id
                                     left join tbl_order_status c on a.or_status = c.os_id
-                                    where a.br_id = '$id_users'
+                                    where a.br_id = '$br_id'
                                     order by or_id desc
                                     ");
                                     $stmt4->execute();

@@ -2,9 +2,11 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຮັບເຄື່ອງເຂົ້າສາງ";
+$header_name = "ເບີກສິນຄ້າອອກສາງ";
 $header_click = "2";
 
+$apo_id = $_POST['apo_id'];
+$wh_id = $_POST['wh_id'];
 
 ?>
 
@@ -68,13 +70,20 @@ $header_click = "2";
 
                                             <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
 
-                                                <input type="hidden" id="po_id" name="po_id" class="form-control" value='<?php echo "$po_id"; ?>' autofocus>
-
 
 
                                                 <div class="input-group px-5 mt-1">
                                                     <label class="text-dark font-weight-medium"> ສະແກນບາໂຄດ </label>
+
+
                                                 </div>
+
+
+                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
+
+
+                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
+
                                                 <div class="input-group px-5 p-4">
                                                     <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
                                                 </div>
@@ -111,31 +120,22 @@ $header_click = "2";
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
-                                    <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ </h2>
-                               
+                                    <?php
+                                    $rowwh = $conn->query("select * from tbl_warehouse where wh_id ='$wh_id' ")->fetch(PDO::FETCH_ASSOC);
 
-                                    <div class="form-group col-lg-12 mt-4">
-                                        <div class="form-group">
 
-                                            <select class=" form-control font" name="wh_id" id="wh_id">
-                                                <option value=""> ເລືອກສາງ </option>
-                                                <?php
-                                                $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse where br_id ='$br_id'  ");
-                                                $stmt5->execute();
-                                                if ($stmt5->rowCount() > 0) {
-                                                    while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-                                                ?>
-                                                        <option value="<?php echo $row5['wh_id']; ?>"> <?php echo $row5['wh_name']; ?></option>
-                                                <?php
-                                                    }
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    ?>
+
+                                    <h2 class="mt-4 "> ສະແກນອອກສາງ <?php echo "(" . $rowwh['wh_name'] . ")";  ?></h2>
+
+                              
+
+                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
+
+                                    <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
-                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ຮັບເຂົ້າສາງ</button>
+                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
                                     </div>
 
 
@@ -156,11 +156,11 @@ $header_click = "2";
 
                                                     <?php
                                                     $stmt4 = $conn->prepare("select a.item_id,item_name,sum(item_values) as item_values 
-                                                    from tbl_stock_in_warehouse_detail_pre a
+                                                    from tbl_stock_out_warehouse_detail_pre a
                                                     left join tbl_item_data b on a.item_id = b.item_id
                                                     where add_by='$id_users' 
                                                     group by item_name,a.item_id
-                                                    order by siwdp_id  desc ");
+                                                    order by sowdp_id  desc ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -306,7 +306,7 @@ $header_click = "2";
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {
+            $.post("../query/scan-stock-out-admin.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
@@ -323,7 +323,7 @@ $header_click = "2";
                 } else if (data.res == "nofound") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນລະບົບ',
+                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນບິນຂໍ',
                         'error'
                     )
                     setTimeout(
@@ -340,10 +340,10 @@ $header_click = "2";
                         function() {
                             location.reload();
                         }, 2000);
-                } else if (data.res == "noorder") {
+                } else if (data.res == "orverorder") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີການຈັດຊື້',
+                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',
                         'error'
                     )
                     setTimeout(
@@ -360,7 +360,7 @@ $header_click = "2";
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-add-stock-in-addmin.php",
+                "../query/confirm-add-stock-out-addmin.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "nowarehouse") {
@@ -422,7 +422,6 @@ $header_click = "2";
             });
             return false;
         });
-  
     </script>
 
     <!--  -->

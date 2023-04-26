@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2023 at 04:08 AM
+-- Generation Time: Apr 24, 2023 at 03:26 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -20,6 +20,67 @@ SET time_zone = "+00:00";
 --
 -- Database: `salesystem`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_caculate_stock_remain` ()  BEGIN
+
+create TEMPORARY table tmp_count_stock_in
+
+select item_id,sum(item_values) as item_in_count
+from tbl_stock_in_warehouse_detail a
+left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+group by item_id,a.siw_id;
+
+create TEMPORARY table tmp_count_stock_out
+
+select item_id,sum(item_values) as item_out_count
+from tbl_stock_out_warehouse_detail a
+left join tbl_stock_out_warehouse b  on a.sow_id = b.sow_id
+group by item_id,a.sow_id;
+
+
+create TEMPORARY table tmp_count_stock_pre_out
+
+select item_id,sum(item_values) as item_pre_count
+from tbl_stock_out_warehouse_detail_pre 
+group by item_id ;
+
+
+create TEMPORARY table tmp_union_item_out
+
+SELECT item_id, item_out_count
+FROM tmp_count_stock_out  
+union all
+SELECT item_id, item_pre_count
+FROM tmp_count_stock_pre_out ;
+
+
+create TEMPORARY table tmp_caculate_item_out
+
+select item_id, sum(item_out_count) as item_out_count
+from tmp_union_item_out
+group by item_id ;
+
+
+
+create TEMPORARY table tmp_item_remain
+
+select a.item_id, item_name,
+(item_in_count - (case when item_out_count is null then 0 else item_out_count end))as remain_value
+from tmp_count_stock_in a
+left join tmp_caculate_item_out b on a.item_id = b.item_id 
+left join tbl_item_data c on a.item_id = c.item_id;
+ 
+
+select * from tmp_item_remain  ;
+
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -47,7 +108,9 @@ INSERT INTO `tbl_approve_order` (`apo_id`, `apo_bill_number`, `or_id`, `br_id`, 
 (2, '202304080001', 2, 1, 1, 1, 1, '2023-04-08'),
 (3, '202304080002', 3, 1, 1, 1, 1, '2023-04-08'),
 (4, '202304080003', 4, 1, 3, 1, 1, '2023-04-08'),
-(5, '202304080004', 5, 1, 3, 1, 1, '2023-04-08');
+(5, '202304080004', 5, 1, 3, 1, 1, '2023-04-08'),
+(6, '202304200001', 7, 1, 3, 1, 1, '2023-04-20'),
+(7, '202304200002', 6, 1, 1, 1, 1, '2023-04-20');
 
 -- --------------------------------------------------------
 
@@ -67,8 +130,11 @@ CREATE TABLE `tbl_approve_order_detail` (
 --
 
 INSERT INTO `tbl_approve_order_detail` (`apod_id`, `apo_id`, `item_id`, `item_values`) VALUES
-(22, 4, 2, 35),
-(23, 5, 2, 11);
+(24, 1, 1, 10),
+(25, 1, 2, 5),
+(26, 1, 3, 15),
+(27, 6, 2, 444),
+(28, 7, 1, 10);
 
 -- --------------------------------------------------------
 
@@ -925,7 +991,9 @@ INSERT INTO `tbl_order_request` (`or_id`, `or_bill_number`, `br_id`, `wh_id`, `o
 (2, '202303300002', 1, 1, 2, 1, '2023-03-30'),
 (3, '202304030001', 1, 1, 2, 1, '2023-04-03'),
 (4, '202304030002', 1, 3, 2, 1, '2023-04-03'),
-(5, '202304030003', 1, 3, 2, 1, '2023-04-03');
+(5, '202304030003', 1, 3, 2, 1, '2023-04-03'),
+(6, '202304200001', 1, 1, 2, 1, '2023-04-20'),
+(7, '202304200002', 1, 3, 2, 1, '2023-04-20');
 
 -- --------------------------------------------------------
 
@@ -954,7 +1022,9 @@ INSERT INTO `tbl_order_request_detail` (`ord_id`, `or_id`, `item_id`, `item_valu
 (7, 3, 9, 12),
 (8, 3, 18, 31),
 (9, 4, 2, 3),
-(10, 5, 2, 123);
+(10, 5, 2, 123),
+(11, 6, 1, 123),
+(12, 7, 2, 444);
 
 -- --------------------------------------------------------
 
@@ -1194,6 +1264,36 @@ CREATE TABLE `tbl_stock_out_warehouse_detail` (
   `item_id` int(11) DEFAULT NULL,
   `item_values` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_stock_out_warehouse_detail`
+--
+
+INSERT INTO `tbl_stock_out_warehouse_detail` (`sowd_id`, `sow_id`, `item_id`, `item_values`) VALUES
+(1, 0, 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_stock_out_warehouse_detail_pre`
+--
+
+CREATE TABLE `tbl_stock_out_warehouse_detail_pre` (
+  `sowdp_id` int(11) NOT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `item_values` int(11) DEFAULT NULL,
+  `add_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_stock_out_warehouse_detail_pre`
+--
+
+INSERT INTO `tbl_stock_out_warehouse_detail_pre` (`sowdp_id`, `item_id`, `item_values`, `add_by`) VALUES
+(1, 1, 1, 1),
+(2, 1, 1, 1),
+(3, 1, 1, 1),
+(4, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1496,6 +1596,12 @@ ALTER TABLE `tbl_stock_out_warehouse_detail`
   ADD PRIMARY KEY (`sowd_id`);
 
 --
+-- Indexes for table `tbl_stock_out_warehouse_detail_pre`
+--
+ALTER TABLE `tbl_stock_out_warehouse_detail_pre`
+  ADD PRIMARY KEY (`sowdp_id`);
+
+--
 -- Indexes for table `tbl_stock_transfer_warehouse`
 --
 ALTER TABLE `tbl_stock_transfer_warehouse`
@@ -1539,13 +1645,13 @@ ALTER TABLE `tbl_warehouse_type`
 -- AUTO_INCREMENT for table `tbl_approve_order`
 --
 ALTER TABLE `tbl_approve_order`
-  MODIFY `apo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `apo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_approve_order_detail`
 --
 ALTER TABLE `tbl_approve_order_detail`
-  MODIFY `apod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `apod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `tbl_approve_order_status`
@@ -1629,13 +1735,13 @@ ALTER TABLE `tbl_item_price`
 -- AUTO_INCREMENT for table `tbl_order_request`
 --
 ALTER TABLE `tbl_order_request`
-  MODIFY `or_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `or_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_request_detail`
 --
 ALTER TABLE `tbl_order_request_detail`
-  MODIFY `ord_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ord_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_status`
@@ -1683,7 +1789,7 @@ ALTER TABLE `tbl_stock_in_warehouse_detail`
 -- AUTO_INCREMENT for table `tbl_stock_in_warehouse_detail_pre`
 --
 ALTER TABLE `tbl_stock_in_warehouse_detail_pre`
-  MODIFY `siwdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `siwdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse`
@@ -1695,7 +1801,13 @@ ALTER TABLE `tbl_stock_out_warehouse`
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail`
 --
 ALTER TABLE `tbl_stock_out_warehouse_detail`
-  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail_pre`
+--
+ALTER TABLE `tbl_stock_out_warehouse_detail_pre`
+  MODIFY `sowdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_transfer_warehouse`

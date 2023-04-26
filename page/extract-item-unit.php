@@ -2,7 +2,7 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຂໍ້ມູນສິນຄ້າ";
+$header_name = "ແຍກຫົວໜ່ວຍສິນຄ້າ";
 $header_click = "2";
 
 
