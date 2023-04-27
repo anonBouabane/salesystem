@@ -70,9 +70,9 @@ $header_click = "2";
                                                     <th>ເລກບິນຂໍ</th>
                                                     <th>ສາຂາ-ແຟນໄຊນ</th>
                                                     <th>ວັນທີຂໍ</th>
-                                                    <th>ເລກບິນເບີກ</th>
+                                                    <th>ຈຳນວນເບີກ</th>
                                                     <th>ສະຖານະເບີກ</th>
-                                                    <th>ວັນທີເບີກ</th>
+                                                    <th>ສະຖານະບິນ</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -82,17 +82,16 @@ $header_click = "2";
 
                                                 $i = 1;
                                                 $stmt4 = $conn->prepare(" 
-                                                SELECT a.apo_id,apo_bill_number,br_name,ar_status,a.date_register as date_request,
-                                                sow_id,sow_bill_number,b.date_register as date_check
-                                                FROM tbl_approve_order a
-                                                left join tbl_stock_out_warehouse b on a.apo_id = b.apo_id
+                                                SELECT a.apo_id,apo_bill_number,br_name,ar_status,a.date_register as date_request,aos_name
+                                                FROM tbl_approve_order a 
                                                 left join tbl_branch c on a.br_id = c.br_id
-                                                
-                                                
+                                                left join tbl_approve_order_status d on a.ar_status = d.aos_id 
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+
+                                                        $apo_id = $row4['apo_id'];
 
 
                                                         if (empty($row4['sow_bill_number'])) {
@@ -116,8 +115,42 @@ $header_click = "2";
                                                             <td><?php echo $row4['apo_bill_number']; ?></td>
                                                             <td><?php echo $row4['br_name']; ?></td>
                                                             <td><?php echo $row4['date_request']; ?></td>
-                                                            <td><?php echo "$sow_bill_number"; ?></td>
-                                                            <td><?php echo "$aos_name"; ?></td>
+
+                                                            <?php
+                                                            $rowio = $conn->query("select    sum(item_values) as item_count
+                                                            from tbl_stock_out_warehouse_detail a
+                                                            left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+                                                            where apo_id ='$apo_id'
+                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                            $rowap = $conn->query("
+                                                            select sum(item_values) as item_approve
+                                                            from tbl_approve_order_detail 
+                                                            where apo_id ='$apo_id'
+                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+                                                            ?>
+
+
+                                                            <td>
+                                                                <?php
+                                                                echo $rowio['item_count'];
+                                                                echo " / ";
+                                                                echo $rowap['item_approve'];
+                                                                ?>
+                                                            </td>
+                                                            <td>
+                                                                <?php
+                                                                if ($rowio['item_count'] == $rowap['item_approve']) {
+                                                                    echo "ສິນຄ້າຄົບຖ້ວນ";
+                                                                }else{
+                                                                    echo "ສິນຄ້າບໍ່ຄົບ";
+                                                                }
+ 
+
+                                                                ?>
+                                                            </td>
                                                             <td><?php echo "$date_check"; ?></td>
 
 
@@ -128,11 +161,7 @@ $header_click = "2";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-<<<<<<< HEAD
                                                                         <a class="dropdown-item" href="select-warehouse-stock-out.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
-=======
-                                                                        <a class="dropdown-item" href="check-order-request.php?or_id=<?php echo $row4['or_id']; ?>">ກວດສອບ</a>
->>>>>>> 617f77cbbec7f4921d835406265362e0a3457607
 
                                                                     </div>
                                                                 </div>
