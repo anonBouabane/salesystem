@@ -173,6 +173,7 @@ create or replace table tbl_stock_out_warehouse_detail (
 
 create or replace table tbl_stock_out_warehouse_detail_pre (
     sowdp_id int not null PRIMARY KEY AUTO_INCREMENT, 
+    wh_id int,
     item_id int,
     item_values int,
     add_by int

@@ -5,8 +5,7 @@ include("../setting/conn.php");
 $header_name = "ເບີກສິນຄ້າອອກສາງ";
 $header_click = "2";
 
-$apo_id = $_POST['apo_id'];
-$wh_id = $_POST['wh_id'];
+$sow_id = $_GET['sow_id'];
 
 ?>
 
@@ -77,13 +76,10 @@ $wh_id = $_POST['wh_id'];
 
 
                                                 </div>
- 
 
 
-                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
 
 
-                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                                 <div class="input-group px-5 p-4">
                                                     <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
@@ -122,7 +118,10 @@ $wh_id = $_POST['wh_id'];
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
                                     <?php
-                                    $rowwh = $conn->query("select * from tbl_warehouse where wh_id ='$wh_id' ")->fetch(PDO::FETCH_ASSOC);
+                                    $rowwh = $conn->query("select sow_id,sow_bill_number,wh_name 
+                                    from tbl_stock_out_warehouse a
+                                    left join tbl_warehouse b on a.wh_id = b.wh_id
+                                    where sow_id ='$sow_id' ")->fetch(PDO::FETCH_ASSOC);
 
 
                                     ?>
@@ -145,7 +144,7 @@ $wh_id = $_POST['wh_id'];
 
                                         <div class="card-body">
 
-                                            <table id="" class="table table-hover table-product" style="width:100%">
+                                            <table id="" class="table table-hover table-product  " style="width:100%">
                                                 <thead>
                                                     <tr>
                                                         <th>ເລກລຳດັບ</th>
@@ -156,12 +155,10 @@ $wh_id = $_POST['wh_id'];
                                                 <tbody>
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("select a.item_id,item_name,sum(item_values) as item_values 
-                                                    from tbl_stock_out_warehouse_detail_pre a
-                                                    left join tbl_item_data b on a.item_id = b.item_id
-                                                    where add_by='$id_users' 
-                                                    group by item_name,a.item_id
-                                                    order by sowdp_id  desc ");
+                                                    $stmt4 = $conn->prepare("SELECT  a.item_id,item_name,item_values 
+                                                    FROM tbl_stock_out_warehouse_detail a
+                                                    left join tbl_item_data b on a.item_id =b.item_id
+                                                    where sow_id ='$sow_id' ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -189,7 +186,13 @@ $wh_id = $_POST['wh_id'];
                                                                     ?>
 
                                                                 </td>
-                                                                <td><?php echo "$item_values"; ?></td>
+                                                                <td>
+                                                                    <div class="col-lg-5  ">
+                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+
+                                                                    </div>
+
+                                                                </td>
 
 
                                                             </tr>
@@ -341,8 +344,7 @@ $wh_id = $_POST['wh_id'];
                         function() {
                             location.reload();
                         }, 2000);
-                }
-                else if (data.res == "noitem") {
+                } else if (data.res == "noitem") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
@@ -352,11 +354,7 @@ $wh_id = $_POST['wh_id'];
                         function() {
                             location.reload();
                         }, 2000);
-                }
-                
-                
-                
-                else if (data.res == "orverorder") {
+                } else if (data.res == "orverorder") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',

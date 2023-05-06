@@ -55,7 +55,7 @@ $header_click = "2";
                             <div class="    ">
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
-                                        <h4 class="text-dark">ລາຍການຄຳຂໍ</h4>
+                                        <h4 class="text-dark">ລາຍການອານຸຍາດ</h4>
 
 
 
@@ -117,12 +117,20 @@ $header_click = "2";
                                                             <td><?php echo $row4['date_request']; ?></td>
 
                                                             <?php
+
+
                                                             $rowio = $conn->query("select    sum(item_values) as item_count
                                                             from tbl_stock_out_warehouse_detail a
                                                             left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
                                                             where apo_id ='$apo_id'
                                                             group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
 
+ 
+                                                            if (!empty($rowio['item_count'])) {
+                                                                $item_count =  $rowio['item_count'];
+                                                            } else {
+                                                                $item_count = 0;
+                                                            }
 
                                                             $rowap = $conn->query("
                                                             select sum(item_values) as item_approve
@@ -130,24 +138,31 @@ $header_click = "2";
                                                             where apo_id ='$apo_id'
                                                             group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
 
+
+                                                            if (!empty($rowap['item_approve'])) {
+                                                                $item_approve =  $rowap['item_approve'];
+                                                            } else {
+                                                                $item_approve = 0;
+                                                            }
+
                                                             ?>
 
 
                                                             <td>
                                                                 <?php
-                                                                echo $rowio['item_count'];
+                                                                echo "$item_count";
                                                                 echo " / ";
-                                                                echo $rowap['item_approve'];
+                                                                echo "$item_approve";
                                                                 ?>
                                                             </td>
                                                             <td>
                                                                 <?php
-                                                                if ($rowio['item_count'] == $rowap['item_approve']) {
+                                                                if ($item_count == $item_approve) {
                                                                     echo "ສິນຄ້າຄົບຖ້ວນ";
-                                                                }else{
+                                                                } else {
                                                                     echo "ສິນຄ້າບໍ່ຄົບ";
                                                                 }
- 
+
 
                                                                 ?>
                                                             </td>

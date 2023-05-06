@@ -59,7 +59,7 @@ $apo_id = $_GET['apo_id'];
 
                             <div class="  col-xxl-12">
                                 <div class="email-right-column  email-body p-4 p-xl-5">
-                                    <form method="post" >
+                                    <form method="post">
 
 
 
@@ -117,7 +117,7 @@ $apo_id = $_GET['apo_id'];
                             <div class="    ">
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
-                                        <h4 class="text-dark">ລາຍການຄຳຂໍ</h4>
+                                        <h4 class="text-dark">ລາຍການເບີກ</h4>
 
 
 
@@ -129,11 +129,9 @@ $apo_id = $_GET['apo_id'];
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
-                                                    <th>ເລກບິນຂໍ</th>
-                                                    <th>ສາຂາ-ແຟນໄຊນ</th>
-                                                    <th>ວັນທີຂໍ</th>
                                                     <th>ເລກບິນເບີກ</th>
-                                                    <th>ສະຖານະເບີກ</th>
+                                                    <th>ເບີກຈາກສາງ</th>
+                                                    <th>ຈຳນວນເບີກ</th> 
                                                     <th>ວັນທີເບີກ</th>
                                                     <th></th>
                                                 </tr>
@@ -144,30 +142,24 @@ $apo_id = $_GET['apo_id'];
 
                                                 $i = 1;
                                                 $stmt4 = $conn->prepare(" 
-                                                SELECT a.apo_id,apo_bill_number,br_name,ar_status,a.date_register as date_request,
-                                                sow_id,sow_bill_number,b.date_register as date_check,aos_name
-                                                FROM tbl_approve_order a
-                                                left join tbl_stock_out_warehouse b on a.apo_id = b.apo_id
-                                                left join tbl_branch c on a.br_id = c.br_id
-                                                left join tbl_approve_order_status d on a.ar_status = d.aos_id 
-                                                where a.apo_id = '$apo_id'
+                                                select sow_id,sow_bill_number,wh_name,a.date_register 
+                                                from tbl_stock_out_warehouse a
+                                                left join tbl_warehouse b on a.wh_id = b.wh_id
+                                                where  apo_id = '$apo_id'
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
 
-
-                                                        if (empty($row4['sow_bill_number'])) {
-                                                            $sow_bill_number = "ລໍຖ້າກວດສອບ";
-                                                            $aos_name = "ລໍຖ້າກວດສອບ";
-                                                            $date_check = "ລໍຖ້າກວດສອບ";
-                                                        } else {
-                                                            $sow_bill_number = $row4['sow_bill_number'];
-                                                            $aos_name = $row4['aos_name'];
-                                                            $date_check = $row4['date_check'];
-                                                        }
+                                                        $sow_id =  $row4['sow_id'];
 
 
+                                                        $rowio = $conn->query("select sum(item_values) as item_values
+                                                        from tbl_stock_out_warehouse_detail
+                                                        where sow_id ='$sow_id' 
+                                                        group by sow_id
+                                                        ")->fetch(PDO::FETCH_ASSOC);
+ 
                                                 ?>
 
 
@@ -175,12 +167,10 @@ $apo_id = $_GET['apo_id'];
                                                         <tr>
 
                                                             <td><?php echo "$i"; ?></td>
-                                                            <td><?php echo $row4['apo_bill_number']; ?></td>
-                                                            <td><?php echo $row4['br_name']; ?></td>
-                                                            <td><?php echo $row4['date_request']; ?></td>
-                                                            <td><?php echo "$sow_bill_number"; ?></td>
-                                                            <td><?php echo "$aos_name"; ?></td>
-                                                            <td><?php echo "$date_check"; ?></td>
+                                                            <td><?php echo $row4['sow_bill_number']; ?></td>
+                                                            <td><?php echo $row4['wh_name']; ?></td>
+                                                            <td><?php echo $rowio['item_values']; ?></td>
+                                                            <td><?php echo $row4['date_register']; ?></td>
 
 
 
@@ -190,7 +180,7 @@ $apo_id = $_GET['apo_id'];
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="select-warehouse-stock-out.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
+                                                                        <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
 
                                                                     </div>
                                                                 </div>
@@ -232,7 +222,7 @@ $apo_id = $_GET['apo_id'];
     </div>
     <?php include("../setting/calljs.php"); ?>
 
- 
+
 
 
 </body>

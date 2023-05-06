@@ -25,7 +25,6 @@ if (!empty($box_barcode)) {
 
     if (!empty($item_id)) {
 
-
         $stmt2 = $conn->prepare("call stp_caculate_stock_remain('$warehouse_id','$id_users','$item_id');");
         $stmt2->execute();
         if ($stmt2->rowCount() > 0) {
@@ -37,11 +36,17 @@ if (!empty($box_barcode)) {
                     $remain_value = "nostock";
                 }
             }
+        } else if (empty($stmt2->rowCount())) {
+            $remain_value = "noitem";
         }
+
+
 
 
         if ($remain_value == "nostock") {
             $res = array("res" => "nostock", "item_code" => "$item_name");
+        } else if ($remain_value == "noitem") {
+            $res = array("res" => "noitem", "item_code" => "$item_name");
         } else {
             $conn = null;
             include("../setting/conn.php");
@@ -79,8 +84,8 @@ if (!empty($box_barcode)) {
             } else {
 
                 $insertSTI = $conn->query(" insert into tbl_stock_out_warehouse_detail_pre  
-                ( item_id,item_values,add_by)  
-                 values ('$item_id','1','$id_users'); ");
+                (wh_id, item_id,item_values,add_by)  
+                values ('$warehouse_id','$item_id','1','$id_users'); ");
 
                 $res = array("res" => "success");
             }
