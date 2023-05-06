@@ -98,9 +98,9 @@ if (!empty($box_barcode)) {
                 $res = array("res" => "orverorder", "item_code" => "$item_name");
             } else {
 
-                $insertSTI = $conn->query(" insert into tbl_stock_out_warehouse_detail_pre  
-                (wh_id, item_id,item_values,add_by)  
-                values ('$warehouse_id','$item_id','1','$id_users'); ");
+                $insertSTI = $conn->query(" insert into tbl_stock_out_warehouse_detail  
+                (sow_id, item_id,item_values)  
+                values ('$sow_id','$item_id','1'); ");
 
                 $res = array("res" => "success");
             }

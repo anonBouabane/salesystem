@@ -58,7 +58,16 @@ $sow_id = $_GET['sow_id'];
                                 <div class="card-default ">
                                     <div class="card-header">
 
+                                        <?php
+                                        $rowwh = $conn->query("select sow_id,sow_bill_number,wh_name,a.wh_id,apo_id
+                                    from tbl_stock_out_warehouse a
+                                    left join tbl_warehouse b on a.wh_id = b.wh_id
+                                    where sow_id ='$sow_id' ")->fetch(PDO::FETCH_ASSOC);
 
+
+                                        $wh_id = $rowwh['wh_id'];
+                                        $apo_id = $rowwh['apo_id'];
+                                        ?>
 
                                         <div class="form-group  col-lg-12">
                                             <img src="../images/Kp-Logo.png" width="100%" height="100%" alt="Mono">
@@ -77,8 +86,11 @@ $sow_id = $_GET['sow_id'];
 
                                                 </div>
 
+                                                <input type="hidden" id="sow_id" name="sow_id" class="form-control" autofocus value='<?php echo "$sow_id"; ?>'>
 
+                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
 
+                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
 
                                                 <div class="input-group px-5 p-4">
@@ -117,18 +129,12 @@ $sow_id = $_GET['sow_id'];
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
-                                    <?php
-                                    $rowwh = $conn->query("select sow_id,sow_bill_number,wh_name 
-                                    from tbl_stock_out_warehouse a
-                                    left join tbl_warehouse b on a.wh_id = b.wh_id
-                                    where sow_id ='$sow_id' ")->fetch(PDO::FETCH_ASSOC);
 
-
-                                    ?>
 
                                     <h2 class="mt-4 "> ສະແກນອອກສາງ <?php echo "(" . $rowwh['wh_name'] . ")";  ?></h2>
 
 
+                                    <input type="hidden" id="sow_id" name="sow_id" class="form-control" autofocus value='<?php echo "$sow_id"; ?>'>
 
                                     <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
 
@@ -155,10 +161,11 @@ $sow_id = $_GET['sow_id'];
                                                 <tbody>
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("SELECT  a.item_id,item_name,item_values 
+                                                    $stmt4 = $conn->prepare("SELECT  a.item_id,item_name,sum(item_values) as item_values
                                                     FROM tbl_stock_out_warehouse_detail a
                                                     left join tbl_item_data b on a.item_id =b.item_id
-                                                    where sow_id ='$sow_id' ");
+                                                    where sow_id ='$sow_id' 
+                                                    group by a.item_id ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -177,8 +184,7 @@ $sow_id = $_GET['sow_id'];
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
-
+                                   
                                                                 <td>
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
@@ -310,7 +316,7 @@ $sow_id = $_GET['sow_id'];
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-stock-out-admin.php", $(this).serialize(), function(data) {
+            $.post("../query/update-scan-stock-out-admin.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
@@ -374,7 +380,7 @@ $sow_id = $_GET['sow_id'];
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-add-stock-out-addmin.php",
+                "../query/update-confirm-add-stock-out-addmin.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "errorwarehouse") {

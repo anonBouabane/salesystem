@@ -131,7 +131,7 @@ $apo_id = $_GET['apo_id'];
                                                     <th>ເລກລຳດັບ</th>
                                                     <th>ເລກບິນເບີກ</th>
                                                     <th>ເບີກຈາກສາງ</th>
-                                                    <th>ຈຳນວນເບີກ</th> 
+                                                    <th>ຈຳນວນເບີກ</th>
                                                     <th>ວັນທີເບີກ</th>
                                                     <th></th>
                                                 </tr>
@@ -159,7 +159,7 @@ $apo_id = $_GET['apo_id'];
                                                         where sow_id ='$sow_id' 
                                                         group by sow_id
                                                         ")->fetch(PDO::FETCH_ASSOC);
- 
+
                                                 ?>
 
 
@@ -181,6 +181,7 @@ $apo_id = $_GET['apo_id'];
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                                         <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
+                                                                        <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['sow_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                     </div>
                                                                 </div>
@@ -215,6 +216,48 @@ $apo_id = $_GET['apo_id'];
 
             </div>
 
+            <script>
+                // Delete item
+                $(document).on("click", "#deleteitem", function(e) {
+                    e.preventDefault();
+                    var id = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-stock-out-admin.php",
+                        dataType: "json",
+                        data: {
+                            id: id
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລຶບຂໍ້ມູນສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        location.reload();
+                                    }, 1000);
+
+                            } else if (data.res == "used") {
+                                Swal.fire(
+                                    'ນຳໃຊ້ແລ້ວ',
+                                    'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                                    'error'
+                                )
+                            }
+
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
+
+                    });
+                    return false;
+                });
+            </script>
 
 
             <?php include "footer.php"; ?>
