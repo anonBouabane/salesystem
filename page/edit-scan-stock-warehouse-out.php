@@ -141,7 +141,7 @@ $sow_id = $_GET['sow_id'];
                                     <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
-                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
+                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ</button>
                                     </div>
 
 
@@ -161,7 +161,7 @@ $sow_id = $_GET['sow_id'];
                                                 <tbody>
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("SELECT  a.item_id,item_name,sum(item_values) as item_values
+                                                    $stmt4 = $conn->prepare("SELECT  sow_id,a.item_id,item_name,sum(item_values) as item_values
                                                     FROM tbl_stock_out_warehouse_detail a
                                                     left join tbl_item_data b on a.item_id =b.item_id
                                                     where sow_id ='$sow_id' 
@@ -173,7 +173,7 @@ $sow_id = $_GET['sow_id'];
                                                             $item_id = $row4['item_id'];
                                                             $item_name = $row4['item_name'];
                                                             $item_values = $row4['item_values'];
-
+                                                            $sow_id = $row4['sow_id'];
 
                                                             $x = 1;
                                                     ?>
@@ -184,8 +184,10 @@ $sow_id = $_GET['sow_id'];
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                   
+
                                                                 <td>
+                                                                    <input type="hidden" name="item_name[]" id="item_name<?php echo $x; ?>" value='<?php echo "$item_name"; ?>' class="form-control">
+
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
 
@@ -388,11 +390,63 @@ $sow_id = $_GET['sow_id'];
                             "ມີລາຍການເບີກສາງປະປົນ",
                             "error");
                     } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+                        Swal.fire("ສຳເລັດ", "ແກ້ໄຂສຳເລັດ", "success");
 
                         setTimeout(function() {
                             location.reload();
                         }, 1500);
+                    } else if (data.res == "noremain") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
+                            'error'
+                        );
+                    } else if (data.res == "limit") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                            'error'
+                        );
+                    } else if (data.res == "nofound") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນບິນຂໍ',
+                            'error'
+                        )
+                        setTimeout(
+                            function() {
+                                location.reload();
+                            }, 2000);
+                    } else if (data.res == "nostock") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
+                            'error'
+                        )
+                        setTimeout(
+                            function() {
+                                location.reload();
+                            }, 2000);
+                    } else if (data.res == "noitem") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
+                            'error'
+                        )
+                        setTimeout(
+                            function() {
+                                location.reload();
+                            }, 2000);
+                    } else if (data.res == "orverorder") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',
+                            'error'
+                        )
+                        setTimeout(
+                            function() {
+                                location.reload();
+                            }, 2000);
                     }
                 },
                 "json"

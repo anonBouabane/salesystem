@@ -27,38 +27,7 @@ $header_click = "4";
 
 <script src="../plugins/nprogress/nprogress.js"></script>
 <script type="text/javascript" src="../js/jquery.min.js"></script>
-<script>
-    $(function() {
-
-
-
-        $('#pv_id').change(function() {
-            var pv_id = $('#pv_id').val();
-            $.post('../function/dynamic_dropdown/get_district_name.php', {
-                    pv_id: pv_id
-                },
-                function(output) {
-                    $('#dis_id').html(output).show();
-                });
-        });
-
-        $('#Acc_id').change(function() {
-            var Acc_id = $('#Acc_id').val();
-            $.post('../function/dynamic_dropdown/get_team_provice_code.php', {
-                    Acc_id: Acc_id
-                },
-                function(output) {
-                    $('#tmpv_code').html(output).show();
-                });
-        });
-
-
-
-
-
-    });
-</script>
-
+ 
 <body class="navbar-fixed sidebar-fixed" id="body">
 
 
@@ -194,7 +163,7 @@ $header_click = "4";
                                     if ($role_level <= 2) {
                                         $syntax = "";
                                     } else {
-                                        $syntax = "where br_id = '$br_id'";
+                                        $syntax = "where a.br_id = '$br_id'";
                                     }
 
                                     $stmt4 = $conn->prepare("select wh_id,wh_name,a.date_register,br_name,

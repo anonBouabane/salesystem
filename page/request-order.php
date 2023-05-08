@@ -52,7 +52,7 @@ $header_click = "2";
 
 
 
-                            <div class="    ">
+                            <div class="">
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
                                         <h4 class="text-dark">ເພີ່ມລາຍການຂໍເບີກສິນຄ້າ</h4>
@@ -66,14 +66,18 @@ $header_click = "2";
 
 
                                         <div class="card p-4">
+                                            <?php
 
+                                            // echo "$br_id";
+
+                                            ?>
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class=" ">
                                                         <div class="card-title">
                                                             <div class="form-group col-lg-12 mt-4">
                                                                 <div class="form-group">
-
+                                                                    <label for="firstName">ຊື່ສາງລົງສິນຄ້າ</label>
                                                                     <select class=" form-control font" name="wh_id" id="wh_id">
                                                                         <option value=""> ເລືອກສາງ </option>
                                                                         <?php
@@ -239,8 +243,8 @@ $header_click = "2";
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                    
- 
+
+
                                     ?>
 
 
@@ -250,7 +254,7 @@ $header_click = "2";
                                                 <td><?php echo $row4['or_bill_number']; ?></td>
                                                 <td><?php echo $row4['wh_name']; ?></td>
                                                 <td><?php echo $row4['os_name']; ?></td>
-                                                <td><?php echo $row4['date_register']; ?></td> 
+                                                <td><?php echo $row4['date_register']; ?></td>
 
 
 
@@ -260,9 +264,9 @@ $header_click = "2";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-purchase-order.php?or_id=<?php echo  $row4['or_id']; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="edit-request-order.php?or_id=<?php echo  $row4['or_id']; ?>">ແກ້ໄຂ</a>
 
-                                                            <a class="dropdown-item" type="button" id="deletepo" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                            <a class="dropdown-item" type="button" id="delro" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -300,7 +304,7 @@ $header_click = "2";
 
 
     <?php include("../setting/calljs.php"); ?>
-    
+
     <script>
         // add item Data 
         $(document).on("submit", "#additemorderfrm", function() {
@@ -324,7 +328,7 @@ $header_click = "2";
                             location.reload();
                         }, 1000);
 
-                }else if (data.res == "nowarehouse") {
+                } else if (data.res == "nowarehouse") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ກະລຸນາເລືອກສາງ',
@@ -338,12 +342,12 @@ $header_click = "2";
 
 
         // Delete item
-        $(document).on("click", "#deletepo", function(e) {
+        $(document).on("click", "#delro", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-purchase-order.php",
+                url: "../query/delete-request-order.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -358,7 +362,7 @@ $header_click = "2";
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'add-purchase-order.php';
+                                location.reload();
                             }, 1000);
 
                     } else if (data.res == "used") {
