@@ -2,7 +2,7 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຈັດການຂໍ້ມູນສິນຄ້າ";
+$header_name = "ສິນຄ້າ-ລາຄາ";
 $header_click = "2";
 
 ?>
@@ -60,7 +60,7 @@ $header_click = "2";
                                     <form method="post" target="_blank">
 
                                         <div class="form-footer  d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary btn-pill" formaction="manage-item-data-branch.php">ຈັດການສິນຄ້າ</button>
+                                            <button type="submit" class="btn btn-primary btn-pill" formaction="manage-item-price.php">ຈັດການສິນຄ້າ</button>
                                         </div><br>
 
   
@@ -82,7 +82,8 @@ $header_click = "2";
                                                 $stmt4 = $conn->prepare(" SELECT item_id,item_name,barcode,ipt_name 
                                                 from tbl_item_data a
                                                 left join tbl_item_pack_type b on a.ipt_id = b.ipt_id
-                                                where status_item ='1' ");
+                                                where status_item ='1' 
+                                                order by item_id desc ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {

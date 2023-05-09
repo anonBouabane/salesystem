@@ -112,7 +112,7 @@ $header_click = "2";
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
                                     <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ </h2>
-                               
+
 
                                     <div class="form-group col-lg-12 mt-4">
                                         <div class="form-group">
@@ -180,8 +180,7 @@ $header_click = "2";
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
-
+                                                             
                                                                 <td>
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
@@ -189,7 +188,13 @@ $header_click = "2";
                                                                     ?>
 
                                                                 </td>
-                                                                <td><?php echo "$item_values"; ?></td>
+                                                                <td>
+                                                                    <div class="col-lg-5  ">
+                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+
+                                                                    </div>
+
+                                                                </td>
 
 
                                                             </tr>
@@ -237,7 +242,7 @@ $header_click = "2";
                                         <th>ເລກລຳດັບ</th>
                                         <th>ຊື່ສາງ</th>
                                         <th>ບິນອ້າງອີງ</th>
-                                        <th>ຈຳນວນເພິີ່ມເຂົ້າ</th>
+                                        <th>ສິນຄ້າເພິີ່ມເຂົ້າ</th>
                                         <th>ວັນທີ່</th>
                                         <th></th>
                                     </tr>

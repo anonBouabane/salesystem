@@ -4,22 +4,24 @@
 include("../setting/conn.php");
 
 extract($_POST);
-
-
-
-$insCourse = $conn->query(" 
-
-delete from tbl_item_data where item_id = '$item_id'
  
-");
-if ($insCourse) {
-    $res = array("res" => "success");
+ 
+
+$checkitem = $conn->query("SELECT * FROM tbl_order_request_detail where item_id = '$id' ");
+
+if ($checkitem->rowCount() > 0) {
+    $res = array("res" => "used");
 } else {
-    $res = array("res" => "failed");
+
+
+    $insCourse = $conn->query(" delete from tbl_item_data where item_id = '$id' ");
+    if ($insCourse) {
+        $res = array("res" => "success");
+    } else {
+        $res = array("res" => "failed");
+    }
 }
 
 
 
-
 echo json_encode($res);
-?>

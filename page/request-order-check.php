@@ -126,7 +126,8 @@ $header_click = "2";
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                                         <a class="dropdown-item" href="check-order-request.php?or_id=<?php echo $row4['or_id']; ?>">ກວດສອບ</a>
-
+                                                                        <a class="dropdown-item" type="button" id="delrochk" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
+                                                      
                                                                     </div>
                                                                 </div>
                                                             </td>
@@ -201,12 +202,12 @@ $header_click = "2";
 
 
         // Delete item
-        $(document).on("click", "#deletescan", function(e) {
+        $(document).on("click", "#delrochk", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-purchase-order.php",
+                url: "../query/delete-approve-order-request.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -221,7 +222,7 @@ $header_click = "2";
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'add-purchase-order.php';
+                                location.reload();
                             }, 1000);
 
                     } else if (data.res == "used") {

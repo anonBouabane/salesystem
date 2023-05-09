@@ -5,6 +5,7 @@ include("../setting/conn.php");
 $header_name = "ຮັບເຄື່ອງເຂົ້າສາງ";
 $header_click = "2";
 
+$siw_id = $_GET['siw_id'];
 
 ?>
 
@@ -68,8 +69,7 @@ $header_click = "2";
 
                                             <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
 
-                                                <input type="hidden" id="po_id" name="po_id" class="form-control" value='<?php echo "$po_id"; ?>' autofocus>
-
+                                                <input type="hidden" name="siw_id" id="siw_id" value='<?php echo "$siw_id"; ?>' class="form-control">
 
 
                                                 <div class="input-group px-5 mt-1">
@@ -108,11 +108,18 @@ $header_click = "2";
 
                             <form method="post" id="submittrack">
 
+                                <input type="hidden" name="siw_id" id="siw_id" value='<?php echo "$siw_id"; ?>' class="form-control">
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
                                     <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ </h2>
-                               
+
+                                    <?php
+                                    $data_row = $conn->query("SELECT * FROM tbl_stock_in_warehouse where siw_id = '$siw_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                    ?>
+
 
                                     <div class="form-group col-lg-12 mt-4">
                                         <div class="form-group">
@@ -125,7 +132,9 @@ $header_click = "2";
                                                 if ($stmt5->rowCount() > 0) {
                                                     while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                 ?>
-                                                        <option value="<?php echo $row5['wh_id']; ?>"> <?php echo $row5['wh_name']; ?></option>
+                                                        <option value="<?php echo $row5['wh_id']; ?>" <?php if ($data_row['wh_id'] == $row5['wh_id']) {
+                                                                                                            echo "selected";
+                                                                                                        } ?>> <?php echo $row5['wh_name']; ?></option>
                                                 <?php
                                                     }
                                                 }
@@ -156,12 +165,15 @@ $header_click = "2";
 
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("select a.item_id,item_name,sum(item_values) as item_values 
-                                                    from tbl_stock_in_warehouse_detail_pre a
+                                                    $stmt4 = $conn->prepare("
+                                                    select a.item_id,item_name,sum(item_values) as item_values
+                                                    from tbl_stock_in_warehouse_detail a 
                                                     left join tbl_item_data b on a.item_id = b.item_id
-                                                    where add_by='$id_users' 
+                                                    where siw_id='$siw_id' 
                                                     group by item_name,a.item_id
-                                                    order by siwdp_id  desc ");
+                                                    order by siwd_id desc
+                                                    
+                                                      ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -180,7 +192,6 @@ $header_click = "2";
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
                                                                 <td>
                                                                     <?php
@@ -189,7 +200,12 @@ $header_click = "2";
                                                                     ?>
 
                                                                 </td>
-                                                                <td><?php echo "$item_values"; ?></td>
+                                                                <td>
+                                                                    <div class="col-lg-5  ">
+                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+
+                                                                    </div>
+                                                                </td>
 
 
                                                             </tr>
@@ -310,7 +326,7 @@ $header_click = "2";
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {
+            $.post("../query/update-scan-stock-in-admin.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
@@ -364,7 +380,7 @@ $header_click = "2";
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-add-stock-in-addmin.php",
+                "../query/update-confirm-add-stock-in-addmin.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "nowarehouse") {

@@ -206,97 +206,117 @@ $or_id = $_GET['or_id'];
 
             <div class="content-wrapper">
                 <div class="content">
-                    <!-- For Components documentaion -->
 
-
-                    <div class="card card-default">
-
-                        <div class="card-body">
-
-                            <table id="productsTable2" class="table table-hover table-product" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>ເລກລຳດັບ</th>
-                                        <th>ບິນອ້າງອີງ</th>
-                                        <th>ປະເພດລາຍການ</th>
-                                        <th>ຈຳນວນສິນຄ້າ</th>
-                                        <th>ລາຄາ</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-
-                                    <?php
-                                    $stmt4 = $conn->prepare(" SELECT  a.po_id,
-                                    (case when bill_number ='' then 'ບໍ່ມີເລກບິນ' else bill_number end) as bill_number,
-                                    (case when status_transfer ='1' then 'ກຽມເຂົ້າສາງ' else 'ໂອນເຂົ້າສາງ' end) as status_transfer,
-                                    count(item_id) as items,sum(price_total) as price_total
-                                    FROM tbl_purchase_order a
-                                    left join tbl_purchase_order_detail b on a.po_id = b.po_id
-                                    group by  a.po_id
-                                    order by a.po_id desc");
-                                    $stmt4->execute();
-                                    if ($stmt4->rowCount() > 0) {
-                                        while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                            $po_id = $row4['po_id'];
-                                            $bill_number = $row4['bill_number'];
-                                            $items = $row4['items'];
-                                            $price_total = $row4['price_total'];
-                                            $status_transfer = $row4['status_transfer'];
-
-
-                                            if (empty($price_total)) {
-                                                $price_total = 0;
-                                            }
-
-                                    ?>
+                    <div class="email-wrapper rounded border bg-white">
+                        <div class="  no-gutters justify-content-center">
 
 
 
-                                            <tr>
-                                                <td><?php echo "$po_id"; ?></td>
-                                                <td><?php echo "$bill_number"; ?></td>
-                                                <td><?php echo "$status_transfer"; ?></td>
-                                                <td><?php echo "$items"; ?></td>
-                                                <td><?php echo number_format("$price_total", 2, ",", ".") ?></td>
-
-
-
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                        </a>
-
-                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-purchase-order.php?po_id=<?php echo "$po_id"; ?>">ແກ້ໄຂ</a>
-
-                                                            <a class="dropdown-item" type="button" id="deletepo" data-id='<?php echo $row4['po_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-
-                                    <?php
-                                        }
-                                    }
-                                    ?>
+                            <div class="    ">
+                                <div class="  p-4 p-xl-5">
+                                    <div class="email-body-head mb-6 ">
+                                        <h4 class="text-dark">ລາຍການຄຳຂໍ</h4>
 
 
 
 
+                                    </div>
+                                    <form method="post" id="additemorderfrm">
+
+                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ເລກລຳດັບ</th>
+                                                    <th>ເລກບິນຂໍ</th>
+                                                    <th>ສາຂາ-ແຟນໄຊນ</th>
+                                                    <th>ວັນທີຂໍ</th>
+                                                    <th>ເລກບິນເບີກ</th>
+                                                    <th>ສະຖານະເບີກ</th>
+                                                    <th>ວັນທີເບີກ</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <?php
+
+                                                $i = 1;
+                                                $stmt4 = $conn->prepare(" SELECT  a.or_id,or_bill_number,br_name,a.date_register as date_request
+                                                ,apo_bill_number,aos_name,b.date_register as date_check
+                                                FROM tbl_order_request a
+                                                left join tbl_approve_order b on a.or_id = b.or_id
+                                                left join tbl_branch c on a.br_id = c.br_id
+                                                left join tbl_approve_order_status d on b.ar_status = d.aos_id ");
+                                                $stmt4->execute();
+                                                if ($stmt4->rowCount() > 0) {
+                                                    while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+
+
+                                                        if (empty($row4['apo_bill_number'])) {
+                                                            $apo_bill_number = "ລໍຖ້າກວດສອບ";
+                                                            $aos_name = "ລໍຖ້າກວດສອບ";
+                                                            $date_check = "ລໍຖ້າກວດສອບ";
+                                                        } else {
+                                                            $apo_bill_number = $row4['apo_bill_number'];
+                                                            $aos_name = $row4['aos_name'];
+                                                            $date_check = $row4['date_check'];
+                                                        }
+
+
+                                                ?>
+
+
+
+                                                        <tr>
+
+                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['or_bill_number']; ?></td>
+                                                            <td><?php echo $row4['br_name']; ?></td>
+                                                            <td><?php echo $row4['date_request']; ?></td>
+                                                            <td><?php echo "$apo_bill_number"; ?></td>
+                                                            <td><?php echo "$aos_name"; ?></td>
+                                                            <td><?php echo "$date_check"; ?></td>
+
+
+
+                                                            <td>
+                                                                <div class="dropdown">
+                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                    </a>
+
+                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                        <a class="dropdown-item" href="check-order-request.php?or_id=<?php echo $row4['or_id']; ?>">ກວດສອບ</a>
+                                                                        <a class="dropdown-item" type="button" id="delrochk" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+
+                                                <?php
+
+                                                        $i++;
+                                                    }
+                                                }
+                                                $conn = null;
+                                                ?>
+
+                                            </tbody>
+                                        </table>
 
 
 
 
-                                </tbody>
-                            </table>
+                                    </form>
 
+
+                                </div>
+
+
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
 
             </div>
@@ -359,12 +379,12 @@ $or_id = $_GET['or_id'];
 
 
         // Delete item
-        $(document).on("click", "#deletepo", function(e) {
+        $(document).on("click", "#delrochk", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-purchase-order.php",
+                url: "../query/delete-approve-order-request.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -379,7 +399,7 @@ $or_id = $_GET['or_id'];
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'add-purchase-order.php';
+                                location.reload();
                             }, 1000);
 
                     } else if (data.res == "used") {

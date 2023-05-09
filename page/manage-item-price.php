@@ -2,7 +2,7 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຈັດການຂໍ້ມູນສິນຄ້າ";
+$header_name = "ສິນຄ້າ-ລາຄາ";
 $header_click = "2";
 
 
@@ -181,7 +181,7 @@ $header_click = "2";
     <script>
         // add item Data 
         $(document).on("submit", "#additemprice", function() {
-            $.post("../query/add-item-price-branch.php", $(this).serialize(), function(data) {
+            $.post("../query/add-item-price.php", $(this).serialize(), function(data) {
                 if (data.res == "novalue") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
@@ -192,7 +192,7 @@ $header_click = "2";
 
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ລົງບິນຊື້ສິນຄ້າສຳເລັດ',
+                        'ເພິ່ມຂໍ້ມູນສຳເລັດ',
                         'success'
                     )
 
