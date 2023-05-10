@@ -2,7 +2,7 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ເບີກສິນຄ້າອອກສາງ";
+$header_name = "ຮັບເຄື່ອງເຂົ້າຮ້ານ";
 $header_click = "2";
 
 
@@ -55,7 +55,7 @@ $header_click = "2";
                             <div class="    ">
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
-                                        <h4 class="text-dark">ລາຍການອານຸຍາດ</h4>
+                                        <h4 class="text-dark">ລາຍການສິນຄ້າຕ້ອງຮັບ</h4>
 
 
 
@@ -67,12 +67,13 @@ $header_click = "2";
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
-                                                    <th>ເລກບິນອານຸມັດ</th>
-                                                    <th>ສາຂາ-ແຟນໄຊນ</th>
+                                                    <th>ເລກບິນຂໍ</th>
                                                     <th>ວັນທີຂໍ</th>
+                                                    <th>ວັນທີອານຸມັດ</th>
+                                                    <th>ວັນທີ່ເບີກ</th>
                                                     <th>ຈຳນວນເບີກ</th>
                                                     <th>ສະຖານະເບີກ</th>
-                                                    <th>ສະຖານະບິນ</th>
+                                                    <th>ວັນທີຮັບເຂົ້າຮ້ານ</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -82,11 +83,13 @@ $header_click = "2";
 
                                                 $i = 1;
                                                 $stmt4 = $conn->prepare(" 
-                                                SELECT a.apo_id,apo_bill_number,br_name,ar_status,a.date_register as date_request,aos_name
-                                                FROM tbl_approve_order a 
-                                                left join tbl_branch c on a.br_id = c.br_id
-                                                left join tbl_approve_order_status d on a.ar_status = d.aos_id 
-                                                order by a.apo_id desc  ");
+                                                select DISTINCT b.apo_id, or_bill_number,a.date_register as date_request, 
+                                                (case when b.date_register is null then 'ລໍຖ້າອານຸມັດ' else b.date_register end) as date_approve,  
+                                                (case when c.date_register is null then 'ລໍຖ້າເບີກສິນຄ້າ' else c.date_register end) as date_stock_out
+                                                from tbl_order_request a 
+                                                left join tbl_approve_order b on a.or_id = b.or_id
+                                                left join tbl_stock_out_warehouse c on b.apo_id = c.apo_id 
+                                                  ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
@@ -94,15 +97,7 @@ $header_click = "2";
                                                         $apo_id = $row4['apo_id'];
 
 
-                                                        if (empty($row4['sow_bill_number'])) {
-                                                            $sow_bill_number = "ລໍຖ້າກວດສອບ";
-                                                            $aos_name = "ລໍຖ້າກວດສອບ";
-                                                            $date_check = "ລໍຖ້າກວດສອບ";
-                                                        } else {
-                                                            $sow_bill_number = $row4['sow_bill_number'];
-                                                            $aos_name = $row4['aos_name'];
-                                                            $date_check = $row4['date_check'];
-                                                        }
+                                                        
 
 
                                                 ?>
@@ -112,10 +107,10 @@ $header_click = "2";
                                                         <tr>
 
                                                             <td><?php echo "$i"; ?></td>
-                                                            <td><?php echo $row4['apo_bill_number']; ?></td>
-                                                            <td><?php echo $row4['br_name']; ?></td>
+                                                            <td><?php echo $row4['or_bill_number']; ?></td>
                                                             <td><?php echo $row4['date_request']; ?></td>
-
+                                                            <td><?php echo $row4['date_approve']; ?></td>
+                                                            <td><?php echo $row4['date_stock_out']; ?></td>
                                                             <?php
 
 
@@ -166,7 +161,7 @@ $header_click = "2";
 
                                                                 ?>
                                                             </td>
-                                                            <td><?php echo "$date_check"; ?></td>
+                                                            <td><?php echo ""; ?></td>
 
 
 
@@ -176,7 +171,7 @@ $header_click = "2";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="select-warehouse-stock-out.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
+                                                                        <a class="dropdown-item" href="scan-recieve-item-branch.php?apo_id=<?php echo $row4['apo_id']; ?>">ກວດສອບ</a>
 
                                                                     </div>
                                                                 </div>

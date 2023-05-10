@@ -38,7 +38,7 @@ if ($stmt1->rowCount() == 1) {
 
 
             $insertDSS = $conn->query(" insert into tbl_stock_out_warehouse  (sow_bill_number,bill_type,apo_id,br_id,wh_id,add_by,date_register) 
-        values ('$ref_bill','1','$approve_id','$br_id','$warehouse_id','$id_users',CURDATE()); ");
+         values ('$ref_bill','1','$approve_id','$br_id','$warehouse_id','$id_users',CURDATE()); ");
             $lastid = $conn->lastInsertId();
 
             if ($insertDSS) {

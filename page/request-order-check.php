@@ -86,7 +86,8 @@ $header_click = "2";
                                                 FROM tbl_order_request a
                                                 left join tbl_approve_order b on a.or_id = b.or_id
                                                 left join tbl_branch c on a.br_id = c.br_id
-                                                left join tbl_approve_order_status d on b.ar_status = d.aos_id ");
+                                                left join tbl_approve_order_status d on b.ar_status = d.aos_id 
+                                                order by a.or_id desc");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {

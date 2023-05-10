@@ -60,6 +60,19 @@ $wh_id = $_POST['wh_id'];
                                     <div class="card-header">
 
 
+                                        <?php
+                                        $chkout = $conn->query("select * from tbl_stock_out_warehouse where apo_id = '3' ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                        if (empty($chkout['sow_id'])) {
+                                            $chk_sow_id = 0;
+                                        } else {
+                                            $chk_sow_id = $chkout['sow_id'];
+                                        }
+
+
+                                        ?>
+
 
                                         <div class="form-group  col-lg-12">
                                             <img src="../images/Kp-Logo.png" width="100%" height="100%" alt="Mono">
@@ -68,41 +81,41 @@ $wh_id = $_POST['wh_id'];
 
                                         <div class="row">
 
-                                            <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
+
+                                        
+
+                                                <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
 
 
 
-                                                <div class="input-group px-5 mt-1">
-                                                    <label class="text-dark font-weight-medium"> ສະແກນບາໂຄດ </label>
+                                                    <div class="input-group px-5 mt-1">
+                                                        <label class="text-dark font-weight-medium"> ສະແກນບາໂຄດ </label>
 
 
-                                                </div>
- 
-
-
-                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
-
-
-                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
-
-                                                <div class="input-group px-5 p-4">
-                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
-                                                </div>
+                                                    </div>
 
 
 
-
-                                                <div class="form-group  col-lg-12">
-                                                    <label class="text-dark font-weight-medium">
-                                                        <button type="submit" name="btn_add" id="btn_add" class="btn btn-primary mb-2 btn-pill">ສະແກນ </button>
-                                                    </label>
-
-                                                </div>
+                                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
 
 
+                                                    <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
-                                            </form>
+                                                    <div class="input-group px-5 p-4">
+                                                        <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
+                                                    </div>
 
+
+
+
+                                                    <div class="form-group  col-lg-12">
+                                                        <label class="text-dark font-weight-medium">
+                                                            <button type="submit" name="btn_add" id="btn_add" class="btn btn-primary mb-2 btn-pill">ສະແກນ </button>
+                                                        </label>
+
+                                                    </div> 
+
+                                                </form> 
 
                                         </div>
 
@@ -115,6 +128,7 @@ $wh_id = $_POST['wh_id'];
                         </div>
 
                         <div class="col-lg-8 col-xxl-9">
+
 
                             <form method="post" id="submittrack">
 
@@ -135,11 +149,30 @@ $wh_id = $_POST['wh_id'];
 
                                     <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
-                                    <div class="d-flex justify-content-center mt-6">
-                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
-                                    </div>
 
 
+
+                                    <?php
+
+                                    if ($chk_sow_id == 0) {
+
+                                    ?>
+                                        <div class="d-flex justify-content-center mt-6">
+                                            <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
+                                        </div>
+
+                                    <?php
+
+                                    } else {
+                                    ?>
+
+                                        <div class="  text-center" style="height: 100%;">
+                                            <h2 class="mt-4 "> ເບີກສິນຄ້າແລ້ວ </h2>
+                                        </div>
+                                    <?php
+                                    }
+
+                                    ?>
 
                                     <div class="card-body pb-0 " data-simplebar>
 
@@ -156,19 +189,21 @@ $wh_id = $_POST['wh_id'];
                                                 <tbody>
 
                                                     <?php
+
+                                                    $item_values = 0;
+
                                                     $stmt4 = $conn->prepare("select a.item_id,item_name,sum(item_values) as item_values 
-                                                    from tbl_stock_out_warehouse_detail_pre a
+                                                    from tbl_approve_order_detail a
                                                     left join tbl_item_data b on a.item_id = b.item_id
-                                                    where add_by='$id_users' 
+                                                    where apo_id='$apo_id' 
                                                     group by item_name,a.item_id
-                                                    order by sowdp_id  desc ");
+                                                    order by apod_id  desc ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
                                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                                             $item_id = $row4['item_id'];
                                                             $item_name = $row4['item_name'];
-                                                            $item_values = $row4['item_values'];
 
 
                                                             $x = 1;
@@ -177,7 +212,42 @@ $wh_id = $_POST['wh_id'];
                                                             <tr>
 
 
+                                                                <?php
+                                                                $rowpre = $conn->query("
+                                                                select sum(item_values) as item_values
+                                                                from tbl_stock_out_warehouse_detail_pre
+                                                                where add_by = '$id_users' and item_id = '$item_id'
+                                                                group by item_id 
+                                                                            ")->fetch(PDO::FETCH_ASSOC);
 
+                                                                if (empty($rowpre['item_values'])) {
+                                                                    $val_pre = 0;
+                                                                } else {
+                                                                    $val_pre = $rowpre['item_values'];
+                                                                }
+
+
+
+                                                                $row_detail = $conn->query("
+                                                                select sum(item_values) as item_values
+                                                                from tbl_stock_out_warehouse_detail a
+                                                                left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+                                                                where apo_id = '$apo_id' and item_id = '$item_id'
+                                                                group by item_id 
+                                                                             ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                if (empty($row_detail['item_values'])) {
+                                                                    $val_detail = 0;
+                                                                } else {
+                                                                    $val_detail = $row_detail['item_values'];
+                                                                }
+
+
+                                                                $item_values = $val_pre + $val_detail;
+
+
+
+                                                                ?>
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
                                                                 <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
@@ -189,7 +259,9 @@ $wh_id = $_POST['wh_id'];
                                                                     ?>
 
                                                                 </td>
-                                                                <td><?php echo "$item_values"; ?></td>
+                                                                <td><?php
+
+                                                                    echo "$item_values"; ?></td>
 
 
                                                             </tr>
@@ -224,76 +296,110 @@ $wh_id = $_POST['wh_id'];
 
             <div class="content-wrapper">
                 <div class="content">
-                    <!-- For Components documentaion -->
+
+                    <div class="email-wrapper rounded border bg-white">
+                        <div class="  no-gutters justify-content-center">
 
 
-                    <div class="card card-default">
 
-                        <div class="card-body">
-                            <h4 class="text-dark">ລາຍການໂອນສິນຄ້າເຂົ້າສາງ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>ເລກລຳດັບ</th>
-                                        <th>ຊື່ສາງ</th>
-                                        <th>ບິນອ້າງອີງ</th>
-                                        <th>ຈຳນວນເພິີ່ມເຂົ້າ</th>
-                                        <th>ວັນທີ່</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <?php
+                            <div class="    ">
+                                <div class="  p-4 p-xl-5">
+                                    <div class="email-body-head mb-6 ">
+                                        <h4 class="text-dark">ລາຍການເບີກ</h4>
 
 
-                                    $stmt5 = $conn->prepare(" select a.siw_id,siw_bill_number,a.date_register,count(siwd_id) as count_item,wh_name 
-                                    from tbl_stock_in_warehouse a
-                                    left join tbl_stock_in_warehouse_detail b on a.siw_id = b.siw_id
-                                    left join tbl_warehouse c on a.wh_id = c.wh_id
-                                    where a.add_by ='$id_users'
-                                    group by siw_id desc ");
-                                    $stmt5->execute();
-                                    $b = 1;
-                                    if ($stmt5->rowCount() > 0) {
-                                        while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-
-                                    ?>
-
-                                            <tr>
-                                                <td><?php echo "$b"; ?></td>
-                                                <td><?php echo $row5['wh_name']; ?></td>
-                                                <td><?php echo $row5['siw_bill_number']; ?></td>
-                                                <td><?php echo $row5['count_item']; ?></td>
-                                                <td><?php echo $row5['date_register']; ?></td>
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                        </a>
-
-                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-stock-in-admin.php?siw_id=<?php echo $row5['siw_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delstockin" data-id='<?php echo $row5['siw_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
-
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
 
 
-                                    <?php
-                                            $b++;
-                                        }
-                                    }
-                                    ?>
+                                    </div>
+                                    <form method="post" id="additemorderfrm">
 
-                                </tbody>
-                            </table>
+                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ເລກລຳດັບ</th>
+                                                    <th>ເລກບິນເບີກ</th>
+                                                    <th>ເບີກຈາກສາງ</th>
+                                                    <th>ຈຳນວນເບີກ</th>
+                                                    <th>ວັນທີເບີກ</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
+                                                <?php
+
+                                                $i = 1;
+                                                $stmt4 = $conn->prepare(" 
+                                                select sow_id,sow_bill_number,wh_name,a.date_register 
+                                                from tbl_stock_out_warehouse a
+                                                left join tbl_warehouse b on a.wh_id = b.wh_id
+                                                where  apo_id = '$apo_id'
+                                           ");
+                                                $stmt4->execute();
+                                                if ($stmt4->rowCount() > 0) {
+                                                    while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+
+                                                        $sow_id =  $row4['sow_id'];
+
+
+                                                        $rowio = $conn->query("select sum(item_values) as item_values
+                                                        from tbl_stock_out_warehouse_detail
+                                                        where sow_id ='$sow_id' 
+                                                        group by sow_id
+                                                        ")->fetch(PDO::FETCH_ASSOC);
+
+                                                ?>
+
+
+
+                                                        <tr>
+
+                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_bill_number']; ?></td>
+                                                            <td><?php echo $row4['wh_name']; ?></td>
+                                                            <td><?php echo $rowio['item_values']; ?></td>
+                                                            <td><?php echo $row4['date_register']; ?></td>
+
+
+
+                                                            <td>
+                                                                <div class="dropdown">
+                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                    </a>
+
+                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                        <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
+                                                                        <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['sow_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+
+                                                <?php
+
+                                                        $i++;
+                                                    }
+                                                }
+                                                $conn = null;
+                                                ?>
+
+                                            </tbody>
+                                        </table>
+
+
+
+
+                                    </form>
+
+
+                                </div>
+
+
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
 
             </div>
@@ -341,8 +447,7 @@ $wh_id = $_POST['wh_id'];
                         function() {
                             location.reload();
                         }, 2000);
-                }
-                else if (data.res == "noitem") {
+                } else if (data.res == "noitem") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
@@ -352,11 +457,7 @@ $wh_id = $_POST['wh_id'];
                         function() {
                             location.reload();
                         }, 2000);
-                }
-                
-                
-                
-                else if (data.res == "orverorder") {
+                } else if (data.res == "orverorder") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',
@@ -376,7 +477,7 @@ $wh_id = $_POST['wh_id'];
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-add-stock-out-addmin.php",
+                "../query/confirm-add-stock-out-admin.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "errorwarehouse") {

@@ -131,6 +131,7 @@ create  or replace table tbl_approve_order_status(
 create or replace table tbl_stock_in_warehouse (
      siw_id int not null PRIMARY KEY AUTO_INCREMENT,
      siw_bill_number varchar(30),
+     apo_id int,
      bill_type int,
      br_id int,
      wh_id int, 
