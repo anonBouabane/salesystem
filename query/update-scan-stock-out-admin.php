@@ -98,11 +98,31 @@ if (!empty($box_barcode)) {
                 $res = array("res" => "orverorder", "item_code" => "$item_name");
             } else {
 
-                $insertSTI = $conn->query(" insert into tbl_stock_out_warehouse_detail  
-                (sow_id, item_id,item_values)  
-                values ('$sow_id','$item_id','1'); ");
+                $stmt2 = $conn->prepare(" 
+                select (item_values+1) as item_values from tbl_stock_out_warehouse_detail
+                where item_id = '$item_id' and sow_id  ='$sow_id' ");
+                $stmt2->execute();
+                if ($stmt2->rowCount() > 0) {
+                    while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
-                $res = array("res" => "success");
+                        $item_values  = $row2['item_values'];
+
+
+                        $insertSTI = $conn->query("
+                        update tbl_stock_out_warehouse_detail set 
+                        item_values = '$item_values'
+                        where item_id ='$item_id' and sow_id ='$sow_id'
+                 ");
+
+                        $res = array("res" => "success");
+                    }
+                } else {
+                    $insertSTI = $conn->query(" insert into tbl_stock_out_warehouse_detail  
+                    (sow_id, item_id,item_values)  
+                    values ('$sow_id','$item_id','1'); ");
+
+                    $res = array("res" => "success");
+                }
             }
         }
     } else {

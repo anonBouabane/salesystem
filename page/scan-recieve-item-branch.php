@@ -126,6 +126,8 @@ $apo_id = $_GET['apo_id'];
                                     <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ (<?php echo $rowwh['wh_name'] ?>) </h2>
 
 
+                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo  $rowwh["wh_id"]; ?>'>
+
                                     <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
@@ -186,24 +188,61 @@ $apo_id = $_GET['apo_id'];
                                                                     <div class="col-lg-5  ">
 
                                                                         <?php
-                                                                        $rowval = $conn->query("select sum(item_values) as item_values
-                                                                            from tbl_stock_in_warehouse_detail_pre
-                                                                            where add_by = '$id_users' and item_id = '$item_id'
-                                                                            group by item_id
-                                                                             ")->fetch(PDO::FETCH_ASSOC);
+                                                                     
 
-                                                                        if (empty($rowval['item_values'])) {
-                                                                            $item_values = 0;
+                                                                        $rowpre = $conn->query("
+                                                                        select sum(item_values) as item_values
+                                                                        from tbl_stock_in_warehouse_detail_pre
+                                                                        where add_by = '$id_users' and item_id = '$item_id'
+                                                                        group by item_id 
+                                                                         ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                        if (empty($rowpre['item_values'])) {
+                                                                            $val_pre = 0;
                                                                         } else {
-                                                                            $item_values = $rowval['item_values'];
+                                                                            $val_pre = $rowpre['item_values'];
+                                                                        }
+
+                                                                        $row_detail = $conn->query("
+                                                                        select sum(item_values) as item_values  
+                                                                        from tbl_stock_in_warehouse_detail a
+                                                                        left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+                                                                        where apo_id = '$apo_id' and item_id = '$item_id'
+                                                                        group by item_id 
+                                                                                     ")->fetch(PDO::FETCH_ASSOC);
+        
+                                                                        if (empty($row_detail['item_values'])) {
+                                                                            $val_detail = 0;
+                                                                        } else {
+                                                                            $val_detail = $row_detail['item_values']; 
+                                                                        }
+        
+        
+                                                                        $item_values = $val_pre + $val_detail;
+
+
+
+
+                                                                        $rowap = $conn->query("
+                                                                        select sum(item_values) as item_approve
+                                                                        from tbl_stock_out_warehouse_detail a
+                                                                        left join tbl_stock_out_warehouse b on a.sow_id  = b.sow_id 
+                                                                        where apo_id ='$apo_id' and item_id = '$item_id'
+                                                                        group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                                        if (!empty($rowap['item_approve'])) {
+                                                                            $item_approve =  $rowap['item_approve'];
+                                                                        } else {
+                                                                            $item_approve = 0;
                                                                         }
 
 
 
+
+                                                                        echo "$item_values / $item_approve";
                                                                         ?>
-
-
-                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                        <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
                                                                     </div>
 
@@ -392,7 +431,7 @@ $apo_id = $_GET['apo_id'];
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-add-stock-in-addmin.php",
+                "../query/confirm-recieve-stock-in-branch.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "nowarehouse") {
@@ -400,7 +439,7 @@ $apo_id = $_GET['apo_id'];
                             "ກະລຸນາເລືອກສາງ",
                             "error");
                     } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+                        Swal.fire("ສຳເລັດ", "ຮັບເຂົ້າຮ້ານສຳເລັດ", "success");
 
                         setTimeout(function() {
                             location.reload();

@@ -109,7 +109,7 @@ $header_click = "2";
                             <form method="post" id="submittrack">
 
 
-                                <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
+                                <div class="card card-default chat-right-sidebar text-center">
 
                                     <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າສາງ </h2>
 
@@ -140,7 +140,7 @@ $header_click = "2";
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " data-simplebar style="height: 350px;">
 
                                         <div class="card-body">
 
@@ -150,6 +150,7 @@ $header_click = "2";
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
                                                         <th>ເພີ່ມເຂົ້າສາງ</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -180,7 +181,7 @@ $header_click = "2";
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                             
+
                                                                 <td>
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
@@ -189,11 +190,27 @@ $header_click = "2";
 
                                                                 </td>
                                                                 <td>
+                                                                    <?php
+                                                                    // echo "$item_values";
+                                                                    ?>
+
                                                                     <div class="col-lg-5  ">
                                                                         <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
                                                                     </div>
 
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="dropdown">
+                                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                        </a>
+
+                                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                            <a class="dropdown-item" type="button" id="delstockinpre" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+
+                                                                        </div>
+                                                                    </div>
                                                                 </td>
 
 
@@ -413,6 +430,47 @@ $header_click = "2";
                         setTimeout(
                             function() {
                                 window.location.href = 'stock-in-admin.php';
+                            }, 1000);
+
+                    } else if (data.res == "used") {
+                        Swal.fire(
+                            'ນຳໃຊ້ແລ້ວ',
+                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                            'error'
+                        )
+                    }
+
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+            return false;
+        });
+
+        // Delete item
+        $(document).on("click", "#delstockinpre", function(e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-detail-stock-in-pre-admin.php",
+                dataType: "json",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                location.reload();
                             }, 1000);
 
                     } else if (data.res == "used") {

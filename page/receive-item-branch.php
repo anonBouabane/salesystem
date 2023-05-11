@@ -88,7 +88,10 @@ $header_click = "2";
                                                 (case when c.date_register is null then 'ລໍຖ້າເບີກສິນຄ້າ' else c.date_register end) as date_stock_out
                                                 from tbl_order_request a 
                                                 left join tbl_approve_order b on a.or_id = b.or_id
-                                                left join tbl_stock_out_warehouse c on b.apo_id = c.apo_id 
+                                                left join tbl_stock_out_warehouse c on b.apo_id = c.apo_id
+                                                where a.add_by = '$id_users'
+                                                order by a.or_id desc
+
                                                   ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {

@@ -161,11 +161,12 @@ $sow_id = $_GET['sow_id'];
                                                 <tbody>
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("SELECT  sow_id,a.item_id,item_name,sum(item_values) as item_values
+                                                    $stmt4 = $conn->prepare("SELECT  sowd_id,sow_id,a.item_id,item_name,sum(item_values) as item_values
                                                     FROM tbl_stock_out_warehouse_detail a
                                                     left join tbl_item_data b on a.item_id =b.item_id
                                                     where sow_id ='$sow_id' 
-                                                    group by a.item_id ");
+                                                    group by a.item_id 
+                                                    ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -184,7 +185,7 @@ $sow_id = $_GET['sow_id'];
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-
+                                                                 
                                                                 <td>
                                                                     <input type="hidden" name="item_name[]" id="item_name<?php echo $x; ?>" value='<?php echo "$item_name"; ?>' class="form-control">
 
@@ -200,6 +201,16 @@ $sow_id = $_GET['sow_id'];
 
                                                                     </div>
 
+                                                                </td>
+                                                                <td>
+                                                                    <div class="dropdown">
+                                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                        </a>
+
+                                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                            <a class="dropdown-item" type="button" id="delstockout" data-id='<?php echo $row4['sowd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                        </div>
+                                                                    </div>
                                                                 </td>
 
 
@@ -273,6 +284,7 @@ $sow_id = $_GET['sow_id'];
                                                 from tbl_stock_out_warehouse a
                                                 left join tbl_warehouse b on a.wh_id = b.wh_id
                                                 where  apo_id = '$apo_id'
+                                                order by sow_id desc
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
@@ -490,13 +502,13 @@ $sow_id = $_GET['sow_id'];
         });
 
 
-        // Delete item
-        $(document).on("click", "#delstockin", function(e) {
+         // Delete item
+         $(document).on("click", "#delstockout", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-stock-in-admin.php",
+                url: "../query/delete-edit-detail-stock-out-admin.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -511,7 +523,48 @@ $sow_id = $_GET['sow_id'];
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'stock-in-admin.php';
+                                location.reload();
+                            }, 1000);
+
+                    } else if (data.res == "used") {
+                        Swal.fire(
+                            'ນຳໃຊ້ແລ້ວ',
+                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                            'error'
+                        )
+                    }
+
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
+
+            });
+            return false;
+        });
+
+        // Delete item
+        $(document).on("click", "#deleteitem", function(e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-stock-out-admin.php",
+                dataType: "json",
+                data: {
+                    id: id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = ' approval-list.php';
                             }, 1000);
 
                     } else if (data.res == "used") {

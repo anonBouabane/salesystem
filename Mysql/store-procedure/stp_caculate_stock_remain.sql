@@ -8,7 +8,7 @@ select item_id,sum(item_values) as item_in_count
 from tbl_stock_in_warehouse_detail a
 left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
 where wh_id = warehouse_id and item_id = id_item
-group by item_id,a.siw_id;
+group by item_id;
 
 create TEMPORARY table tmp_count_stock_out
 
@@ -16,7 +16,7 @@ select item_id,sum(item_values) as item_out_count
 from tbl_stock_out_warehouse_detail a
 left join tbl_stock_out_warehouse b  on a.sow_id = b.sow_id
 where wh_id = warehouse_id  and item_id = id_item
-group by item_id,a.sow_id;
+group by item_id;
 
 
 create TEMPORARY table tmp_count_stock_pre_out

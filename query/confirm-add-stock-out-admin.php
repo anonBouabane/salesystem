@@ -46,7 +46,9 @@ if ($stmt1->rowCount() == 1) {
                 for ($i = 0; $i < ($countbox); $i++) {
                     extract($_POST);
 
-                    $update = $conn->query(" insert into tbl_stock_out_warehouse_detail  (sow_id,item_id,item_values) values ('$lastid','$item_id[$i]','$item_values[$i]') ");
+                    if (($item_values[$i] != 0) && ($check_apo[$i] == 0)) {
+                        $insert = $conn->query(" insert into tbl_stock_out_warehouse_detail  (sow_id,item_id,item_values) values ('$lastid','$item_id[$i]','$item_values[$i]') ");
+                    }
                 }
 
                 $clear_pre_item = $conn->query(" delete from tbl_stock_out_warehouse_detail_pre where add_by = '$id_users' ");

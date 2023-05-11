@@ -146,6 +146,7 @@ $apo_id = $_GET['apo_id'];
                                                 from tbl_stock_out_warehouse a
                                                 left join tbl_warehouse b on a.wh_id = b.wh_id
                                                 where  apo_id = '$apo_id'
+                                                order by sow_id desc
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
