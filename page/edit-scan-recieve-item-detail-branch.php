@@ -5,7 +5,7 @@ include("../setting/conn.php");
 $header_name = "ຮັບເຄື່ອງເຂົ້າຮ້ານ";
 $header_click = "2";
 
-$apo_id = $_GET['apo_id'];
+$siw_id = $_GET['siw_id'];
 
 ?>
 
@@ -59,14 +59,15 @@ $apo_id = $_GET['apo_id'];
                                     <div class="card-header">
 
                                         <?php
-                                        $rowwh = $conn->query("
-                                            select b.br_id, b.wh_id,wh_name
-                                            from tbl_approve_order a
-                                            left join tbl_order_request b on a.or_id = b.or_id
-                                            left join tbl_warehouse c on b.wh_id = c.wh_id
-                                            where apo_id = '$apo_id' 
-                                             ")->fetch(PDO::FETCH_ASSOC);
+                                        $rowedit = $conn->query("
+                                        select * from tbl_stock_in_warehouse a
+                                        left join tbl_warehouse b on a.wh_id = b.wh_id
+                                        where siw_id = '$siw_id' 
+                                        
+                                        ")->fetch(PDO::FETCH_ASSOC);
 
+                                        $apo_id = $rowedit['apo_id'];
+                                        $wh_id = $rowedit['wh_id'];
 
                                         ?>
 
@@ -123,10 +124,10 @@ $apo_id = $_GET['apo_id'];
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
-                                    <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າຮ້ານ (<?php echo $rowwh['wh_name'] ?>) </h2>
+                                    <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າຮ້ານ (<?php echo $rowedit['wh_name'] ?>) </h2>
 
 
-                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo  $rowwh["wh_id"]; ?>'>
+                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo  $rowedit["wh_id"]; ?>'>
 
                                     <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
@@ -146,34 +147,33 @@ $apo_id = $_GET['apo_id'];
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
                                                         <th>ເພີ່ມເຂົ້າສາງ</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
 
 
                                                     <?php
-                                                    $stmt4 = $conn->prepare("select a.item_id,item_name, a.sow_id
-                                                    from tbl_stock_out_warehouse_detail a
+                                                    $stmt4 = $conn->prepare("
+                                                    select a.item_id,item_name, a.siw_id,item_values
+                                                    from tbl_stock_in_warehouse_detail a
                                                     left join tbl_item_data b on a.item_id = b.item_id 
-                                                    left join tbl_stock_out_warehouse c on a.sow_id = c.sow_id
-                                                    where apo_id = '$apo_id'
+                                                    left join tbl_stock_in_warehouse c on a.siw_id = c.siw_id
+                                                    where a.siw_id =  '$siw_id'
                                                     group by item_name,a.item_id
-                                                    order by a.sow_id  desc ");
+                                                    order by a.siw_id  desc  ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
                                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                                             $item_id = $row4['item_id'];
                                                             $item_name = $row4['item_name'];
-                                                            $sow_id = $row4['sow_id'];
+                                                            $siw_id = $row4['siw_id'];
+                                                            $item_values =  $row4['item_values'];
 
                                                             $x = 1;
                                                     ?>
 
-                                                            <tr>
-
-
+                                                            <tr> 
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
@@ -186,101 +186,10 @@ $apo_id = $_GET['apo_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <div class="col-lg-5  ">
-
-                                                                        <?php
-                                                                        $check_apo = 0;
-
-                                                                        $rowpre = $conn->query("
-                                                                        select sum(item_values) as item_values
-                                                                        from tbl_stock_in_warehouse_detail_pre
-                                                                        where add_by = '$id_users' and item_id = '$item_id'
-                                                                        group by item_id 
-                                                                         ")->fetch(PDO::FETCH_ASSOC);
-
-                                                                        if (empty($rowpre['item_values'])) {
-                                                                            $val_pre = 0;
-                                                                        } else {
-                                                                            $val_pre = $rowpre['item_values'];
-                                                                        }
-
-                                                                        $row_detail = $conn->query("
-                                                                        select sum(item_values) as item_values ,apo_id
-                                                                        from tbl_stock_in_warehouse_detail a
-                                                                        left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
-                                                                        where apo_id = '$apo_id' and item_id = '$item_id'
-                                                                        group by item_id 
-                                                                                     ")->fetch(PDO::FETCH_ASSOC);
-
-                                                                        if (empty($row_detail['item_values'])) {
-                                                                            $val_detail = 0;
-                                                                        } else {
-                                                                            $val_detail = $row_detail['item_values'];
-                                                                            $check_apo = $row_detail['apo_id'];
-                                                                        }
-
-
-                                                                        $item_values = $val_pre + $val_detail;
-
-
-
-
-                                                                        $rowap = $conn->query("
-                                                                        select sum(item_values) as item_approve
-                                                                        from tbl_stock_out_warehouse_detail a
-                                                                        left join tbl_stock_out_warehouse b on a.sow_id  = b.sow_id 
-                                                                        where apo_id ='$apo_id' and item_id = '$item_id'
-                                                                        group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                                                        if (!empty($rowap['item_approve'])) {
-                                                                            $item_approve =  $rowap['item_approve'];
-                                                                        } else {
-                                                                            $item_approve = 0;
-                                                                        }
-
-
-
-
-                                                                        if ($item_values == $item_approve) {
-                                                                            $check_done   = "yes";
-                                                                        } else {
-                                                                            $check_done   = "no";
-                                                                        }
-
-
-
-                                                                        echo "$item_values / $item_approve";
-                                                                        ?>
-                                                                        <input type="hidden" name="val_pre[]" id="val_pre<?php echo $x; ?>" value='<?php echo "$val_pre"; ?>' class="form-control">
-
-
-
-                                                                    </div>
-
+                                                                    <input type="number" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
                                                                 </td>
-                                                                <td>
-                                                                    <?php
-
-                                                                    if ($val_pre != 0) {
 
 
-                                                                    ?>
-                                                                        <div class="dropdown">
-                                                                            <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                            </a>
-
-                                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                                <a class="dropdown-item" type="button" id="delstockinpre" data-id='<?php echo "$item_id"; ?>' class="btn btn-danger btn-sm">ຍົກເລີກສະແກນ</a>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    <?php
-
-                                                                    }
-
-                                                                    ?>
-                                                                </td>
 
 
                                                             </tr>

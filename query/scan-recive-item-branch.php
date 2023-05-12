@@ -39,10 +39,25 @@ if (!empty($box_barcode)) {
         $item_out =   $check_out['item_values'];
 
 
-        $check_in = $conn->query("
+        $check_in_pre = $conn->query("
         SELECT   sum(item_values) as item_values  
         FROM tbl_stock_in_warehouse_detail_pre
         WHERE add_by ='$id_users'  and item_id = '$item_id'
+        group by item_id   ")->fetch(PDO::FETCH_ASSOC);
+
+
+
+        if (empty($check_in_pre['item_values'])) {
+            $item_in_pre = 0;
+        } else {
+            $item_in_pre = $check_in_pre['item_values'];
+        }
+
+        $check_in = $conn->query("
+        SELECT   sum(item_values) as item_values  
+        FROM tbl_stock_in_warehouse_detail a
+        left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+        WHERE   item_id = '$item_id' and apo_id = '$approve_id'
         group by item_id   ")->fetch(PDO::FETCH_ASSOC);
 
 
@@ -53,8 +68,10 @@ if (!empty($box_barcode)) {
             $item_in = $check_in['item_values'];
         }
 
+        $total_in = $item_in + $item_in_pre;
 
-        if ($item_in >= $item_out) {
+
+        if ($total_in >= $item_out) {
             $res = array("res" => "orverorder", "item_code" => "$item_name");
         } else {
 

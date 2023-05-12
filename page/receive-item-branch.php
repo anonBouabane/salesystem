@@ -70,10 +70,9 @@ $header_click = "2";
                                                     <th>ເລກບິນຂໍ</th>
                                                     <th>ວັນທີຂໍ</th>
                                                     <th>ວັນທີອານຸມັດ</th>
-                                                    <th>ວັນທີ່ເບີກ</th>
-                                                    <th>ຈຳນວນເບີກ</th>
+                                                    <th>ວັນທີ່ອອກສູນ</th>
                                                     <th>ສະຖານະເບີກ</th>
-                                                    <th>ວັນທີຮັບເຂົ້າຮ້ານ</th>
+                                                    <th>ຈຳນວນເບີກ</th> 
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -100,7 +99,7 @@ $header_click = "2";
                                                         $apo_id = $row4['apo_id'];
 
 
-                                                        
+
 
 
                                                 ?>
@@ -114,38 +113,50 @@ $header_click = "2";
                                                             <td><?php echo $row4['date_request']; ?></td>
                                                             <td><?php echo $row4['date_approve']; ?></td>
                                                             <td><?php echo $row4['date_stock_out']; ?></td>
+
                                                             <?php
 
 
-                                                            $rowio = $conn->query("select    sum(item_values) as item_count
+                                                            $rowap = $conn->query("select    sum(item_values) as item_count
                                                             from tbl_stock_out_warehouse_detail a
                                                             left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
                                                             where apo_id ='$apo_id'
                                                             group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
 
 
-                                                            if (!empty($rowio['item_count'])) {
-                                                                $item_count =  $rowio['item_count'];
-                                                            } else {
-                                                                $item_count = 0;
-                                                            }
-
-                                                            $rowap = $conn->query("
-                                                            select sum(item_values) as item_approve
-                                                            from tbl_approve_order_detail 
-                                                            where apo_id ='$apo_id'
-                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                                            if (!empty($rowap['item_approve'])) {
-                                                                $item_approve =  $rowap['item_approve'];
+                                                            if (!empty($rowap['item_count'])) {
+                                                                $item_approve =  $rowap['item_count'];
                                                             } else {
                                                                 $item_approve = 0;
                                                             }
 
+                                                            $rowio = $conn->query("
+                                                            select sum(item_values) as item_approve
+                                                            from tbl_stock_in_warehouse_detail a
+                                                            left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+                                                            where apo_id ='$apo_id'
+                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                            if (!empty($rowio['item_approve'])) {
+                                                                $item_count =  $rowio['item_approve'];
+                                                            } else {
+                                                                $item_count = 0;
+                                                            }
+
                                                             ?>
 
+                                                            <td>
+                                                                <?php
+                                                                if ($item_count == $item_approve) {
+                                                                    echo "ຮັບສິນຄ້າຄົບຖ້ວຍ";
+                                                                } else {
+                                                                    echo "ຮັບສິນຄ້າບໍ່ຄົບ";
+                                                                }
 
+
+                                                                ?>
+                                                            </td>
                                                             <td>
                                                                 <?php
                                                                 echo "$item_count";
@@ -153,18 +164,7 @@ $header_click = "2";
                                                                 echo "$item_approve";
                                                                 ?>
                                                             </td>
-                                                            <td>
-                                                                <?php
-                                                                if ($item_count == $item_approve) {
-                                                                    echo "ສິນຄ້າຄົບຖ້ວນ";
-                                                                } else {
-                                                                    echo "ສິນຄ້າບໍ່ຄົບ";
-                                                                }
 
-
-                                                                ?>
-                                                            </td>
-                                                            <td><?php echo ""; ?></td>
 
 
 
