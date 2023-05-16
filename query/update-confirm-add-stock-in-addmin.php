@@ -8,12 +8,6 @@ if ($wh_id == 0) {
     $res = array("res" => "nowarehouse");
 } else {
     $countbox = count($_POST['item_id']);
-
-    $countrow = $conn->query(" SELECT max(siw_bill_number)+1 as last_number 
-    FROM tbl_stock_in_warehouse
-    where date_register =  CURDATE() and br_id = '$br_id'  ")->fetch(PDO::FETCH_ASSOC);
-
-    
  
 
   

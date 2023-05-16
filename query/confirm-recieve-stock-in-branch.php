@@ -8,18 +8,13 @@ $countbox = count($_POST['item_id']);
 
 $check_insert = "no";
 
-// $checkitem = $conn->query("SELECT * FROM tbl_stock_in_warehouse where apo_id = '$approve_id' ");
-
-// if ($checkitem->rowCount() > 0) {
-//     $res = array("res" => "recieved");
-// } else {
 
 
 for ($h = 0; $h < ($countbox); $h++) {
     extract($_POST);
-    if (($val_pre[$h] != 0) ) {
+    if (($val_pre[$h] != 0)) {
         $check_insert = "yes";
-    } 
+    }
 }
 
 
@@ -55,7 +50,7 @@ if ($check_insert == "yes") {
         for ($i = 0; $i < ($countbox); $i++) {
             extract($_POST);
 
-            if (($val_pre[$i] != 0) ) {
+            if (($val_pre[$i] != 0)) {
                 $insert = $conn->query(" insert into tbl_stock_in_warehouse_detail  (siw_id,item_id,item_values) values ('$lastid','$item_id[$i]','$val_pre[$i]') ");
             }
         }
@@ -69,5 +64,5 @@ if ($check_insert == "yes") {
 } else {
     $res = array("res" => "recieved");
 }
-// }
+
 echo json_encode($res);

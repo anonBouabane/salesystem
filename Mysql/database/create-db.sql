@@ -204,6 +204,8 @@ create or replace table tbl_stock_transfer_warehouse_detail (
 create or replace table tbl_deburse_item_pre_sale (
     dips_id int not null PRIMARY KEY AUTO_INCREMENT,
     dips_bill_number varchar(30),
+    sow_id int,
+    wh_id int,
     br_id int,
     add_by int,
     date_register date

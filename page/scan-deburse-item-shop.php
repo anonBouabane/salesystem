@@ -2,10 +2,10 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ຮັບເຄື່ອງເຂົ້າຮ້ານ";
+$header_name = "ເບີກສິນຄ້າເພື່ອຂາຍ";
 $header_click = "2";
 
-$siw_id = $_GET['siw_id'];
+$wh_id = $_POST['wh_id'];
 
 ?>
 
@@ -59,15 +59,9 @@ $siw_id = $_GET['siw_id'];
                                     <div class="card-header">
 
                                         <?php
-                                        $rowedit = $conn->query("
-                                        select * from tbl_stock_in_warehouse a
-                                        left join tbl_warehouse b on a.wh_id = b.wh_id
-                                        where siw_id = '$siw_id' 
-                                        
-                                        ")->fetch(PDO::FETCH_ASSOC);
-
-                                        $apo_id = $rowedit['apo_id'];
-                                        $wh_id = $rowedit['wh_id'];
+                                        $rowedit = $conn->query(" select * from tbl_warehouse where wh_id = '$wh_id'  ")->fetch(PDO::FETCH_ASSOC);
+ 
+                                         
 
                                         ?>
 
@@ -82,8 +76,7 @@ $siw_id = $_GET['siw_id'];
 
                                             <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
 
-                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
-                                                <input type="hidden" id="siw_id" name="siw_id" class="form-control" autofocus value='<?php echo "$siw_id" ?>'>
+                                                 <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo "$wh_id" ?>'>
 
 
                                                 <div class="input-group px-5 mt-1">
@@ -125,7 +118,7 @@ $siw_id = $_GET['siw_id'];
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
-                                    <h2 class="mt-4 "> ສະແກນສິນຄ້າເຂົ້າຮ້ານ (<?php echo $rowedit['wh_name'] ?>) </h2>
+                                    <h2 class="mt-4 "> ເບີກສິນຄ້າເພື່ອຂາຍ (<?php echo $rowedit['wh_name'] ?>) </h2>
 
                                     <input type="hidden" id="siw_id" name="siw_id" class="form-control" autofocus value='<?php echo "$siw_id" ?>'>
 
@@ -157,20 +150,21 @@ $siw_id = $_GET['siw_id'];
 
                                                     <?php
                                                     $stmt4 = $conn->prepare("
-                                                    select a.item_id,item_name, a.siw_id,item_values,siwd_id
-                                                    from tbl_stock_in_warehouse_detail a
-                                                    left join tbl_item_data b on a.item_id = b.item_id 
-                                                    left join tbl_stock_in_warehouse c on a.siw_id = c.siw_id
-                                                    where a.siw_id =  '$siw_id'
-                                                    group by item_name,a.item_id
-                                                    order by a.siw_id  desc  ");
+                                                     
+                                                    SELECT a.item_id,sum(item_values) as item_values,item_name
+                                                    FROM tbl_stock_out_warehouse_detail_pre a
+                                                    left join tbl_item_data b on a.item_id = b.item_id
+                                                    where add_by = '$id_users' and wh_id ='$wh_id'
+                                                    group by item_id,wh_id
+
+
+                                                     ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
                                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                                             $item_id = $row4['item_id'];
-                                                            $item_name = $row4['item_name'];
-                                                            $siw_id = $row4['siw_id'];
+                                                            $item_name = $row4['item_name']; 
                                                             $item_values =  $row4['item_values'];
 
                                                             $x = 1;
@@ -323,14 +317,14 @@ $siw_id = $_GET['siw_id'];
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/update-scan-recive-item-branch.php", $(this).serialize(), function(data) {
+            $.post("../query/scan-deburse-item-shop.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
-                } else if (data.res == "limit") {
+                } else if (data.res == "noitem") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ສິນຄ້າ ' + data.limit_item.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                        'ສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພົບໃນສາງ',
                         'error'
                     )
                     setTimeout(
@@ -340,7 +334,7 @@ $siw_id = $_GET['siw_id'];
                 } else if (data.res == "nofound") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນບິນເບີກ',
+                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
                         'error'
                     )
                     setTimeout(
@@ -350,7 +344,7 @@ $siw_id = $_GET['siw_id'];
                 } else if (data.res == "nostock") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
+                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
                         'error'
                     )
                     setTimeout(
@@ -387,7 +381,7 @@ $siw_id = $_GET['siw_id'];
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/update-confirm-recieve-stock-in-branch.php",
+                "../query/confirm-deburse-item-shop.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "recieved") {
@@ -401,7 +395,7 @@ $siw_id = $_GET['siw_id'];
                             'error'
                         )
                     } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ຮັບເຂົ້າຮ້ານສຳເລັດ", "success");
+                        Swal.fire("ສຳເລັດ", "ເບີກໜ້າຮ້ານສຳເລັດ", "success");
 
                         setTimeout(function() {
                             location.reload();
