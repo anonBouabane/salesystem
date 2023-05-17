@@ -140,24 +140,24 @@ $header_click = "2";
                                                 <?php
 
                                                 $i = 1;
-                                                $stmt4 = $conn->prepare(" 
-                                                select sow_id,sow_bill_number,wh_name,a.date_register 
-                                                from tbl_stock_out_warehouse a
+                                                $stmt4 = $conn->prepare("
+                                                select dips_bill_number,sow_id, wh_name, a.date_register,dips_id
+                                                from tbl_deburse_item_pre_sale a
                                                 left join tbl_warehouse b on a.wh_id = b.wh_id
-                                                where  a.add_by = '$id_users'
-                                                order by sow_id desc
+                                                where a.add_by = '$id_users' 
+                                                order by dips_id desc
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
 
-                                                        $sow_id =  $row4['sow_id'];
+                                                        $dips_id =  $row4['dips_id'];
 
 
                                                         $rowio = $conn->query("select sum(item_values) as item_values
-                                                        from tbl_stock_out_warehouse_detail
-                                                        where sow_id ='$sow_id' 
-                                                        group by sow_id
+                                                        from tbl_deburse_item_pre_sale_detail
+                                                        where dips_id ='$dips_id' 
+                                                        group by dips_id
                                                         ")->fetch(PDO::FETCH_ASSOC);
 
                                                 ?>
@@ -167,7 +167,7 @@ $header_click = "2";
                                                         <tr>
 
                                                             <td><?php echo "$i"; ?></td>
-                                                            <td><?php echo $row4['sow_bill_number']; ?></td>
+                                                            <td><?php echo $row4['dips_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
                                                             <td><?php echo $row4['date_register']; ?></td>
@@ -223,7 +223,7 @@ $header_click = "2";
                     var id = $(this).data("id");
                     $.ajax({
                         type: "post",
-                        url: "../query/delete-stock-out-admin.php",
+                        url: "../query/delete-deburse-item-shop.php",
                         dataType: "json",
                         data: {
                             id: id
@@ -238,7 +238,7 @@ $header_click = "2";
                                 )
                                 setTimeout(
                                     function() {
-                                        location.reload();
+                                        window.location.href = 'item-master-data.php';
                                     }, 1000);
 
                             } else if (data.res == "used") {

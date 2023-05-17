@@ -60,8 +60,8 @@ $wh_id = $_POST['wh_id'];
 
                                         <?php
                                         $rowedit = $conn->query(" select * from tbl_warehouse where wh_id = '$wh_id'  ")->fetch(PDO::FETCH_ASSOC);
- 
-                                         
+
+
 
                                         ?>
 
@@ -76,7 +76,7 @@ $wh_id = $_POST['wh_id'];
 
                                             <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
 
-                                                 <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo "$wh_id" ?>'>
+                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo "$wh_id" ?>'>
 
 
                                                 <div class="input-group px-5 mt-1">
@@ -141,7 +141,7 @@ $wh_id = $_POST['wh_id'];
                                                     <tr>
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
-                                                        <th>ເພີ່ມເຂົ້າສາງ</th>
+                                                        <th>ຈຳນວນເບີກ</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -164,7 +164,7 @@ $wh_id = $_POST['wh_id'];
                                                     if ($stmt4->rowCount() > 0) {
                                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                                             $item_id = $row4['item_id'];
-                                                            $item_name = $row4['item_name']; 
+                                                            $item_name = $row4['item_name'];
                                                             $item_values =  $row4['item_values'];
 
                                                             $x = 1;
@@ -193,7 +193,7 @@ $wh_id = $_POST['wh_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                            <a class="dropdown-item" type="button" id="delstockindetail" data-id='<?php echo $row4['siwd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                            <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
                                                                     </div>
@@ -233,74 +233,111 @@ $wh_id = $_POST['wh_id'];
 
             <div class="content-wrapper">
                 <div class="content">
-                    <!-- For Components documentaion -->
+
+                    <div class="email-wrapper rounded border bg-white">
+                        <div class="  no-gutters justify-content-center">
 
 
-                    <div class="card card-default">
 
-                        <div class="card-body">
-                            <h4 class="text-dark">ລາຍການຮັບສິນຄ້າເຂົ້າຮ້ານ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>ເລກລຳດັບ</th>
-                                        <th>ບິນອ້າງອີງ</th>
-                                        <th>ສິນຄ້າເພິີ່ມເຂົ້າ</th>
-                                        <th>ວັນທີ່</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <?php
+                            <div class="    ">
+                                <div class="  p-4 p-xl-5">
+                                    <div class="email-body-head mb-6 ">
+                                        <h4 class="text-dark">ລາຍການເບີກ</h4>
 
 
-                                    $stmt5 = $conn->prepare(" select a.siw_id,siw_bill_number,a.date_register,count(siwd_id) as count_item 
-                                    from tbl_stock_in_warehouse a
-                                    right join tbl_stock_in_warehouse_detail b on a.siw_id = b.siw_id 
-                                    where  apo_id = '$apo_id'
-                                    group by siw_id desc
-                                    order by a.siw_id desc ");
-                                    $stmt5->execute();
-                                    $b = 1;
-                                    if ($stmt5->rowCount() > 0) {
-                                        while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-
-                                    ?>
-
-                                            <tr>
-                                                <td><?php echo "$b"; ?></td>
-                                                <td><?php echo $row5['siw_bill_number']; ?></td>
-                                                <td><?php echo $row5['count_item']; ?></td>
-                                                <td><?php echo $row5['date_register']; ?></td>
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                        </a>
-
-                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-scan-recieve-item-detail-branch.php?siw_id=<?php echo $row5['siw_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="delstockin" data-id='<?php echo $row5['siw_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
-
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
 
 
-                                    <?php
-                                            $b++;
-                                        }
-                                    }
-                                    ?>
+                                    </div>
+                                    <form method="post" id="additemorderfrm">
 
-                                </tbody>
-                            </table>
+                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>ເລກລຳດັບ</th>
+                                                    <th>ເລກບິນເບີກ</th>
+                                                    <th>ເບີກຈາກສາງ</th>
+                                                    <th>ຈຳນວນເບີກ</th>
+                                                    <th>ວັນທີເບີກ</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
+                                                <?php
+
+                                                $i = 1;
+                                                $stmt4 = $conn->prepare("
+                                                select dips_bill_number,sow_id, wh_name, a.date_register,dips_id
+                                                from tbl_deburse_item_pre_sale a
+                                                left join tbl_warehouse b on a.wh_id = b.wh_id
+                                                where a.add_by = '$id_users' 
+                                                order by dips_id desc
+                                           ");
+                                                $stmt4->execute();
+                                                if ($stmt4->rowCount() > 0) {
+                                                    while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+
+                                                        $dips_id =  $row4['dips_id'];
+
+
+                                                        $rowio = $conn->query("select sum(item_values) as item_values
+                                                        from tbl_deburse_item_pre_sale_detail
+                                                        where dips_id ='$dips_id' 
+                                                        group by dips_id
+                                                        ")->fetch(PDO::FETCH_ASSOC);
+
+                                                ?>
+
+
+
+                                                        <tr>
+
+                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['dips_bill_number']; ?></td>
+                                                            <td><?php echo $row4['wh_name']; ?></td>
+                                                            <td><?php echo $rowio['item_values']; ?></td>
+                                                            <td><?php echo $row4['date_register']; ?></td>
+
+
+
+                                                            <td>
+                                                                <div class="dropdown">
+                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                    </a>
+
+                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                        <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
+                                                                        <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['sow_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+
+                                                <?php
+
+                                                        $i++;
+                                                    }
+                                                }
+                                                $conn = null;
+                                                ?>
+
+                                            </tbody>
+                                        </table>
+
+
+
+
+                                    </form>
+
+
+                                </div>
+
+
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
 
             </div>
@@ -377,7 +414,6 @@ $wh_id = $_POST['wh_id'];
             return false;
         });
 
-
         // add track check Data
         $(document).on("submit", "#submittrack", function() {
             $.post(
@@ -400,6 +436,22 @@ $wh_id = $_POST['wh_id'];
                         setTimeout(function() {
                             location.reload();
                         }, 1500);
+                    } else if (data.res == "errorwarehouse") {
+                        Swal.fire("ສຳເລັດ", "ບໍ່ສາມາດເພີ່ມໄດ້", "error");
+
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    } else if (data.res == "nostock") {
+                        Swal.fire(
+                            'ແຈ້ງເຕືອນ',
+                            'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
+                            'error'
+                        )
+                        setTimeout(
+                            function() {
+
+                            }, 2000);
                     }
                 },
                 "json"
@@ -409,14 +461,13 @@ $wh_id = $_POST['wh_id'];
         });
 
 
-
         // Delete item
-        $(document).on("click", "#delstockindetail", function(e) {
+        $(document).on("click", "#deleteitem", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-edit-detail-stock-in-pre-admin.php",
+                url: "../query/delete-deburse-item-shop.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -431,7 +482,7 @@ $wh_id = $_POST['wh_id'];
                         )
                         setTimeout(
                             function() {
-                                location.reload();
+                                window.location.href = 'deburse-item-shop.php';
                             }, 1000);
 
                     } else if (data.res == "used") {
@@ -452,13 +503,15 @@ $wh_id = $_POST['wh_id'];
         });
 
 
+
+
         // Delete item
-        $(document).on("click", "#delstockin", function(e) {
+        $(document).on("click", "#delitempre", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-stock-in-admin.php",
+                url: "../query/delete-deburse-item-shop-pre.php",
                 dataType: "json",
                 data: {
                     id: id
