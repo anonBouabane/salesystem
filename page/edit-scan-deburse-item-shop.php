@@ -5,7 +5,7 @@ include("../setting/conn.php");
 $header_name = "ເບີກສິນຄ້າເພື່ອຂາຍ";
 $header_click = "2";
 
-$wh_id = $_POST['wh_id'];
+$sow_id = $_GET['sow_id'];
 
 ?>
 
@@ -59,9 +59,15 @@ $wh_id = $_POST['wh_id'];
                                     <div class="card-header">
 
                                         <?php
-                                        $rowedit = $conn->query(" select * from tbl_warehouse where wh_id = '$wh_id'  ")->fetch(PDO::FETCH_ASSOC);
+                                        $rowedit = $conn->query("
+                                        select wh_name,a.wh_id,a.sow_id,dips_id
+                                        from tbl_stock_out_warehouse a
+                                        left join tbl_warehouse b on a.wh_id = b.wh_id
+                                        left join tbl_deburse_item_pre_sale c on a.sow_id = c.sow_id
+                                        where a.sow_id = '$sow_id' ")->fetch(PDO::FETCH_ASSOC);
 
-
+                                        $wh_id = $rowedit['wh_id'];
+                                        $dips_id = $rowedit['dips_id'];
 
                                         ?>
 
@@ -75,6 +81,10 @@ $wh_id = $_POST['wh_id'];
                                         <div class="row">
 
                                             <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
+
+
+
+                                                <input type="hidden" id="sow_id" name="sow_id" class="form-control" autofocus value='<?php echo "$sow_id" ?>'>
 
                                                 <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo "$wh_id" ?>'>
 
@@ -113,21 +123,21 @@ $wh_id = $_POST['wh_id'];
 
                         <div class="col-lg-8 col-xxl-9">
 
-                            <form method="post" id="submitform">
+                            <form method="post" id="submittrack">
 
 
                                 <div class="card card-default chat-right-sidebar text-center" style="height: 100%;">
 
                                     <h2 class="mt-4 "> ເບີກສິນຄ້າເພື່ອຂາຍ (<?php echo $rowedit['wh_name'] ?>) </h2>
 
-                                    <input type="hidden" id="siw_id" name="siw_id" class="form-control" autofocus value='<?php echo "$siw_id" ?>'>
-
+                                    <input type="hidden" id="sow_id" name="sow_id" class="form-control" autofocus value='<?php echo "$sow_id" ?>'>
+ 
                                     <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo  $rowedit["wh_id"]; ?>'>
 
-                                    <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
+                                    <input type="hidden" id="dips_id" name="dips_id" class="form-control" autofocus value='<?php echo "$dips_id" ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
-                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
+                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ຮັບເຂົ້າສາງ</button>
                                     </div>
 
 
@@ -150,15 +160,10 @@ $wh_id = $_POST['wh_id'];
 
                                                     <?php
                                                     $stmt4 = $conn->prepare("
-                                                     
-                                                    SELECT a.item_id,sum(item_values) as item_values,item_name
-                                                    FROM tbl_stock_out_warehouse_detail_pre a
+                                                    select a.item_id,item_values,item_name,sowd_id
+                                                    from tbl_stock_out_warehouse_detail a
                                                     left join tbl_item_data b on a.item_id = b.item_id
-                                                    where add_by = '$id_users' and wh_id ='$wh_id'
-                                                    group by item_id,wh_id
-
-
-                                                     ");
+                                                    where sow_id = '$sow_id' ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -166,7 +171,8 @@ $wh_id = $_POST['wh_id'];
                                                             $item_id = $row4['item_id'];
                                                             $item_name = $row4['item_name'];
                                                             $item_values =  $row4['item_values'];
-
+                                                            $item_values =  $row4['item_values'];
+                                                            
                                                             $x = 1;
                                                     ?>
 
@@ -174,6 +180,7 @@ $wh_id = $_POST['wh_id'];
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
+                                                                <input type="hidden" name="item_name[]" id="item_name<?php echo $x; ?>" value='<?php echo "$item_name"; ?>' class="form-control">
                                                                 <input type="hidden" name="item_name[]" id="item_name<?php echo $x; ?>" value='<?php echo "$item_name"; ?>' class="form-control">
 
                                                                 <td>
@@ -193,7 +200,7 @@ $wh_id = $_POST['wh_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                            <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                            <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['sowd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
                                                                     </div>
@@ -243,10 +250,6 @@ $wh_id = $_POST['wh_id'];
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
                                         <h4 class="text-dark">ລາຍການເບີກ</h4>
-
-
-
-
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
@@ -313,8 +316,6 @@ $wh_id = $_POST['wh_id'];
                                                                 </div>
                                                             </td>
                                                         </tr>
-
-
                                                 <?php
 
                                                         $i++;
@@ -325,16 +326,8 @@ $wh_id = $_POST['wh_id'];
 
                                             </tbody>
                                         </table>
-
-
-
-
                                     </form>
-
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -354,7 +347,7 @@ $wh_id = $_POST['wh_id'];
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-deburse-item-shop.php", $(this).serialize(), function(data) {
+            $.post("../query/update-scan-deburse-item-shop.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
@@ -415,9 +408,9 @@ $wh_id = $_POST['wh_id'];
         });
 
         // add track check Data
-        $(document).on("submit", "#submitform", function() {
+        $(document).on("submit", "#submittrack", function() {
             $.post(
-                "../query/confirm-deburse-item-shop.php",
+                "../query/update-confirm-deburse-item-shop.php",
                 $(this).serialize(),
                 function(data) {
                     if (data.res == "recieved") {
@@ -511,7 +504,7 @@ $wh_id = $_POST['wh_id'];
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-deburse-item-shop-pre.php",
+                url: "../query/delete-deburse-item-shop-detail.php",
                 dataType: "json",
                 data: {
                     id: id

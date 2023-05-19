@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE or replace PROCEDURE stp_caculate_stock_remain(warehouse_id int, user_add int,id_item int)
+CREATE or replace PROCEDURE stp_edit_caculate_shop_stock_remain(warehouse_id int, id_item int,  sow_bill int)
 BEGIN
 
 create TEMPORARY table tmp_count_stock_in
@@ -8,17 +8,25 @@ select item_id,sum(item_values) as item_in_count
 from tbl_stock_in_warehouse_detail a
 left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
 where wh_id = warehouse_id and item_id = id_item
-group by item_id,a.siw_id;
+group by item_id;
 
 create TEMPORARY table tmp_count_stock_out
 
 select item_id,sum(item_values) as item_out_count
 from tbl_stock_out_warehouse_detail a
 left join tbl_stock_out_warehouse b  on a.sow_id = b.sow_id
-where wh_id = warehouse_id  and item_id = id_item
+where wh_id = warehouse_id  and item_id = id_item and a.sow_id != sow_bill
 group by item_id,a.sow_id;
 
- 
+
+
+create TEMPORARY table tmp_caculate_item_out
+
+select item_id, sum(item_out_count) as item_out_count
+from tmp_count_stock_out
+group by item_id ;
+
+
 
 create TEMPORARY table tmp_item_remain
 

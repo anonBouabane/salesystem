@@ -236,8 +236,17 @@ create or replace table tbl_bill_sale_detail(
     bsd_id int not null PRIMARY KEY AUTO_INCREMENT,
     bs_id int,
     item_id int,
-    item_values int,
+    item_values int, 
     item_total_price int
 );
 
 
+create or replace table tbl_bill_sale_detail_pre(
+    bsdp_id int not null PRIMARY KEY AUTO_INCREMENT, 
+    item_id int,
+    item_values int,  
+    add_by int
+);
+
+
+ 

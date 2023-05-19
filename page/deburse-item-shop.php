@@ -180,7 +180,7 @@ $header_click = "2";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
+                                                                        <a class="dropdown-item" href="edit-scan-deburse-item-shop.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
                                                                         <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['sow_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                     </div>
@@ -238,7 +238,7 @@ $header_click = "2";
                                 )
                                 setTimeout(
                                     function() {
-                                        window.location.href = 'item-master-data.php';
+                                        window.location.href = 'deburse-item-shop.php';
                                     }, 1000);
 
                             } else if (data.res == "used") {
