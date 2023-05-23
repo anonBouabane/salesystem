@@ -64,15 +64,7 @@ $header_click = "2";
                                     </div>
                                     <form method="post" id="additemfrm">
 
-
-
-
-
-
-
                                         <div class="row">
-
-
 
                                             <div class="col-lg-12">
                                                 <div class=" ">

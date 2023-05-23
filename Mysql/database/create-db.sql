@@ -244,7 +244,8 @@ create or replace table tbl_bill_sale_detail(
 create or replace table tbl_bill_sale_detail_pre(
     bsdp_id int not null PRIMARY KEY AUTO_INCREMENT, 
     item_id int,
-    item_values int,  
+    item_values int, 
+    br_id int,
     add_by int
 );
 

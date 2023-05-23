@@ -20,3 +20,6 @@
 
 
 <link href="../images/iconmenu.png" rel="shortcut icon" />
+
+<link href="../css/sweetalert.css" rel="stylesheet">
+<link href="../css/facebox.css" rel="stylesheet">

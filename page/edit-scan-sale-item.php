@@ -2,9 +2,10 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
+
+
 $header_name = "ຂາຍສິນຄ້າ";
 $header_click = "5";
-
 
 ?>
 
@@ -26,9 +27,8 @@ $header_click = "5";
     ?>
 
 
-
 </head>
-
+<script src="../plugins/nprogress/nprogress.js"></script>
 
 <body class="navbar-fixed sidebar-fixed" id="body">
 
@@ -49,78 +49,24 @@ $header_click = "5";
             <div class="content-wrapper">
                 <div class="content">
                     <div class="row no-gutters">
-                        <div class="col-lg-4 col-xxl-3">
 
 
-                            <div class="card card-default chat-left-sidebar" style="height: 625px;">
-
-
-
-                                <div class="card-default text-center">
-                                    <div class="card-header">
-
-                                        <br>
-
-                                        <div class="form-group  col-lg-12">
-                                            <img src="../images/Kp-Logo.png" width="100%" height="100%" alt="Mono">
-                                        </div>
-
-                                        <div class="row">
-
-
-
-
-                                            <form method="post" class=" card-header px-4 " id="scanitemfrom">
-
-
-                                                <input type="hidden" id="bill_id" name="bill_id" value='<?php echo ""; ?>' class="form-control" autofocus>
-
-                                                <div class="input-group px-5">
-                                                    <label class="text-dark font-weight-medium">ລະຫັດສິນຄ້າ</label>
-                                                </div>
-                                                <div class="input-group px-5 p-4">
-                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
-                                                </div>
-
-
-
-
-                                                <div class="form-group  col-lg-12">
-                                                    <label class="text-dark font-weight-medium">
-                                                        <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ສະແກນ</button>
-                                                    </label>
-
-                                                </div>
-                                            </form>
-
-
-
-
-                                        </div>
-
-
-                                    </div>
-                                </div>
-
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-8 col-xxl-9">
-                            <form method="post" id="confirmpay">
+                        <div class="col-lg-12 col-xxl-12">
+                            <form method="post" id="editform">
                                 <div class="card card-default chat-right-sidebar text-center ">
 
                                     <h2 class="mt-2"> ລາຍການຊື້ </h2>
-                                    <div class="card-body pb-0" data-simplebar style="height: 457px;">
+                                    <div class="card-body pb-0" data-simplebar style="height: 400px;">
 
-                                        <table class="align-middle mb-0 table table-borderless  " id="tableList">
+                                        <input type="hidden" id="bill_id_confirm" name="bill_id_confirm" value='<?php echo ""; ?>' class="form-control" autofocus>
+
+
+
+                                        <table id="" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
-                                                    <th>ຊື່ສິນຄ້າ</th>
-                                                    <th>ຈຳນວນ</th>
-                                                    <th>ລາຄາ</th>
-                                                    <th>ລວມ</th>
-                                                    <th></th>
+                                                    <th width="85%">ຊື່ສິນຄ້າ</th>
+                                                    <th width="15%">ຈຳນວນ</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -130,15 +76,15 @@ $header_click = "5";
                                                 $stmt4 = $conn->prepare("select a.item_id,sum(item_values) as item_sale, item_name, item_price
                                                 from tbl_bill_sale_detail_pre a
                                                 left join tbl_item_data b on a.item_id = b.item_id
-                                                left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id
-                                                where a.add_by = '$id_users' and a.br_id = '$br_id'
+                                                left join tbl_item_price c on a.item_id = c.item_id  
+                                                where a.add_by = '$id_users' and br_id = '$br_id'
                                                 group by a.item_id
                                                 order by bsdp_id desc");
-
                                                 $stmt4->execute();
                                                 $i = 1;
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+
                                                         $item_id = $row4['item_id'];
                                                         $item_name = $row4['item_name'];
                                                         $item_sale = $row4['item_sale'];
@@ -146,46 +92,31 @@ $header_click = "5";
 
                                                         $total_price = $item_sale * $item_price;
 
+
                                                 ?>
                                                         <tr>
+
+
                                                             <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
                                                             <td>
-                                                                <?php
-                                                                echo mb_strimwidth("$item_name", 0, 50, "...");
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" name="item_value[]" id="item_value<?php echo $x; ?>" value='<?php echo "$item_sale"; ?>' class="form-control">
-
-                                                                <?php echo "$item_sale"; ?>
-                                                            </td>
-                                                            <td>
-
-                                                                <?php echo number_format("$item_price", 2, ",", ".") ?>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>" value='<?php echo "$total_price"; ?>' class="form-control">
-
-                                                                <?php echo number_format("$total_price", 2, ",", ".") ?>
-                                                            </td>
-                                                            <td>
-
-
-                                                            </td>
-                                                            <td>
-                                                                <div class="dropdown">
-                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                    </a>
-
-                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a rel="facebox" href="../modal/modal-sale-item.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
-                                                                        <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
-
-                                                                    </div>
+                                                                <div class="col-lg-12  ">
+                                                                    <label class="text-dark font-weight-medium"><?php echo mb_strimwidth("$item_name", 0, 250, "...");  ?></label>
                                                                 </div>
                                                             </td>
+                                                            <td>
+                                                                <div class="col-lg-12  ">
+                                                                    <input type="number" name="item_value[]" id="item_value<?php echo $x; ?>" value='<?php echo "$item_sale"; ?>' class="form-control">
+                                                                </div>
+                                                            </td>
+
+
+
+
                                                         </tr>
+
+
                                                 <?php
+
                                                         $total_bill_price += $total_price;
                                                         $i++;
                                                     }
@@ -195,34 +126,22 @@ $header_click = "5";
                                         </table>
 
 
+
                                     </div>
 
 
 
 
-                                    <div class="card-body  " data-simplebar style="height: 120px;">
-
+                                    <div class="card-body  " data-simplebar style="height: 177px;">
 
 
                                         <div class="row">
-                                            <div class="form-group  col-lg-6">
-                                                <label class="text-dark font-weight-medium">ມູນຄ່າທັງໝົດ</label>
-                                                <div class="form-group">
-                                                    <input type="hidden" id="bs_total_price" name="bs_total_price" value='<?php echo ""; ?>' class="form-control" autofocus>
 
-                                                    <label class="text-dark font-weight-medium">
-                                                        <td><?php echo number_format("$total_bill_price", 0, ",", ".") ?> ກີບ</td>
-                                                    </label>
 
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group  col-lg-6">
+                                            <div class="form-group  col-lg-12">
                                                 <label class="text-dark font-weight-medium"></label>
                                                 <div class="form-group">
-                                                    <a rel="facebox" href="../modal/payment-recieve-cash.php" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a>
-
-                                                    <!-- <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</button> -->
+                                                    <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -377,19 +296,21 @@ $header_click = "5";
             return false;
         });
 
-        $(document).on("submit", "#confirmpay", function() {
-            $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
+        $(document).on("submit", "#editform", function() {
+            $.post("../query/edit-list-sale-item.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     Swal.fire(
                         'ສຳເລັດ',
-                        'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
+                        'ແກ້ໄຂສຳເລັດ',
                         'success'
                     )
+
                     setTimeout(
                         function() {
                             location.reload();
-                        }, 6000);
+                            window.location.href = 'sale-item-for-customer.php';
+                        }, 1000);
 
                 } else if (data.res == "error") {
 
@@ -403,15 +324,6 @@ $header_click = "5";
                         function() {
                             location.reload();
                         }, 1000);
-
-                } else if (data.res == "notenoughtmoney") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ຮັບເງິນບໍ່ພໍ',
-                        'error'
-                    )
- 
 
                 }
             }, 'json');
@@ -454,49 +366,9 @@ $header_click = "5";
             });
             return false;
         });
-
-
-        $(function() {
-            $('a[rel*=facebox]').facebox();
-        });
-
-
-        // Update Examinee
-        $(document).on("submit", "#updatesaleitemFrm", function() {
-            $.post("../query/update-sale-item.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        data.item_name + ' <br> ແກ້ໄຂສຳເລັດ',
-                        'success'
-                    )
-                    refreshDiv();
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 1000);
-                } else if (data.res == "failed") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາດເບີກເກີນສາງໄດ້',
-                        'error'
-                    )
-
-                }
-            }, 'json')
-            return false;
-        });
-
-
-
-        function refreshDiv() {
-            $('#tableList').load(document.URL + ' #tableList');
-            $('#refreshData').load(document.URL + ' #refreshData');
-
-        }
     </script>
 
+    <!--  -->
 
 
 </body>

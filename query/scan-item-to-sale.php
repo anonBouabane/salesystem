@@ -55,8 +55,8 @@ if (!empty($box_barcode)) {
             $conn = null;
             include("../setting/conn.php"); 
 
-            $insertSTI = $conn->query(" insert into tbl_bill_sale_detail_pre (item_id,item_values,add_by)
-            values ('$item_id','1','$id_users'); ");
+            $insertSTI = $conn->query(" insert into tbl_bill_sale_detail_pre (item_id,item_values,br_id,add_by)
+            values ('$item_id','1','$br_id','$id_users'); ");
             $res = array("res" => "success");
         }
     } else {
