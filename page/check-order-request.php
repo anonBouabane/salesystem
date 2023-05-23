@@ -223,7 +223,7 @@ $or_id = $_GET['or_id'];
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -241,13 +241,13 @@ $or_id = $_GET['or_id'];
                                                 <?php
 
                                                 $i = 1;
-                                                $stmt4 = $conn->prepare(" SELECT  a.or_id,or_bill_number,br_name,a.date_register as date_request
+                                                $stmt4 = $conn->prepare(" SELECT  a.or_id,or_bill_number,br_name,a.date_register as date_request,apo_id
                                                 ,apo_bill_number,aos_name,b.date_register as date_check
                                                 FROM tbl_order_request a
                                                 left join tbl_approve_order b on a.or_id = b.or_id
                                                 left join tbl_branch c on a.br_id = c.br_id
                                                 left join tbl_approve_order_status d on b.ar_status = d.aos_id 
-                                                order by a.or_id desc ");
+                                                order by a.or_id desc");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
@@ -257,10 +257,13 @@ $or_id = $_GET['or_id'];
                                                             $apo_bill_number = "ລໍຖ້າກວດສອບ";
                                                             $aos_name = "ລໍຖ້າກວດສອບ";
                                                             $date_check = "ລໍຖ້າກວດສອບ";
+                                                            $apo_id = 0;
                                                         } else {
                                                             $apo_bill_number = $row4['apo_bill_number'];
                                                             $aos_name = $row4['aos_name'];
                                                             $date_check = $row4['date_check'];
+
+                                                            $apo_id = $row4['apo_id'];
                                                         }
 
 
@@ -269,8 +272,7 @@ $or_id = $_GET['or_id'];
 
 
                                                         <tr>
-
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['or_id']; ?></td>
                                                             <td><?php echo $row4['or_bill_number']; ?></td>
                                                             <td><?php echo $row4['br_name']; ?></td>
                                                             <td><?php echo $row4['date_request']; ?></td>
@@ -287,7 +289,7 @@ $or_id = $_GET['or_id'];
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                                         <a class="dropdown-item" href="check-order-request.php?or_id=<?php echo $row4['or_id']; ?>">ກວດສອບ</a>
-                                                                        <a class="dropdown-item" type="button" id="delrochk" data-id='<?php echo $row4['or_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
+                                                                        <a class="dropdown-item" type="button" id="delrochk" data-id='<?php echo "$apo_id";  ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
 
                                                                     </div>
                                                                 </div>

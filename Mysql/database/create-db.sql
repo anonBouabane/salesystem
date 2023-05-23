@@ -224,8 +224,8 @@ create or replace table tbl_deburse_item_pre_sale_detail (
 create or replace table tbl_bill_sale (
     bs_id int not null PRIMARY KEY AUTO_INCREMENT,
     sale_bill_number varchar(30),
-    br_id int,
-    add_by int,
+    total_pay int,
+    br_id int, 
     bill_status int,
     payment_type int,
     sale_by int,
@@ -249,5 +249,12 @@ create or replace table tbl_bill_sale_detail_pre(
     add_by int
 );
 
+create or replace table tbl_payment_type (
+    pt_id int not null PRIMARY KEY AUTO_INCREMENT,
+    payment_name varchar(100)
+);
 
- 
+create table tbl_bill_type (
+    bt_id int not null PRIMARY KEY AUTO_INCREMENT,
+    bt_name varchar(100)
+);

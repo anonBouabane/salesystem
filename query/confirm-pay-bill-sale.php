@@ -38,8 +38,8 @@ if (empty($_POST['item_id'])) {
 
 
 
-    $insert_bill = $conn->query("insert into tbl_bill_sale (sale_bill_number,br_id,bill_status,payment_type,sale_by,date_register) 
-values ('$ref_bill','$br_id','2','$paytype','$id_users',CURDATE())");
+    $insert_bill = $conn->query("insert into tbl_bill_sale (sale_bill_number,total_pay,br_id,bill_status,payment_type,sale_by,date_register) 
+values ('$ref_bill','$monney_pay','$br_id','2','$paytype','$id_users',CURDATE())");
     $lastid = $conn->lastInsertId();
 
     if ($insert_bill) {

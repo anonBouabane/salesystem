@@ -5,6 +5,7 @@ include("../setting/conn.php");
 $header_name = "ຂາຍສິນຄ້າ";
 $header_click = "5";
 
+$bs_id = $_GET['bs_id'];
 
 ?>
 
@@ -127,13 +128,14 @@ $header_click = "5";
                                                 <?php
 
                                                 $total_bill_price = 0;
-                                                $stmt4 = $conn->prepare("select a.item_id,sum(item_values) as item_sale, item_name, item_price
-                                                from tbl_bill_sale_detail_pre a
-                                                left join tbl_item_data b on a.item_id = b.item_id
-                                                left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id
-                                                where a.add_by = '$id_users' and a.br_id = '$br_id'
-                                                group by a.item_id
-                                                order by bsdp_id desc");
+                                                $stmt4 = $conn->prepare("
+                                                select a.item_id,item_price,item_name,item_values
+                                                from tbl_bill_sale_detail a
+                                                left join tbl_bill_sale b on a.bs_id = b.bs_id
+                                                left join tbl_item_price c on a.item_id = c.item_id and b.br_id = c.br_id
+                                                left join tbl_item_data d on a.item_id = d.item_id
+                                                where a.bs_id = '$bs_id'
+                                                order by bsd_id desc ");
 
                                                 $stmt4->execute();
                                                 $i = 1;
@@ -141,7 +143,7 @@ $header_click = "5";
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
                                                         $item_id = $row4['item_id'];
                                                         $item_name = $row4['item_name'];
-                                                        $item_sale = $row4['item_sale'];
+                                                        $item_sale = $row4['item_values'];
                                                         $item_price = $row4['item_price'];
 
                                                         $total_price = $item_sale * $item_price;
@@ -178,7 +180,7 @@ $header_click = "5";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a rel="facebox" href="../modal/sale-item.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                        <a rel="facebox" href="../modal/edit-sale-item.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
                                                                         <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
 
                                                                     </div>
@@ -253,7 +255,7 @@ $header_click = "5";
                                     <tr>
                                         <th>ລຳດັບ</th>
                                         <th>ເລກບິນ</th>
-                                        <th>ລາຍການຊື້</th>
+                                        <th>ລາຄາລວມ</th>
                                         <th>ການຊຳລະ</th>
                                         <th>ລາຄາລວມ</th>
                                         <th>ວັນທີໃບບິນ</th>
@@ -293,7 +295,7 @@ $header_click = "5";
                                                 <td><?php echo "$bs_number"; ?></td>
                                                 <td>
                                                     <?php
-                                                    $row_values = $conn->query(" 
+                                                    $row_values = $conn->query("
                                                     select count(bsd_id) as item_values 
                                                     from tbl_bill_sale_detail 
                                                     where bs_id = '$bs_id'
@@ -329,12 +331,6 @@ $header_click = "5";
                                         }
                                     }
                                     ?>
-
-
-
-
-
-
 
 
                                 </tbody>

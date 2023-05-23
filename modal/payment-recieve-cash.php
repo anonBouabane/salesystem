@@ -5,16 +5,24 @@ include("../setting/conn.php");
 
 
 
+
 $row_price = $conn->query("
 
 select sum(item_price) as total_price
 from tbl_bill_sale_detail_pre a
 left join tbl_item_price b on a.item_id = b.item_id and a.br_id = b.br_id
 WHERE a.add_by = '$id_users'
-group by a.item_id,a.add_by 
+group by  a.add_by 
 ")->fetch(PDO::FETCH_ASSOC);
 
-$total_price = $row_price['total_price'];
+if (empty($row_price['total_price'])) {
+    $total_price = 0;
+} else {
+    $total_price = $row_price['total_price'];
+}
+
+
+
 
 ?>
 
