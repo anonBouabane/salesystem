@@ -53,6 +53,14 @@ $bs_id = $_GET['bs_id'];
                         <div class="col-lg-4 col-xxl-3">
 
 
+                            <?php
+                            $rowedit = $conn->query("select * from tbl_bill_sale where bs_id = '$bs_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
+
+                            ?>
+
+
                             <div class="card card-default chat-left-sidebar" style="height: 625px;">
 
 
@@ -73,6 +81,9 @@ $bs_id = $_GET['bs_id'];
 
                                             <form method="post" class=" card-header px-4 " id="scanitemfrom">
 
+
+
+                                                <input type="hidden" id="bs_id" name="bs_id" class="form-control" value='<?php echo "$bs_id" ?>'>
 
                                                 <input type="hidden" id="bill_id" name="bill_id" value='<?php echo ""; ?>' class="form-control" autofocus>
 
@@ -112,7 +123,7 @@ $bs_id = $_GET['bs_id'];
                                 <div class="card card-default chat-right-sidebar text-center ">
 
                                     <h2 class="mt-2"> ລາຍການຊື້ </h2>
-                                    <div class="card-body pb-0" data-simplebar style="height: 457px;">
+                                    <div class="card-body pb-0" data-simplebar style="height: 400px;">
 
                                         <table class="align-middle mb-0 table table-borderless  " id="tableList">
                                             <thead>
@@ -129,7 +140,7 @@ $bs_id = $_GET['bs_id'];
 
                                                 $total_bill_price = 0;
                                                 $stmt4 = $conn->prepare("
-                                                select a.item_id,item_price,item_name,item_values
+                                                select a.item_id,item_price,item_name,item_values,bsd_id
                                                 from tbl_bill_sale_detail a
                                                 left join tbl_bill_sale b on a.bs_id = b.bs_id
                                                 left join tbl_item_price c on a.item_id = c.item_id and b.br_id = c.br_id
@@ -180,8 +191,8 @@ $bs_id = $_GET['bs_id'];
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a rel="facebox" href="../modal/edit-sale-item.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
-                                                                        <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
+                                                                        <a rel="facebox" href="../modal/edit-sale-item-detail.php?id=<?php echo $row4['bsd_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                        <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['bsd_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
 
                                                                     </div>
                                                                 </div>
@@ -202,9 +213,30 @@ $bs_id = $_GET['bs_id'];
 
 
 
-                                    <div class="card-body  " data-simplebar style="height: 120px;">
+                                    <div class="card-body  " data-simplebar style="height: 177px;">
 
-
+                                        <div class="row   no-gutters justify-content-center">
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                                                        <input type="radio" id="cash" name="paytype" value="1" class="custom-control-input" <?php if ($rowedit['payment_type'] == 1) {
+                                                                                                                                                echo "checked";
+                                                                                                                                            } ?>>
+                                                        <label class="custom-control-label" for="cash">ເງິນສົດ</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                                                        <input type="radio" id="tran" name="paytype" value="2" class="custom-control-input" <?php if ($rowedit['payment_type'] == 2) {
+                                                                                                                                                echo "checked";
+                                                                                                                                            } ?>>
+                                                        <label class="custom-control-label" for="tran">ເງິນໂອນ</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="row">
                                             <div class="form-group  col-lg-6">
@@ -219,12 +251,11 @@ $bs_id = $_GET['bs_id'];
                                                 </div>
                                             </div>
 
-                                            <div class="form-group  col-lg-6">
-                                                <label class="text-dark font-weight-medium"></label>
+                                            <div class="form-group  col-lg-6"> 
                                                 <div class="form-group">
-                                                    <a rel="facebox" href="../modal/payment-recieve-cash.php" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a>
+                                                    <!-- <a rel="facebox" href="../modal/payment-recieve-cash.php?bs_id" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a> -->
 
-                                                    <!-- <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</button> -->
+                                                    <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ / ພິນບິນ</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -357,7 +388,7 @@ $bs_id = $_GET['bs_id'];
     <script>
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-item-to-sale.php", $(this).serialize(), function(data) {
+            $.post("../query/update-scan-item-to-sale.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
                     location.reload();
@@ -447,7 +478,7 @@ $bs_id = $_GET['bs_id'];
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-item-sale-pre.php",
+                url: "../query/delete-item-sale-detail.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -482,8 +513,8 @@ $bs_id = $_GET['bs_id'];
 
 
         // Update Examinee
-        $(document).on("submit", "#updatesaleitemFrm", function() {
-            $.post("../query/update-sale-item.php", $(this).serialize(), function(data) {
+        $(document).on("submit", "#updateDetailFrm", function() {
+            $.post("../query/update-sale-item-detail.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',

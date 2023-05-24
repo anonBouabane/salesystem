@@ -19,7 +19,7 @@ group by a.item_id,add_by
 <fieldset style="width:543px;">
     <legend><i class="facebox-header"><i class="edit large icon text-center"> <?php echo ($select_item['item_name']); ?> </i></legend>
     <div class="col-md-12 mt-4">
-        <form method="post" id="updatesaleitemFrm">
+        <form method="post" id="updatePreFrm">
 
             <input type="hidden" name="item_name" class="form-control" required="" value="<?php echo $select_item['item_name']; ?>">
 

@@ -133,10 +133,7 @@ if (empty($row_price['total_price'])) {
 
                                     <?php echo number_format("$total_price", 0, ",", ".") ?>
                                 </td>
-                                <td>
-
-
-                                </td>
+                         
 
                             </tr>
                     <?php

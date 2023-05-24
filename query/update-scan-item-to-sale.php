@@ -28,7 +28,7 @@ if (!empty($box_barcode)) {
 
     if (!empty($item_id)) {
 
-        $stmt2 = $conn->prepare("call stp_check_stock_shop_sale_pre('$br_id','$id_users','$item_id');");
+        $stmt2 = $conn->prepare("call stp_check_stock_shop_sale_detail('$br_id', '$item_id');");
         $stmt2->execute();
         if ($stmt2->rowCount() > 0) {
             while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
@@ -49,15 +49,41 @@ if (!empty($box_barcode)) {
 
         if ($remain_value == "nostock") {
             $res = array("res" => "nostock", "item_code" => "$item_name");
-        } else if ($item_price == 0 ) {
+        } else if ($item_price == 0) {
             $res = array("res" => "noprice", "item_code" => "$item_name");
         } else {
             $conn = null;
-            include("../setting/conn.php"); 
+            include("../setting/conn.php");
 
-            $insertSTI = $conn->query(" insert into tbl_bill_sale_detail_pre (item_id,item_values,br_id,add_by)
-            values ('$item_id','1','$br_id','$id_users'); ");
-            $res = array("res" => "success");
+
+            $check_data = $conn->query("
+            select (item_values)+1 as item_values
+            from tbl_bill_sale_detail 
+            where bs_id = '$bs_id' and item_id = '$item_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
+            if (empty($check_data['item_values'])) {
+
+                $insertSTI = $conn->query(" insert into tbl_bill_sale_detail  (bs_id,item_id,item_values,item_total_price)
+            values ('$bs_id','$item_id','1','0'); ");
+                $res = array("res" => "success");
+
+            } else {
+
+                $check_val = $check_data['item_values'];
+
+                $price_update = $check_val * $item_price ;
+
+                $insertSTI = $conn->query(" 
+                update tbl_bill_sale_detail
+                set  item_values = '$check_val' , item_total_price = '$price_update'
+                where bs_id = '$bs_id' and item_id = '$item_id' ");
+
+
+                
+                    $res = array("res" => "success");
+
+            }
         }
     } else {
         $res = array("res" => "nofound", "item_code" => "$box_barcode");

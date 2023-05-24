@@ -178,7 +178,7 @@ $header_click = "5";
                                                                     </a>
 
                                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a rel="facebox" href="../modal/sale-item.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                        <a rel="facebox" href="../modal/edit-sale-item-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
                                                                         <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
 
                                                                     </div>
@@ -405,15 +405,49 @@ $header_click = "5";
             $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 6000);
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
+                       // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        footer: ' <a rel="facebox" href="../pdf/print-add-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>',
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                   // refreshDiv();
+
+                    // Swal.fire({
+                    //     icon: 'success',
+                    //     title: 'ສຳເລັດ',
+                    //     text: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
+                    //     showConfirmButton: false,
+
+                    // footer: ' <a rel="facebox" href="../pdf/print-add-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>'
+
+                    // })
+                    // setTimeout(
+                    //     function() {
+                    //         location.reload();
+                    //     }, 6000);
 
                 } else if (data.res == "error") {
 
@@ -486,8 +520,8 @@ $header_click = "5";
 
 
         // Update Examinee
-        $(document).on("submit", "#updatesaleitemFrm", function() {
-            $.post("../query/update-sale-item.php", $(this).serialize(), function(data) {
+        $(document).on("submit", "#updatePreFrm", function() {
+            $.post("../query/update-sale-item-pre.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',

@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE or replace PROCEDURE stp_check_stock_shop_sale(branch_id int, user_add int,id_item int)
+CREATE or replace PROCEDURE stp_check_stock_shop_sale_detail(branch_id int, id_item int)
 BEGIN
 
 create TEMPORARY table tmp_count_stock_in
@@ -19,27 +19,10 @@ where br_id = branch_id  and item_id = id_item
 group by item_id;
 
 
-create TEMPORARY table tmp_count_stock_pre_out
-
-select item_id,sum(item_values) as item_pre_count
-from tbl_bill_sale_detail_pre 
-where add_by = user_add  and item_id = id_item
-group by item_id ;
-
-
-create TEMPORARY table tmp_union_item_out
-
-SELECT item_id, item_out_count
-FROM tmp_count_stock_out  
-union all
-SELECT item_id, item_pre_count
-FROM tmp_count_stock_pre_out ;
-
-
 create TEMPORARY table tmp_caculate_item_out
 
 select item_id, sum(item_out_count) as item_out_count
-from tmp_union_item_out
+from tmp_count_stock_out
 group by item_id ;
 
 
