@@ -191,7 +191,7 @@ $header_click = "2";
                     if (data.res == "success") {
                         Swal.fire(
                             'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
+                            'ຍົກເລີກສຳເລັດ',
                             'success'
                         )
                         setTimeout(

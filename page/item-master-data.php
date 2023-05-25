@@ -100,14 +100,14 @@ $header_click = "2";
                                                                                         <div class="form-group  col-lg-2">
                                                                                             <label class="text-dark font-weight-medium">ບາໂຄດ</label>
                                                                                             <div class="form-group">
-                                                                                                <input type="text" step="any" name="bar_code[]" id="bar_code<?php echo $x; ?>" autocomplete="off" class="form-control" />
+                                                                                                <input type="text" step="any" name="bar_code[]" id="bar_code<?php echo $x; ?>" autocomplete="off" class="form-control"/>
                                                                                             </div>
                                                                                         </div>
 
                                                                                         <div class="col-lg-2">
                                                                                             <div class="form-group">
                                                                                                 <label for="firstName">ຫົວໜ່ວຍ</label>
-                                                                                                <select class="form-control" name="item_unit[]" id="item_unit<?php echo $x; ?>">
+                                                                                                <select class="form-control" name="item_unit[]" id="item_unit<?php echo $x; ?>"required>
                                                                                                     <option value="">ຫົວໜ່ວຍ</option>
                                                                                                     <?php
                                                                                                     $stmt2 = $conn->prepare(" SELECT * from tbl_item_pack_type  order by ipt_id  ");

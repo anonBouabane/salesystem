@@ -131,7 +131,7 @@ $apo_id = $_GET['apo_id'];
                                     <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
-                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ຮັບເຂົ້າສາງ</button>
+                                        <button type="submit" class="btn btn-primary mb-2 btn-pill">ຮັບເຂົ້າຮ້ານ</button>
                                     </div>
 
 

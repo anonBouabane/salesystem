@@ -124,7 +124,7 @@ $siw_id = $_GET['siw_id'];
                                     <div class="form-group col-lg-12 mt-4">
                                         <div class="form-group">
 
-                                            <select class=" form-control font" name="wh_id" id="wh_id">
+                                            <select class=" form-control font" name="wh_id" id="wh_id"required>
                                                 <option value=""> ເລືອກສາງ </option>
                                                 <?php
                                                 $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse where br_id ='$br_id'  ");

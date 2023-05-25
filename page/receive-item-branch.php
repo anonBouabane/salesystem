@@ -149,7 +149,7 @@ $header_click = "2";
                                                             <td>
                                                                 <?php
                                                                 if ($item_count == $item_approve) {
-                                                                    echo "ຮັບສິນຄ້າຄົບຖ້ວຍ";
+                                                                    echo "ຮັບສິນຄ້າຄົບຖ້ວນ";
                                                                 } else {
                                                                     echo "ຮັບສິນຄ້າບໍ່ຄົບ";
                                                                 }

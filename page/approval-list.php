@@ -72,7 +72,6 @@ $header_click = "2";
                                                     <th>ວັນທີຂໍ</th>
                                                     <th>ຈຳນວນເບີກ</th>
                                                     <th>ສະຖານະເບີກ</th>
-                                                    <th>ສະຖານະບິນ</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -101,10 +100,7 @@ $header_click = "2";
                                                         } else {
                                                             $sow_bill_number = $row4['sow_bill_number'];
                                                             $aos_name = $row4['aos_name'];
-                                                            $date_check = $row4['date_check'];
-                                                        }
-
-
+                                                            }
                                                 ?>
 
 
@@ -166,7 +162,7 @@ $header_click = "2";
 
                                                                 ?>
                                                             </td>
-                                                            <td><?php echo "$date_check"; ?></td>
+                                                         
 
 
 
