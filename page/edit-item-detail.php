@@ -104,7 +104,7 @@ $item_id = $_GET['item_id'];
                                                                     <div class="col-lg-3">
                                                                         <div class="form-group">
                                                                             <label for="firstName">ຫົວໜ່ວຍ</label>
-                                                                            <select class="form-control" name="item_unit" id="item_unit">
+                                                                            <select class="form-control" name="item_unit" id="item_unit"required>
                                                                                 <option value="">ຫົວໜ່ວຍ</option>
                                                                                 <?php
                                                                                 $stmt2 = $conn->prepare(" SELECT * from tbl_item_pack_type  order by ipt_id  ");
