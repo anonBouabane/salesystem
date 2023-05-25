@@ -414,7 +414,7 @@ $header_click = "5";
                         timerProgressBar: true,
                         showConfirmButton: false,
                         showCloseButton: true,
-                        footer: ' <a rel="facebox" href="../pdf/print-add-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>',
+                        footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>',
                         didOpen: () => {
                             Swal.showLoading()
                             const b = Swal.getHtmlContainer().querySelector('b')

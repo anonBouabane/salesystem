@@ -8,9 +8,47 @@ include("../setting/conn.php");
 $date_report = date("d/m/Y");
 
 
-include("../setting/callcss.php");
-
 ?>
+
+<style>
+	.center {
+		text-align: center;
+	}
+
+	.left {
+		text-align: left;
+	}
+
+	.right {
+		text-align: right;
+	}
+
+	.fs-25 {
+		font-size: 25px;
+	}
+
+	.fs-30 {
+		font-size: 30px;
+	}
+
+	.fs-35 {
+		font-size: 35px;
+	}
+
+	.header {
+
+		text-decoration: underline;
+
+	}
+
+	.line-hr {
+		height: 2px;
+		width: 100%;
+		border-width: 0;
+		color: black;
+		background-color: black
+	}
+</style>
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,120 +61,137 @@ include("../setting/callcss.php");
 
 		<?php
 
-		$cusrows = $conn->query("select * from tbl_bill_sale")->fetch(PDO::FETCH_ASSOC);
+		$cusrows = $conn->query("
+		SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
+		FROM tbl_bill_sale a
+		left join tbl_branch b on a.br_id = b.br_id
+		left join tbl_payment_type c on a.payment_type = c.pt_id 
+        left join tbl_user d on a.sale_by = d.usid 
+		where sale_by ='6' 
+		")->fetch(PDO::FETCH_ASSOC);
 
 
-		$sale_bill_number = $cusrows['sale_bill_number'];
-
+		$bs_id = $cusrows['bs_id'];
+		$sale_name = $cusrows['full_name'];
+		
 
 		?>
 
-		<div class="col-12">
-			<table width="100%" style="border:none;">
-				<tr class="table" align="center">
+		<div class="">
 
-					<td> <img src='../images/logologin.png' width='80%'></td>
+			<div class="center">
 
+				<img src='../images/logologin.png' width='35%'>
+
+			</div>
+			<div class="center fs-35">
+				ສາຂາ: <?php echo $cusrows['br_name']; ?>
+			</div>
+			<div class="center fs-35">
+				ບິນເລກທີ: <?php echo $cusrows['sale_bill_number']; ?>
+			</div>
+			<div class="center fs-35">
+				ເບີໂທ: 020 55609011
+			</div>
+
+			<br>
+
+			<div class="center fs-35">
+				ບິນເກັບເງິນ
+			</div>
+
+			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
+
+				<tr>
+					<th class="left" style="font-size: 35px;">ຊື່ສິນຄ້າ</th>
+					<th class="right" style="font-size: 35px;">ຈຳນວນ / ລາຄາ</th>
 				</tr>
-				<tr style="font-size: 35px;">
-					<td align="center">ບິນເລກທີ: </td>
-				</tr>
-				<tr style="font-size: 30px;">
-					<td align="center">ສາຂາ: </td>
-				</tr>
-				<tr style="font-size: 27px;">
-					<td align="center">ເບີໂທ: </td>
-				</tr>
+
 			</table>
 
-			<?php
-			$row_price = $conn->query("
+			<hr class="line-hr">
 
-				select sum(item_price) as total_price
-				from tbl_bill_sale_detail_pre a
-				left join tbl_item_price b on a.item_id = b.item_id and a.br_id = b.br_id 
-				group by a.add_by
-				")->fetch(PDO::FETCH_ASSOC);
-
-			if (empty($row_price['total_price'])) {
-				$total_price = 0;
-			} else {
-				$total_price = $row_price['total_price'];
-			}
+			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
 
 
 
 
-			?>
+				<?php
 
-			<fieldset style=" ">
+				$total_bill_price = 0;
+				$total_item = 0;
 
-				<div class="col-md-12 mt-4">
-					<form method="post" id="confirmpay" name="pricecalculator">
+				$stmt4 = $conn->prepare("
+					select item_name,item_values,item_total_price 
+					from tbl_bill_sale_detail a
+					left join tbl_item_data b on a.item_id = b.item_id
+					where bs_id = '$bs_id' ");
+
+				$stmt4->execute();
+				$i = 1;
+				if ($stmt4->rowCount() > 0) {
+					while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+						$item_name = $row4['item_name'];
+						$item_values = $row4['item_values'];
+						$total_price = $row4['item_total_price'];
 
 
-						<table class="align-middle mb-0 table table-borderless  " id="tableList">
-							<thead>
-								<tr>
-									<th>ຊື່ສິນຄ້າ</th>
-									<th>ລາຄາ</th>
-								</tr>
-							</thead>
-							<tbody>
+				?>
+						<tr>
+							<td class="left fs-25">
 								<?php
+								echo mb_strimwidth("$item_name", 0, 50, "...");
+								?>
+							</td>
 
-								$total_bill_price = 0;
-								$stmt4 = $conn->prepare("select a.item_id,sum(item_values) as item_sale, item_name, item_price
-                    from tbl_bill_sale_detail_pre a
-                    left join tbl_item_data b on a.item_id = b.item_id
-                    left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id 
-                    group by a.item_id
-                    order by bsdp_id desc ");
 
-								$stmt4->execute();
-								$i = 1;
-								if ($stmt4->rowCount() > 0) {
-									while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-										$item_id = $row4['item_id'];
-										$item_name = $row4['item_name'];
-										$item_sale = $row4['item_sale'];
-										$item_price = $row4['item_price'];
+							<td class="right fs-25">
 
-										$total_price = $item_sale * $item_price;
+								<?php
+								echo  "$item_values / ";
+								echo number_format("$total_price", 0, ",", ".")
 
 								?>
-										<tr>
-											<input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-											<td>
-												<?php
-												echo mb_strimwidth("$item_name", 0, 50, "...");
-												?>
-											</td>
+							</td>
+
+						</tr>
+
+				<?php
+						$total_bill_price += $total_price;
+
+						$total_item += $item_values;
 
 
-											<td>
-
-												<?php echo number_format("$total_price", 0, ",", ".") ?>
-											</td>
-
-
-										</tr>
-								<?php
-										$total_bill_price += $total_price;
-										$i++;
-									}
-								}
-								?>
-							</tbody>
-						</table>
+						$i++;
+					}
+				}
+				?>
 
 
 
-					</form>
-				</div>
-			</fieldset>
+			</table>
 
+			<hr class="line-hr">
+			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
 
+				<tr>
+					<th class="right" style="font-size: 35px;">ຈຳນວນສິນຄ້າ: <?php echo "$total_item"; ?></th>
+					<th class="right" style="font-size: 35px;">
+						<?php
+						echo number_format("$total_bill_price", 0, ",", ".")
+						?>
+					</th>
+				</tr>
+
+			</table>
+
+			<br>
+			<div style="font-size: 35px;" class="center">
+				ຜູ້ຂາຍ: <?php echo "$sale_name"; ?>
+			</div>
+			<div style="font-size: 35px;" class="center">
+				ຂອບໃຈທິດອຸດໜູນ
+			</div>
 		</div>
 
 		</b>

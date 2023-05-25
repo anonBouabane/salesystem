@@ -9,7 +9,7 @@ include("../setting/conn.php");
 
 extract($_POST);
 
-$stmt2 = $conn->prepare("call stp_edit_check_stock_shop_sale('$br_id','$id_users','$item_id');");
+$stmt2 = $conn->prepare("call stp_edit_check_stock_shop_sale_pre('$br_id','$id_users','$item_id');");
 $stmt2->execute();
 if ($stmt2->rowCount() > 0) {
 	while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
