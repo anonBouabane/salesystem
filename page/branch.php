@@ -206,6 +206,41 @@ $header_click = "4";
             }, 'json')
             return false;
         });
+        // delete 
+        $(document).on("click", "#deletebranch", function(e) {
+                    e.preventDefault();
+                    var br_id = $(this).data("id");
+                    $.ajax({
+                        type: "post",
+                        url: "../query/delete-branch.php",
+                        dataType: "json",
+                        data: {
+                            br_id: br_id
+                        },
+                        cache: false,
+                        success: function(data) {
+                            if (data.res == "success") {
+                                Swal.fire(
+                                    'ສຳເລັດ',
+                                    'ລືບສຳເລັດ',
+                                    'success'
+                                )
+                                setTimeout(
+                                    function() {
+                                        window.location.href = 'branch.php';
+                                    }, 1000);
+
+                            }
+                        },
+                        error: function(xhr, ErrorStatus, error) {
+                            console.log(status.error);
+                        }
+
+                    });
+
+
+                    return false;
+                });
     </script>
 
     <!--  -->
