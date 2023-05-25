@@ -8,6 +8,34 @@ include("../setting/conn.php");
 $date_report = date("d/m/Y");
 
 
+if (empty($_GET['bs_id'])) {
+
+	$cusrows = $conn->query("
+	SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
+	FROM tbl_bill_sale a
+	left join tbl_branch b on a.br_id = b.br_id
+	left join tbl_payment_type c on a.payment_type = c.pt_id 
+	left join tbl_user d on a.sale_by = d.usid 
+	where sale_by ='$id_users' 
+	")->fetch(PDO::FETCH_ASSOC);
+
+} else {
+
+		
+	$bill_id = $_GET['bs_id'];
+
+	$cusrows = $conn->query("
+	SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
+	FROM tbl_bill_sale a
+	left join tbl_branch b on a.br_id = b.br_id
+	left join tbl_payment_type c on a.payment_type = c.pt_id 
+	left join tbl_user d on a.sale_by = d.usid 
+	where bs_id ='$bill_id' 
+	")->fetch(PDO::FETCH_ASSOC);
+
+
+}
+
 ?>
 
 <style>
@@ -61,19 +89,12 @@ $date_report = date("d/m/Y");
 
 		<?php
 
-		$cusrows = $conn->query("
-		SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
-		FROM tbl_bill_sale a
-		left join tbl_branch b on a.br_id = b.br_id
-		left join tbl_payment_type c on a.payment_type = c.pt_id 
-        left join tbl_user d on a.sale_by = d.usid 
-		where sale_by ='6' 
-		")->fetch(PDO::FETCH_ASSOC);
+	
 
 
 		$bs_id = $cusrows['bs_id'];
 		$sale_name = $cusrows['full_name'];
-		
+
 
 		?>
 

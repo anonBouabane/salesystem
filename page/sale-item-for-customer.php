@@ -317,6 +317,7 @@ $header_click = "5";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$bs_id"; ?>" target="_blank">ພິນບິນ</a>
                                                             <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$bs_id"; ?>">ແກ້ໄຂ</a>
 
                                                         </div>
@@ -410,7 +411,7 @@ $header_click = "5";
                         icon: 'success',
                         title: 'ສຳເລັດ',
                         html: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
-                       // timer: 10000,
+                        // timer: 10000,
                         timerProgressBar: true,
                         showConfirmButton: false,
                         showCloseButton: true,
@@ -433,7 +434,7 @@ $header_click = "5";
                         }
                     })
 
-                   // refreshDiv();
+                    // refreshDiv();
 
                     // Swal.fire({
                     //     icon: 'success',
