@@ -426,7 +426,7 @@ $header_click = "2";
                         '<label for="firstName">ຊື່ສິນຄ້າ</label>' +
 
 
-                        '<select class="form-control" name="item_name[]" id="item_name' + count + '" >' +
+                        '<select class="form-control" name="item_name[]" id="item_name' + count + '" required>' +
                         '<option value="">ເລືອກສິນຄ້າ</option>';
                     $.each(response, function(index, value) {
                         tr += '<option value="' + value[0] + '">' + value[1] + '</option>';
@@ -439,7 +439,7 @@ $header_click = "2";
                         '<div class="form-group  col-lg-2">' +
                         '<label class="text-dark font-weight-medium">ຈຳນວນ</label>' +
                         '<div class="form-group">' +
-                        '<input type="number" step ="any" name="item_value[]" id="item_value' + count + '" autocomplete="off" class="form-control" />' +
+                        '<input type="number" step ="any" name="item_value[]" id="item_value' + count + '" autocomplete="off" class="form-control" required/>' +
                         '</div>' +
                         '</div>' +
 
