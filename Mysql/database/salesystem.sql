@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2023 at 09:28 AM
+-- Generation Time: May 25, 2023 at 04:14 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -124,7 +124,48 @@ select * from tmp_item_remain  ;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_check_stock_shop_sale` (`branch_id` INT, `user_add` INT, `id_item` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_check_stock_shop_sale_detail` (`branch_id` INT, `id_item` INT)  BEGIN
+
+create TEMPORARY table tmp_count_stock_in
+
+select item_id,sum(item_values) as item_in_count
+from tbl_deburse_item_pre_sale_detail a
+left join tbl_deburse_item_pre_sale b on a.dips_id = b.dips_id
+where br_id = branch_id and item_id = id_item
+group by item_id;
+
+create TEMPORARY table tmp_count_stock_out
+
+select item_id,sum(item_values) as item_out_count
+from tbl_bill_sale_detail a
+left join tbl_bill_sale b  on a.bs_id = b.bs_id
+where br_id = branch_id  and item_id = id_item
+group by item_id;
+
+
+create TEMPORARY table tmp_caculate_item_out
+
+select item_id, sum(item_out_count) as item_out_count
+from tmp_count_stock_out
+group by item_id ;
+
+
+
+create TEMPORARY table tmp_item_remain
+
+select a.item_id, item_name,
+(item_in_count - (case when item_out_count is null then 0 else item_out_count end))as remain_value
+from tmp_count_stock_in a
+left join tmp_caculate_item_out b on a.item_id = b.item_id 
+left join tbl_item_data c on a.item_id = c.item_id;
+ 
+
+select * from tmp_item_remain  ;
+
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_check_stock_shop_sale_pre` (`branch_id` INT, `user_add` INT, `id_item` INT)  BEGIN
 
 create TEMPORARY table tmp_count_stock_in
 
@@ -266,7 +307,48 @@ select * from tmp_item_remain  ;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_edit_check_stock_shop_sale` (`branch_id` INT, `user_add` INT, `id_item` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_edit_check_stock_shop_sale_detail` (`branch_id` INT, `id_item` INT, `bill_id` INT)  BEGIN
+
+create TEMPORARY table tmp_count_stock_in
+
+select item_id,sum(item_values) as item_in_count
+from tbl_deburse_item_pre_sale_detail a
+left join tbl_deburse_item_pre_sale b on a.dips_id = b.dips_id
+where br_id = branch_id and item_id = id_item
+group by item_id;
+
+create TEMPORARY table tmp_count_stock_out
+
+select item_id,sum(item_values) as item_out_count
+from tbl_bill_sale_detail a
+left join tbl_bill_sale b  on a.bs_id = b.bs_id
+where br_id = branch_id  and item_id = id_item and a.bs_id != bill_id
+group by item_id;
+
+
+create TEMPORARY table tmp_caculate_item_out
+
+select item_id, sum(item_out_count) as item_out_count
+from tmp_count_stock_out
+group by item_id ;
+
+
+
+create TEMPORARY table tmp_item_remain
+
+select a.item_id, item_name,
+(item_in_count - (case when item_out_count is null then 0 else item_out_count end))as remain_value
+from tmp_count_stock_in a
+left join tmp_caculate_item_out b on a.item_id = b.item_id 
+left join tbl_item_data c on a.item_id = c.item_id;
+ 
+
+select * from tmp_item_remain  ;
+
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_edit_check_stock_shop_sale_pre` (`branch_id` INT, `user_add` INT, `id_item` INT)  BEGIN
 
 create TEMPORARY table tmp_count_stock_in
 
@@ -364,22 +446,6 @@ CREATE TABLE `tbl_approve_order_detail` (
   `item_values` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `tbl_approve_order_detail`
---
-
-INSERT INTO `tbl_approve_order_detail` (`apod_id`, `apo_id`, `item_id`, `item_values`) VALUES
-(1, 1, 5, 10),
-(2, 1, 4, 5),
-(3, 1, 3, 3),
-(4, 1, 2, 10),
-(5, 1, 1, 20),
-(6, 2, 10, 10),
-(7, 2, 9, 2),
-(8, 2, 8, 10),
-(9, 2, 6, 30),
-(10, 2, 7, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -408,12 +474,20 @@ INSERT INTO `tbl_approve_order_status` (`aos_id`, `aos_name`) VALUES
 CREATE TABLE `tbl_bill_sale` (
   `bs_id` int(11) NOT NULL,
   `sale_bill_number` varchar(30) DEFAULT NULL,
+  `total_pay` int(11) DEFAULT NULL,
   `br_id` int(11) DEFAULT NULL,
   `bill_status` int(11) DEFAULT NULL,
   `payment_type` int(11) DEFAULT NULL,
   `sale_by` int(11) DEFAULT NULL,
   `date_register` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_bill_sale`
+--
+
+INSERT INTO `tbl_bill_sale` (`bs_id`, `sale_bill_number`, `total_pay`, `br_id`, `bill_status`, `payment_type`, `sale_by`, `date_register`) VALUES
+(1, '202305240001', 500, 2, 2, 1, 6, '2023-05-24');
 
 -- --------------------------------------------------------
 
@@ -429,6 +503,13 @@ CREATE TABLE `tbl_bill_sale_detail` (
   `item_total_price` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `tbl_bill_sale_detail`
+--
+
+INSERT INTO `tbl_bill_sale_detail` (`bsd_id`, `bs_id`, `item_id`, `item_values`, `item_total_price`) VALUES
+(1, 1, 1, 1, 500);
+
 -- --------------------------------------------------------
 
 --
@@ -442,6 +523,34 @@ CREATE TABLE `tbl_bill_sale_detail_pre` (
   `br_id` int(11) DEFAULT NULL,
   `add_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_bill_sale_detail_pre`
+--
+
+INSERT INTO `tbl_bill_sale_detail_pre` (`bsdp_id`, `item_id`, `item_values`, `br_id`, `add_by`) VALUES
+(161, 2, 1, 2, 6),
+(162, 5, 1, 2, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_bill_type`
+--
+
+CREATE TABLE `tbl_bill_type` (
+  `bt_id` int(11) NOT NULL,
+  `bt_name` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_bill_type`
+--
+
+INSERT INTO `tbl_bill_type` (`bt_id`, `bt_name`) VALUES
+(1, 'ລໍຖ້າ'),
+(2, 'ຊຳລະແລ້ວ'),
+(3, 'ຕິດຫນີ້');
 
 -- --------------------------------------------------------
 
@@ -1246,7 +1355,12 @@ INSERT INTO `tbl_item_price` (`ip_id`, `item_id`, `item_price`, `br_id`, `status
 (7, 4, 5000, 2, 1, 6, '2023-05-22'),
 (8, 3, 1000, 2, 1, 6, '2023-05-22'),
 (9, 2, 5000, 2, 1, 6, '2023-05-22'),
-(10, 1, 500, 2, 1, 6, '2023-05-22');
+(10, 1, 500, 2, 1, 6, '2023-05-22'),
+(11, 15, 3000, 2, 1, 6, '2023-05-23'),
+(12, 14, 5000, 2, 1, 6, '2023-05-23'),
+(13, 13, 10000, 2, 1, 6, '2023-05-23'),
+(14, 12, 5000, 2, 1, 6, '2023-05-23'),
+(15, 11, 10000, 2, 1, 6, '2023-05-23');
 
 -- --------------------------------------------------------
 
@@ -1270,7 +1384,8 @@ CREATE TABLE `tbl_order_request` (
 
 INSERT INTO `tbl_order_request` (`or_id`, `or_bill_number`, `br_id`, `wh_id`, `or_status`, `add_by`, `date_register`) VALUES
 (1, '202305220001', 2, 5, 2, 6, '2023-05-22'),
-(2, '202305220002', 2, 6, 2, 6, '2023-05-22');
+(2, '202305220002', 2, 6, 2, 6, '2023-05-22'),
+(3, '202305230001', 2, 7, 2, 6, '2023-05-23');
 
 -- --------------------------------------------------------
 
@@ -1299,7 +1414,12 @@ INSERT INTO `tbl_order_request_detail` (`ord_id`, `or_id`, `item_id`, `item_valu
 (7, 2, 4, 5),
 (8, 2, 3, 3),
 (9, 2, 2, 10),
-(10, 2, 1, 20);
+(10, 2, 1, 20),
+(11, 3, 15, 10),
+(12, 3, 14, 10),
+(13, 3, 13, 10),
+(14, 3, 12, 10),
+(15, 3, 11, 10);
 
 -- --------------------------------------------------------
 
@@ -1355,6 +1475,25 @@ INSERT INTO `tbl_page_title` (`pt_id`, `pt_name`, `ptf_name`, `st_id`) VALUES
 (15, 'ຮັບເຄື່ອງເຂົ້າຮ້ານ', 'receive-item-branch.php', 2),
 (16, 'ເບີກສິນຄ້າເພື່ອຂາຍ', 'deburse-item-shop.php', 2),
 (17, 'ຂາຍສິນຄ້າ', 'sale-item-for-customer.php', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_payment_type`
+--
+
+CREATE TABLE `tbl_payment_type` (
+  `pt_id` int(11) NOT NULL,
+  `payment_name` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_payment_type`
+--
+
+INSERT INTO `tbl_payment_type` (`pt_id`, `payment_name`) VALUES
+(1, 'ເງິນສົດ'),
+(2, 'ເງິນໂອນ');
 
 -- --------------------------------------------------------
 
@@ -1764,6 +1903,12 @@ ALTER TABLE `tbl_bill_sale_detail_pre`
   ADD PRIMARY KEY (`bsdp_id`);
 
 --
+-- Indexes for table `tbl_bill_type`
+--
+ALTER TABLE `tbl_bill_type`
+  ADD PRIMARY KEY (`bt_id`);
+
+--
 -- Indexes for table `tbl_branch`
 --
 ALTER TABLE `tbl_branch`
@@ -1845,6 +1990,12 @@ ALTER TABLE `tbl_order_status`
 -- Indexes for table `tbl_page_title`
 --
 ALTER TABLE `tbl_page_title`
+  ADD PRIMARY KEY (`pt_id`);
+
+--
+-- Indexes for table `tbl_payment_type`
+--
+ALTER TABLE `tbl_payment_type`
   ADD PRIMARY KEY (`pt_id`);
 
 --
@@ -1933,13 +2084,13 @@ ALTER TABLE `tbl_warehouse_type`
 -- AUTO_INCREMENT for table `tbl_approve_order`
 --
 ALTER TABLE `tbl_approve_order`
-  MODIFY `apo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `apo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_approve_order_detail`
 --
 ALTER TABLE `tbl_approve_order_detail`
-  MODIFY `apod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `apod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `tbl_approve_order_status`
@@ -1951,19 +2102,25 @@ ALTER TABLE `tbl_approve_order_status`
 -- AUTO_INCREMENT for table `tbl_bill_sale`
 --
 ALTER TABLE `tbl_bill_sale`
-  MODIFY `bs_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `bs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_sale_detail`
 --
 ALTER TABLE `tbl_bill_sale_detail`
-  MODIFY `bsd_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `bsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_sale_detail_pre`
 --
 ALTER TABLE `tbl_bill_sale_detail_pre`
-  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+
+--
+-- AUTO_INCREMENT for table `tbl_bill_type`
+--
+ALTER TABLE `tbl_bill_type`
+  MODIFY `bt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_branch`
@@ -2023,19 +2180,19 @@ ALTER TABLE `tbl_item_pack_type`
 -- AUTO_INCREMENT for table `tbl_item_price`
 --
 ALTER TABLE `tbl_item_price`
-  MODIFY `ip_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ip_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_request`
 --
 ALTER TABLE `tbl_order_request`
-  MODIFY `or_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `or_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_request_detail`
 --
 ALTER TABLE `tbl_order_request_detail`
-  MODIFY `ord_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ord_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_status`
@@ -2048,6 +2205,12 @@ ALTER TABLE `tbl_order_status`
 --
 ALTER TABLE `tbl_page_title`
   MODIFY `pt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `tbl_payment_type`
+--
+ALTER TABLE `tbl_payment_type`
+  MODIFY `pt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_roles`
