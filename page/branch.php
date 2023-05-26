@@ -190,22 +190,29 @@ $header_click = "4";
 
     <script>
         // Add branch
+        
         $(document).on("submit", "#addbranch", function() {
-            $.post("../query/add-branch.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 1000);
-                }
-            }, 'json')
-            return false;
-        });
+			$.post("../query/add-branch.php", $(this).serialize(), function(data) {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ຜູ້ໃຊ້ນີ້ຖືກລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
+					Swal.fire(
+						'ສຳເລັດ',
+						'ເພິ່ມຜູ້ໃຊ້ສຳເລັດ',
+						'success'
+					)
+					setTimeout(
+						function() {
+							location.reload();
+						}, 1000);
+				}
+			}, 'json')
+			return false;
+		});
         // delete 
         $(document).on("click", "#deletebranch", function(e) {
                     e.preventDefault();
@@ -241,6 +248,42 @@ $header_click = "4";
 
                     return false;
                 });
+                // active user
+		$(document).on("click", "#activestaffuser", function(e) {
+			e.preventDefault();
+			var id = $(this).data("id");
+			$.ajax({
+				type: "post",
+				url: "../query/activestaffuser.php",
+				dataType: "json",
+				data: {
+					id: id
+				},
+				cache: false,
+				success: function(data) {
+					if (data.res == "success") {
+						Swal.fire(
+							'ສຳເລັດ',
+							'ເປີດນຳໃຊ້ສຳເລັດ',
+							'success'
+						)
+						setTimeout(
+							function() {
+								window.location.href = 'branch.php';
+							}, 1000);
+
+					}
+				},
+				error: function(xhr, ErrorStatus, error) {
+					console.log(status.error);
+				}
+
+			});
+
+
+
+			return false;
+		});
     </script>
 
     <!--  -->
