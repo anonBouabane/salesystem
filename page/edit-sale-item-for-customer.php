@@ -122,6 +122,9 @@ $bs_id = $_GET['bs_id'];
                             <form method="post" id="confirmpay">
                                 <div class="card card-default chat-right-sidebar text-center ">
 
+                                    <input type="hidden" id="bs_id" name="bs_id" class="form-control" value='<?php echo "$bs_id" ?>'>
+
+
                                     <h2 class="mt-2"> ລາຍການຊື້ </h2>
                                     <div class="card-body pb-0" data-simplebar style="height: 400px;">
 
@@ -251,7 +254,7 @@ $bs_id = $_GET['bs_id'];
                                                 </div>
                                             </div>
 
-                                            <div class="form-group  col-lg-6"> 
+                                            <div class="form-group  col-lg-6">
                                                 <div class="form-group">
                                                     <!-- <a rel="facebox" href="../modal/payment-recieve-cash.php?bs_id" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a> -->
 
@@ -274,9 +277,6 @@ $bs_id = $_GET['bs_id'];
 
             <div class="content-wrapper">
                 <div class="content">
-                    <!-- For Components documentaion -->
-
-
                     <div class="card card-default">
 
                         <div class="card-body">
@@ -286,7 +286,7 @@ $bs_id = $_GET['bs_id'];
                                     <tr>
                                         <th>ລຳດັບ</th>
                                         <th>ເລກບິນ</th>
-                                        <th>ລາຄາລວມ</th>
+                                        <th>ລາຍການຊື້</th>
                                         <th>ການຊຳລະ</th>
                                         <th>ລາຄາລວມ</th>
                                         <th>ວັນທີໃບບິນ</th>
@@ -309,7 +309,7 @@ $bs_id = $_GET['bs_id'];
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                            $bs_id = $row4['bs_id'];
+                                            $tbs_id = $row4['bs_id'];
                                             $bs_number = $row4['sale_bill_number'];
                                             $price_total = $row4['total_pay'];
                                             $date_sale = $row4['date_register'];
@@ -322,14 +322,14 @@ $bs_id = $_GET['bs_id'];
 
 
                                             <tr>
-                                                <td><?php echo "$bs_id"; ?></td>
+                                                <td><?php echo "$tbs_id"; ?></td>
                                                 <td><?php echo "$bs_number"; ?></td>
                                                 <td>
                                                     <?php
-                                                    $row_values = $conn->query("
+                                                    $row_values = $conn->query(" 
                                                     select count(bsd_id) as item_values 
                                                     from tbl_bill_sale_detail 
-                                                    where bs_id = '$bs_id'
+                                                    where bs_id = '$tbs_id'
                                                     ")->fetch(PDO::FETCH_ASSOC);
 
                                                     echo $row_values['item_values'];
@@ -350,20 +350,17 @@ $bs_id = $_GET['bs_id'];
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິນບິນ</a>
                                                             <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$bs_id"; ?>">ແກ້ໄຂ</a>
 
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
-
                                     <?php
                                         }
                                     }
                                     ?>
-
-
                                 </tbody>
                             </table>
 
@@ -429,19 +426,36 @@ $bs_id = $_GET['bs_id'];
         });
 
         $(document).on("submit", "#confirmpay", function() {
-            $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
+            $.post("../query/update-confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 6000);
-
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php?bs_id='+<?php echo "$bs_id"?>+'" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>',
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
                 } else if (data.res == "error") {
 
                     Swal.fire(

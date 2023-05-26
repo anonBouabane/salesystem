@@ -241,9 +241,6 @@ $header_click = "5";
 
             <div class="content-wrapper">
                 <div class="content">
-                    <!-- For Components documentaion -->
-
-
                     <div class="card card-default">
 
                         <div class="card-body">
@@ -276,7 +273,7 @@ $header_click = "5";
                                     $stmt4->execute();
                                     if ($stmt4->rowCount() > 0) {
                                         while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                            $bs_id = $row4['bs_id'];
+                                            $tbs_id = $row4['bs_id'];
                                             $bs_number = $row4['sale_bill_number'];
                                             $price_total = $row4['total_pay'];
                                             $date_sale = $row4['date_register'];
@@ -289,14 +286,14 @@ $header_click = "5";
 
 
                                             <tr>
-                                                <td><?php echo "$bs_id"; ?></td>
+                                                <td><?php echo "$tbs_id"; ?></td>
                                                 <td><?php echo "$bs_number"; ?></td>
                                                 <td>
                                                     <?php
                                                     $row_values = $conn->query(" 
                                                     select count(bsd_id) as item_values 
                                                     from tbl_bill_sale_detail 
-                                                    where bs_id = '$bs_id'
+                                                    where bs_id = '$tbs_id'
                                                     ")->fetch(PDO::FETCH_ASSOC);
 
                                                     echo $row_values['item_values'];
@@ -317,27 +314,17 @@ $header_click = "5";
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$bs_id"; ?>" target="_blank">ພິນບິນ</a>
+                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິນບິນ</a>
                                                             <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$bs_id"; ?>">ແກ້ໄຂ</a>
 
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
-
                                     <?php
                                         }
                                     }
                                     ?>
-
-
-
-
-
-
-
-
                                 </tbody>
                             </table>
 
@@ -433,22 +420,6 @@ $header_click = "5";
                             console.log('I was closed by the timer')
                         }
                     })
-
-                    // refreshDiv();
-
-                    // Swal.fire({
-                    //     icon: 'success',
-                    //     title: 'ສຳເລັດ',
-                    //     text: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
-                    //     showConfirmButton: false,
-
-                    // footer: ' <a rel="facebox" href="../pdf/print-add-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>'
-
-                    // })
-                    // setTimeout(
-                    //     function() {
-                    //         location.reload();
-                    //     }, 6000);
 
                 } else if (data.res == "error") {
 
