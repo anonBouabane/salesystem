@@ -82,7 +82,7 @@ $header_click = "2";
 
                                                 $i = 1;
                                                 $stmt4 = $conn->prepare(" 
-                                                select DISTINCT b.apo_id, or_bill_number,a.date_register as date_request, 
+                                                select DISTINCT a.or_id, b.apo_id, or_bill_number,a.date_register as date_request, 
                                                 (case when b.date_register is null then 'ລໍຖ້າອານຸມັດ' else b.date_register end) as date_approve,  
                                                 (case when c.date_register is null then 'ລໍຖ້າເບີກສິນຄ້າ' else c.date_register end) as date_stock_out
                                                 from tbl_order_request a 
@@ -97,6 +97,7 @@ $header_click = "2";
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
 
                                                         $apo_id = $row4['apo_id'];
+                                                        
 
 
 
@@ -108,7 +109,7 @@ $header_click = "2";
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['or_id']; ?></td>
                                                             <td><?php echo $row4['or_bill_number']; ?></td>
                                                             <td><?php echo $row4['date_request']; ?></td>
                                                             <td><?php echo $row4['date_approve']; ?></td>

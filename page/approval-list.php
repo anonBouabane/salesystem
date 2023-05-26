@@ -107,7 +107,7 @@ $header_click = "2";
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['apo_id'];?></td>
                                                             <td><?php echo $row4['apo_bill_number']; ?></td>
                                                             <td><?php echo $row4['br_name']; ?></td>
                                                             <td><?php echo $row4['date_request']; ?></td>

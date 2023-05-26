@@ -165,20 +165,26 @@ $header_click = "4";
     <script>
         // Add staff user 
         $(document).on("submit", "#adddepart", function() {
-            $.post("../query/add-depart.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ເພີ່ມຂໍ້ມູນສຳເລັດ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 1000);
-                }
-            }, 'json')
-            return false;
+			$.post("../query/add-depart.php", $(this).serialize(), function(data) {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ພະແນກນີ້ລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
+					Swal.fire(
+						'ສຳເລັດ',
+						'ເພີ່ມພະແນກສຳເລັດ',
+						'success'
+					)
+					setTimeout(
+						function() {
+							location.reload();
+						}, 1000);
+				}
+			}, 'json')
+			return false;
         });
          // delete 
          $(document).on("click", "#deletedepart", function(e) {
