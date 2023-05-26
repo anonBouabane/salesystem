@@ -11,8 +11,18 @@
     <div class="sidebar-left" data-simplebar style="height: 100%;">
       <!-- sidebar menu -->
       <ul class="nav sidebar-inner" id="sidebar-menu">
+
+        <li class="<?php if ($header_click == 0) {
+                      echo "active";
+                    } ?>">
+
+          <a class="sidenav-item-link" href="index.php">
+            <i class="mdi mdi-briefcase-account-outline"></i>
+            <span class="nav-text">ກະດານສັງລວມ</span>
+          </a>
+        </li>
         <?php
- 
+
 
         $stmt = $conn->prepare(" SELECT distinct a.ht_id,ht_name 
         FROM tbl_header_title a
@@ -28,7 +38,7 @@
         ?>
 
             <li class="section-title"> <?php echo "$ht_name"; ?></li>
- 
+
 
             <?php
 
@@ -45,16 +55,20 @@
                 $st_id = $row1['st_id'];
                 $icon_code = $row1['icon_code'];
 
-                
+
 
             ?>
-                <li class='has-sub <?php if ($header_click == "$st_id") {  echo "active expand"; } ?>'>
+                <li class='has-sub <?php if ($header_click == "$st_id") {
+                                      echo "active expand";
+                                    } ?>'>
                   <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target='#<?php echo "$st_name"; ?>' aria-expanded="false" aria-controls="<?php echo "$st_name"; ?>">
-                    <i class="mdi <?php echo"$icon_code";?>"></i>
+                    <i class="mdi <?php echo "$icon_code"; ?>"></i>
                     <span class="nav-text"> <?php echo "$st_name"; ?> </span> <b class="caret"></b>
                   </a>
 
-                  <ul class='collapse <?php if ($header_click == "$st_id" ) { echo "show"; } ?>' id="<?php echo "$st_name"; ?>" data-parent="#sidebar-menu">
+                  <ul class='collapse <?php if ($header_click == "$st_id") {
+                                        echo "show";
+                                      } ?>' id="<?php echo "$st_name"; ?>" data-parent="#sidebar-menu">
                     <div class="sub-menu">
 
                       <?php
@@ -72,9 +86,11 @@
                       ?>
 
 
-                          <li class="<?php if ($header_name ==  $row2['pt_name']) { echo "active"; } ?>">
+                          <li class="<?php if ($header_name ==  $row2['pt_name']) {
+                                        echo "active";
+                                      } ?>">
                             <a class="sidenav-item-link" href='<?php echo $row2['ptf_name'] ?>'>
-                              <span class="nav-text"><?php echo"$pt_name";?></span>
+                              <span class="nav-text"><?php echo "$pt_name"; ?></span>
 
                             </a>
                           </li>
@@ -103,7 +119,7 @@
 
 
 
-                  
+
                 </li>
 
 

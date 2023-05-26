@@ -41,10 +41,7 @@ $siw_id = $_GET['siw_id'];
 
         <div class="page-wrapper">
 
-            <?php
-
-            include "header.php";
-            ?>
+            <?php  include "header.php"; ?>
             <div class="content-wrapper">
                 <div class="content">
                     <div class="row no-gutters">
