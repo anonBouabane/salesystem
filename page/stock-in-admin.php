@@ -76,7 +76,7 @@ $header_click = "2";
                                                     <label class="text-dark font-weight-medium"> ສະແກນບາໂຄດ </label>
                                                 </div>
                                                 <div class="input-group px-5 p-4">
-                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
+                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus required>
                                                 </div>
 
 
