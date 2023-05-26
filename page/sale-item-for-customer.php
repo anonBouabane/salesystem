@@ -315,7 +315,7 @@ $header_click = "5";
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິນບິນ</a>
-                                                            <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$bs_id"; ?>">ແກ້ໄຂ</a>
+                                                            <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$tbs_id"; ?>">ແກ້ໄຂ</a>
 
                                                         </div>
                                                     </div>
