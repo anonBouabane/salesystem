@@ -199,7 +199,7 @@ $header_click = "4";
 				if (data.res == "exist") {
 					Swal.fire(
 						'ລົງທະບຽນຊ້ຳ',
-						'ຜູ້ໃຊ້ນີ້ຖືກລົງທະບຽນແລ້ວ',
+						'ຟັງຊັ້ນນີ້ລົງທະບຽນແລ້ວ',
 						'error'
 					)
 				} else if (data.res == "success") {
