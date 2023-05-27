@@ -500,7 +500,7 @@ $wh_id = $_POST['wh_id'];
                 function(data) {
                     if (data.res == "errorwarehouse") {
                         Swal.fire(" ແຈ້ງເຕືອນ",
-                            "ມີລາຍການເບີກສາງປະປົນ",
+                            "ບໍ່ມີສິນຄ້າເບີກ",
                             "error");
                     } else if (data.res == "success") {
                         Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");

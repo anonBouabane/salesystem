@@ -330,6 +330,28 @@ $header_click = "2";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+         $(document).on("submit", "#submittrack", function() {
+            $.post(
+                "../query/confirm-add-stock-out-admin.php",
+                $(this).serialize(),
+                function(data) {
+                    if (data.res == "errorwarehouse") {
+                        Swal.fire(" ແຈ້ງເຕືອນ",
+                            "ບໍ່ມີສິນຄ້າ",
+                            "error");
+                    } else if (data.res == "success") {
+                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    }
+                },
+                "json"
+            );
+
+            return false;
+        });
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {

@@ -173,20 +173,26 @@ $dp_id = $_GET['dp_id'];
     <script>
         // edit
         $(document).on("submit", "#editdepart", function() {
-            $.post("../query/update-depart.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            window.location.href = 'depart.php';
-                        }, 1000);
-                }
-            }, 'json')
-            return false;
+			$.post("../query/update-depart.php", $(this).serialize(), function(data) {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ພະແນກນີ້ລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
+					Swal.fire(
+						'ສຳເລັດ',
+						'ແກ້ໄຂສຳເລັດ',
+						'success'
+					)
+					setTimeout(
+						function() {
+							location.reload();
+						}, 1000);
+				}
+			}, 'json')
+			return false;
         });
 
 
