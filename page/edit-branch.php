@@ -93,7 +93,7 @@ $br_id = $_GET['br_id']
                                                     <select class=" form-control font" name="br_type" id="br_type">
 
                                                         <?php
-                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");
+                                                        $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type");
                                                         $stmt5->execute();
                                                         if ($stmt5->rowCount() > 0) {
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {

@@ -81,11 +81,10 @@ $header_click = "2";
 
                                                 $i = 1;
                                                 $stmt4 = $conn->prepare(" 
-                                                SELECT a.apo_id,apo_bill_number,br_name,ar_status,a.date_register as date_request,aos_name
+                                                SELECT a.apo_id,apo_bill_number,br_name,a.date_register as date_request 
                                                 FROM tbl_approve_order a 
-                                                left join tbl_branch c on a.br_id = c.br_id
-                                                left join tbl_approve_order_status d on a.ar_status = d.aos_id 
-                                                order by a.apo_id desc  ");
+                                                left join tbl_branch c on a.br_id = c.br_id 
+                                                order by a.apo_id desc ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
                                                     while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {

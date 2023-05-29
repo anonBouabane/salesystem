@@ -75,7 +75,7 @@ $header_click = "4";
                                                     <label class="text-dark font-weight-medium">ປະເພດສາງ</label>
                                                     <div class="form-group">
 
-                                                        <select class=" form-control font" name="wh_type" id="wh_type">
+                                                        <select class=" form-control font" name="wh_type" id="wh_type" required>
                                                             <option value=""> ເລືອກປະເພດ </option>
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse_type ");
@@ -95,7 +95,7 @@ $header_click = "4";
                                                     <label class="text-dark font-weight-medium">ສາຂາ</label>
                                                     <div class="form-group">
 
-                                                        <select class=" form-control font" name="branch_id" id="branch_id">
+                                                        <select class=" form-control font" name="branch_id" id="branch_id"required>
                                                             <option value=""> ເລືອກສາຂາ </option>
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");

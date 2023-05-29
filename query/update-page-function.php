@@ -14,9 +14,9 @@ else{
 $delExam = $conn->query(" update tbl_page_title set 
 st_id='$st_id', pt_name ='$pt_name', ptf_name='$ptf_name' WHERE pt_id='$pt_id'  ");
 if ($delExam) {
-    $res = array("res" => "success");
+    $res = array("res" => "success","pt_name" => $pt_name);
 } else {
-    $res = array("res" => "failed");
+    $res = array("res" => "failed" ,"pt_name" =>$pt_name);
 }
 }
 

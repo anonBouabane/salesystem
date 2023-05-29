@@ -124,7 +124,7 @@ $siw_id = $_GET['siw_id'];
                                     <div class="form-group col-lg-12 mt-4">
                                         <div class="form-group">
 
-                                            <select class=" form-control font" name="wh_id" id="wh_id"required>
+                                            <select class=" form-control font" name="wh_id" id="wh_id" required>
                                                 <option value=""> ເລືອກສາງ </option>
                                                 <?php
                                                 $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse where br_id ='$br_id'  ");
@@ -149,7 +149,7 @@ $siw_id = $_GET['siw_id'];
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " data-simplebar style="height: 400px;">
 
                                         <div class="card-body">
 
@@ -202,10 +202,12 @@ $siw_id = $_GET['siw_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <div class="col-lg-5  ">
-                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <?php
+                                                                    echo "$item_values";
+                                                                    ?>
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
-                                                                    </div>
+
                                                                 </td>
 
                                                                 <td>
@@ -214,6 +216,8 @@ $siw_id = $_GET['siw_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                            <a rel="facebox" href="../modal/edit-stock-in-admin-detail.php?id=<?php echo $row4['siwd_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                             <a class="dropdown-item" type="button" id="delstockinpre" data-id='<?php echo $row4['siwd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
@@ -260,10 +264,10 @@ $siw_id = $_GET['siw_id'];
 
                         <div class="card-body">
                             <h4 class="text-dark">ລາຍການໂອນສິນຄ້າເຂົ້າສາງ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
+                            <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກລຳດັບ</th>
+                                        <th>ເລກທີ</th>
                                         <th>ຊື່ສາງ</th>
                                         <th>ບິນອ້າງອີງ</th>
                                         <th>ຈຳນວນເພິີ່ມເຂົ້າ</th>
@@ -290,7 +294,7 @@ $siw_id = $_GET['siw_id'];
                                     ?>
 
                                             <tr>
-                                                <td><?php echo "$b"; ?></td>
+                                                <td><?php echo $row5['siw_id']; ?></td>
                                                 <td><?php echo $row5['wh_name']; ?></td>
                                                 <td><?php echo $row5['siw_bill_number']; ?></td>
                                                 <td><?php echo $row5['count_item']; ?></td>
@@ -337,6 +341,69 @@ $siw_id = $_GET['siw_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+        $(document).on("submit", "#updatestockadmindetail", function() {
+            $.post("../query/update-stock-in-admin-item-detail.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "error") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                        'error'
+                    )
+
+                    setTimeout(
+                        function() {
+                            location.reload();
+                        }, 1000);
+
+                } else if (data.res == "notenoughtmoney") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ຮັບເງິນບໍ່ພໍ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/update-scan-stock-in-admin.php", $(this).serialize(), function(data) {
@@ -401,7 +468,7 @@ $siw_id = $_GET['siw_id'];
                             "ກະລຸນາເລືອກສາງ",
                             "error");
                     } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+                        Swal.fire("ສຳເລັດ", "ແກ້ໄຂສຳເລັດ", "success");
 
                         setTimeout(function() {
                             location.reload();

@@ -177,6 +177,7 @@ create or replace table tbl_stock_out_warehouse_detail_pre (
     wh_id int,
     item_id int,
     item_values int,
+    apo_id int,
     add_by int
 );
 

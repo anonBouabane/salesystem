@@ -7,7 +7,7 @@ extract($_POST);
  
  
 
-$checkitem = $conn->query("SELECT * FROM tbl_order_request_detail where item_id = '$id' ");
+$checkitem = $conn->query("SELECT * FROM tbl_item_price where item_id = '$id' ");
 
 if ($checkitem->rowCount() > 0) {
     $res = array("res" => "used");

@@ -191,13 +191,11 @@ $header_click = "2";
                                                                 </td>
                                                                 <td>
                                                                     <?php
-                                                                    // echo "$item_values";
+                                                                    echo "$item_values";
                                                                     ?>
 
-                                                                    <div class="col-lg-5  ">
-                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
-                                                                    </div>
 
                                                                 </td>
 
@@ -207,6 +205,7 @@ $header_click = "2";
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                            <a rel="facebox" href="../modal/edit-stock-in-admin-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
                                                                             <a class="dropdown-item" type="button" id="delstockinpre" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
@@ -253,10 +252,10 @@ $header_click = "2";
 
                         <div class="card-body">
                             <h4 class="text-dark">ລາຍການໂອນສິນຄ້າເຂົ້າສາງ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
+                            <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ເລກລຳດັບ</th>
+                                        <th>ເລກທີ</th>
                                         <th>ຊື່ສາງ</th>
                                         <th>ບິນອ້າງອີງ</th>
                                         <th>ສິນຄ້າເພິີ່ມເຂົ້າ</th>
@@ -274,7 +273,8 @@ $header_click = "2";
                                     left join tbl_stock_in_warehouse_detail b on a.siw_id = b.siw_id
                                     left join tbl_warehouse c on a.wh_id = c.wh_id
                                     where a.add_by ='$id_users'
-                                    group by siw_id desc ");
+                                    group by a.siw_id 
+                                    order by  a.siw_id desc ");
                                     $stmt5->execute();
                                     $b = 1;
                                     if ($stmt5->rowCount() > 0) {
@@ -283,7 +283,7 @@ $header_click = "2";
                                     ?>
 
                                             <tr>
-                                                <td><?php echo "$b"; ?></td>
+                                                <td><?php echo $row5['siw_id']; ?></td>
                                                 <td><?php echo $row5['wh_name']; ?></td>
                                                 <td><?php echo $row5['siw_bill_number']; ?></td>
                                                 <td><?php echo $row5['count_item']; ?></td>
@@ -330,6 +330,73 @@ $header_click = "2";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+ 
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+
+
+        $(document).on("submit", "#updatestockadminpre", function() {
+            $.post("../query/update-stock-in-admin-item-pre.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "error") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                        'error'
+                    )
+
+                    setTimeout(
+                        function() {
+                            location.reload();
+                        }, 1000);
+
+                } else if (data.res == "notenoughtmoney") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ຮັບເງິນບໍ່ພໍ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+ 
          $(document).on("submit", "#submittrack", function() {
             $.post(
                 "../query/confirm-add-stock-out-admin.php",
@@ -352,6 +419,7 @@ $header_click = "2";
 
             return false;
         });
+ 
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {
