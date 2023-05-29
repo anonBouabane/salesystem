@@ -297,7 +297,18 @@ $usid = $_GET['usid'];
         // edit staff user 
         $(document).on("submit", "#editstaffuserFrm", function() {
             $.post("../query/update-user-staff.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+                if (data.res == "exist"){
+                    swal.fire(
+
+                        'ແກ້ໄຂບໍ່ສຳເລັດ',
+                        'ລົງທະບຽນຊ້ຳ',
+                        'error'
+                    )
+                }
+
+
+
+                else if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
                         'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
