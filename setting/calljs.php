@@ -44,7 +44,7 @@
 					<script src="../js/mono.js"></script>
 					<script src="../js/chart.js"></script>
 					<script src="../js/map.js"></script>
-					<script src="../js/5custom.js"></script>
+					<script src="../js/6custom.js"></script>
 
 
 					<script type="text/javascript" src="../js/sweetalert.js"></script>

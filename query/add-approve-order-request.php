@@ -12,7 +12,7 @@ if ($apo_id == 0) {
 
     $countrow = $conn->query(" SELECT max(apo_bill_number)+1 as last_number 
 FROM tbl_approve_order
-where date_register =  CURDATE() and br_id = '$br_id' ")->fetch(PDO::FETCH_ASSOC);
+where date_register =  CURDATE() and br_id = '$branch_id' ")->fetch(PDO::FETCH_ASSOC);
 
 
     if (empty($countrow['last_number'])) {
@@ -27,8 +27,8 @@ where date_register =  CURDATE() and br_id = '$br_id' ")->fetch(PDO::FETCH_ASSOC
 
 
     $insert_hod = $conn->query("INSERT INTO tbl_approve_order 
-   (apo_bill_number,or_id,br_id,wh_id,ar_status,add_by,date_register ) 
-   VALUES('$ref_bill','$or_id','$branch_id','$wh_id','1','$id_users',CURDATE()) ");
+   (apo_bill_number,or_id,br_id,wh_id,add_by,date_register ) 
+   VALUES('$ref_bill','$or_id','$branch_id','$wh_id','$id_users',CURDATE()) ");
     $lastid = $conn->lastInsertId();
 
 
