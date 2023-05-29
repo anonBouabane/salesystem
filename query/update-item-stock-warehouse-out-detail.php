@@ -6,7 +6,7 @@ extract($_POST);
 
 $nostock = 0;
 
-$stmt2 = $conn->prepare("call stp_edit_caculate_stock_remain('$warehouse_id','$id_users','$item_id','0');");
+$stmt2 = $conn->prepare("call stp_edit_caculate_stock_remain('$warehouse_id','$id_users','$item_id','$sow_id');");
 $stmt2->execute();
 if ($stmt2->rowCount() > 0) {
     while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
@@ -32,7 +32,7 @@ if ($nostock != 0) {
 } elseif ($remain_value < $item_val) {
     $res = array("res" => "nostock");
 } else {
-    
+
     $rowap = $conn->query("select * from tbl_approve_order_detail where apo_id ='$approve_id' and item_id = '$item_id' ")->fetch(PDO::FETCH_ASSOC);
 
     if (empty($rowap['item_values'])) {
@@ -44,11 +44,13 @@ if ($nostock != 0) {
     if ($item_approve < $item_val) {
         $res = array("res" => "limnitapprove");
     } else {
-        $delete_data = $conn->query(" delete from tbl_stock_out_warehouse_detail_pre where item_id = '$item_id' and add_by = '$id_users' ");
-        if ($delete_data) {
 
-            $insert_data = $conn->query(" insert into tbl_stock_out_warehouse_detail_pre (wh_id, item_id,item_values,apo_id,add_by) 
-            values ('$warehouse_id','$item_id','$item_val','$approve_id','$id_users') ");
+        $update_data = $conn->query(" 
+        update tbl_stock_out_warehouse_detail set item_values = '$item_val'
+        where sow_id ='$sow_id' and item_id = '$item_id'  ");
+
+
+        if ($update_data) {
 
             $res = array("res" => "success", "item_name" => $item_name);
         } else {

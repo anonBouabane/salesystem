@@ -262,17 +262,26 @@ $wh_id = $_POST['wh_id'];
 
                                                                 ?>
                                                                     <td>
-                                                                        <div class="dropdown">
-                                                                            <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                            </a>
+                                                                        <?php if ($item_values != 0) {
+                                                                        ?>
+                                                                            <div class="dropdown">
+                                                                                <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                                </a>
 
-                                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                                <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
 
-                                                                                <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                                    <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
+                                                                                    <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+
+                                                                                </div>
+
 
                                                                             </div>
-                                                                        </div>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+
                                                                     </td>
                                                                 <?php
                                                                 } else {
@@ -473,13 +482,13 @@ $wh_id = $_POST['wh_id'];
                         'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
                         'error'
                     )
- 
 
-                } else if (data.res == "notenoughtmoney") {
+
+                } else if (data.res == "nostock") {
 
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ຮັບເງິນບໍ່ພໍ',
+                        'ເບີກສິນຄ້າເກີນສາງ',
                         'error'
                     )
 

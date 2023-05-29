@@ -185,7 +185,7 @@ $sow_id = $_GET['sow_id'];
 
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                 
+
                                                                 <td>
                                                                     <input type="hidden" name="item_name[]" id="item_name<?php echo $x; ?>" value='<?php echo "$item_name"; ?>' class="form-control">
 
@@ -196,10 +196,28 @@ $sow_id = $_GET['sow_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <div class="col-lg-5  ">
-                                                                        <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <?php
 
-                                                                    </div>
+                                                                    $rowap = $conn->query("
+                                                                    select sum(item_values) as item_approve
+                                                                    from tbl_approve_order_detail 
+                                                                    where apo_id ='$apo_id' and item_id = '$item_id'
+                                                                    group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                                    if (!empty($rowap['item_approve'])) {
+                                                                        $item_approve =  $rowap['item_approve'];
+                                                                    } else {
+                                                                        $item_approve = 0;
+                                                                    }
+
+
+
+                                                                    echo "$item_values / $item_approve";
+                                                                    ?>
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+
+
 
                                                                 </td>
                                                                 <td>
@@ -208,6 +226,9 @@ $sow_id = $_GET['sow_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+
+                                                                            <a rel="facebox" href="../modal/edit-stock-warehouse-out-detail.php?id=<?php echo $row4['sowd_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                             <a class="dropdown-item" type="button" id="delstockout" data-id='<?php echo $row4['sowd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
                                                                         </div>
                                                                     </div>
@@ -362,6 +383,66 @@ $sow_id = $_GET['sow_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+        $(document).on("submit", "#updatestockoutdetail", function() {
+            $.post("../query/update-item-stock-warehouse-out-detail.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "limnitapprove") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                        'error'
+                    )
+
+
+                } else if (data.res == "nostock") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ເບີກສິນຄ້າເກີນສາງ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/update-scan-stock-out-admin.php", $(this).serialize(), function(data) {
@@ -502,8 +583,8 @@ $sow_id = $_GET['sow_id'];
         });
 
 
-         // Delete item
-         $(document).on("click", "#delstockout", function(e) {
+        // Delete item
+        $(document).on("click", "#delstockout", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
