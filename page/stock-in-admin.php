@@ -330,7 +330,7 @@ $header_click = "2";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-<<<<<<< HEAD
+ 
         $(function() {
             $('a[rel*=facebox]').facebox();
         });
@@ -396,7 +396,7 @@ $header_click = "2";
             return false;
         });
 
-=======
+ 
          $(document).on("submit", "#submittrack", function() {
             $.post(
                 "../query/confirm-add-stock-out-admin.php",
@@ -419,7 +419,7 @@ $header_click = "2";
 
             return false;
         });
->>>>>>> 1c77f9d7b73f4271e9bad7d87c02debe33f80817
+ 
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {

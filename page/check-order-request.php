@@ -266,12 +266,11 @@ $or_id = $_GET['or_id'];
 
                                             $i = 1;
                                             $stmt4 = $conn->prepare(" SELECT  a.or_id,or_bill_number,br_name,a.date_register as date_request,apo_id
-                                                ,apo_bill_number,aos_name,b.date_register as date_check
-                                                FROM tbl_order_request a
-                                                left join tbl_approve_order b on a.or_id = b.or_id
-                                                left join tbl_branch c on a.br_id = c.br_id
-                                                left join tbl_approve_order_status d on b.ar_status = d.aos_id 
-                                                order by a.or_id desc");
+                                            ,apo_bill_number,b.date_register as date_check
+                                            FROM tbl_order_request a
+                                            left join tbl_approve_order b on a.or_id = b.or_id
+                                            left join tbl_branch c on a.br_id = c.br_id 
+                                            order by a.or_id desc ");
                                             $stmt4->execute();
                                             if ($stmt4->rowCount() > 0) {
                                                 while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
@@ -284,7 +283,7 @@ $or_id = $_GET['or_id'];
                                                         $apo_id = 0;
                                                     } else {
                                                         $apo_bill_number = $row4['apo_bill_number'];
-                                                        $aos_name = $row4['aos_name'];
+                                                        $aos_name = "ກວດສອບແລ້ວ";
                                                         $date_check = $row4['date_check'];
 
                                                         $apo_id = $row4['apo_id'];
