@@ -54,13 +54,13 @@ $br_id = $_GET['br_id']
                                     <div class="email-body-head mb-5 ">
                                         <h4 class="text-dark">ແກ້ໄຂຂໍ້ມູນສາຂາ-ແຟນຊາຍ</h4>
                                         <?php
-                                        $branch_rows = $conn->query("SELECT * FROM tbl_branch where br_id = '$br_id' ") ->fetch(PDO::FETCH_ASSOC); 
-                                        
-                                        
+                                        $branch_rows = $conn->query("SELECT * FROM tbl_branch where br_id = '$br_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
                                         ?>
                                     </div>
                                     <form method="post" id="editbranch">
-                                    <input type="hidden" class="form-control" id="br_id" name="br_id"value="<?php echo $branch_rows['br_id']; ?>" required>
+                                        <input type="hidden" class="form-control" id="br_id" name="br_id" value="<?php echo $branch_rows['br_id']; ?>" required>
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
@@ -68,18 +68,18 @@ $br_id = $_GET['br_id']
                                                     <input type="text" class="form-control" id="br_name" name="br_name" value=" <?php echo $branch_rows['br_name']; ?>" required>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label class="text-dark font-weight-medium">ສະຖານະ</label>
                                                     <div class="form-group">
                                                     <select class="form-control font" name="br_status" id="br_status" required>
                                                     <option value="1" <?php if ($branch_rows["br_status"] == "1") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ນຳໃຊ້</option>
+                                                                            echo "SELECTED";
+                                                                        } ?>>ນຳໃຊ້</option>
                                                     <option value="2" <?php if ($branch_rows["br_status"] == "2") {
-                                                                                    echo "SELECTED";
-                                                                                } ?>>ຢຸດບໍລິການ</option>
+                                                                            echo "SELECTED";
+                                                                        } ?>>ຢຸດບໍລິການ</option>
                                                     
                                                     </select>
                                                     
@@ -91,7 +91,7 @@ $br_id = $_GET['br_id']
                                                 <div class="form-group">
 
                                                     <select class=" form-control font" name="br_type" id="br_type">
-                                                        
+
                                                         <?php
                                                         $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");
                                                         $stmt5->execute();
@@ -99,10 +99,10 @@ $br_id = $_GET['br_id']
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                         ?>
                                                                 <option value="<?php echo $row5['brt_id']; ?>" <?php if ($branch_rows['br_type'] == $row5['brt_id']) {
-                                                                                                            echo "selected";
-                                                                                                        } ?>>
+                                                                                                                    echo "selected";
+                                                                                                                } ?>>
                                                                     <?php echo $row5['brt_name']; ?></option>
-                                                               
+
                                                         <?php
                                                             }
                                                         }
@@ -123,8 +123,8 @@ $br_id = $_GET['br_id']
                                                             while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                         ?>
                                                                 <option value="<?php echo $row5['usid']; ?>" <?php if ($branch_rows['add_by'] == $row5['usid']) {
-                                                                                                                echo "selected";
-                                                                                                            } ?>> <?php echo $row5['user_name']; ?></option>
+                                                                                                                    echo "selected";
+                                                                                                                } ?>> <?php echo $row5['user_name']; ?></option>
                                                         <?php
                                                             }
                                                         }
@@ -132,8 +132,8 @@ $br_id = $_GET['br_id']
                                                     </select>
                                                 </div>
                                             </div> -->
-                                            
-                                            
+
+
                                             <!-- <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="firstName">ວັນລົງທະບຽນ</label>
@@ -213,7 +213,7 @@ $br_id = $_GET['br_id']
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item" href="edit-branch.php?br_id=<?php echo $row4['br_id']; ?>">ແກ້ໄຂ</a>
                                                             <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
-                                                            <a class="dropdown-item" type="button" id="deletebranch" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+                                                            <a class="dropdown-item" type="button" id="deletebranch" data-id='<?php echo $row4['br_id']; ?>' class="btn btn-danger btn-sm">ລືບ</a>
 
                                                         </div>
                                                     </div>
@@ -253,12 +253,19 @@ $br_id = $_GET['br_id']
         // Add branch
         $(document).on("submit", "#editbranch", function() {
             $.post("../query/update-branch.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+                if (data.res == "exist") {
                     Swal.fire(
+                        'ລົງທະບຽນຊ້ຳ',
+                        'ສາຂາຫຼືແຟນຊາຍນີ້ລົງທະບຽນແລ້ວ',
+                        'error'
+                    )
+                } else if (data.res == "success") {
+                    swal.fire(
                         'ສຳເລັດ',
-                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂສຳເລັດ',
                         'success'
                     )
+
                     setTimeout(
                         function() {
                             window.location.href = 'branch.php';
@@ -267,41 +274,41 @@ $br_id = $_GET['br_id']
             }, 'json')
             return false;
         });
-         // delete 
-         $(document).on("click", "#deletebranch", function(e) {
-                    e.preventDefault();
-                    var br_id = $(this).data("id");
-                    $.ajax({
-                        type: "post",
-                        url: "../query/delete-branch.php",
-                        dataType: "json",
-                        data: {
-                            br_id: br_id
-                        },
-                        cache: false,
-                        success: function(data) {
-                            if (data.res == "success") {
-                                Swal.fire(
-                                    'ສຳເລັດ',
-                                    'ລືບສຳເລັດ',
-                                    'success'
-                                )
-                                setTimeout(
-                                    function() {
-                                        window.location.href = 'branch.php';
-                                    }, 1000);
+        // delete 
+        $(document).on("click", "#deletebranch", function(e) {
+            e.preventDefault();
+            var br_id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-branch.php",
+                dataType: "json",
+                data: {
+                    br_id: br_id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ລືບສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'branch.php';
+                            }, 1000);
 
-                            }
-                        },
-                        error: function(xhr, ErrorStatus, error) {
-                            console.log(status.error);
-                        }
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
 
-                    });
+            });
 
 
-                    return false;
-                });
+            return false;
+        });
     </script>
 
     <!--  -->

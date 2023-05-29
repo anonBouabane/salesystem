@@ -57,27 +57,27 @@ $pt_id = $_GET['pt_id']
 										<h4 class="text-dark">ແກ້ໄຂຫນ້າຟັງຊັ້ນ</h4>
 
 									</div>
-                                    <?php
-                                        $function_rows = $conn->query("SELECT * FROM tbl_page_title where pt_id = '$pt_id' ") ->fetch(PDO::FETCH_ASSOC);                                    
-                                        ?>
+									<?php
+									$function_rows = $conn->query("SELECT * FROM tbl_page_title where pt_id = '$pt_id' ")->fetch(PDO::FETCH_ASSOC);
+									?>
 									<form method="post" id="editpagefunction">
 
 										<div class="row">
 
-                                        <input type="hidden" class="form-control" id="pt_id" name="pt_id" value="<?php echo $function_rows['pt_id']; ?>" required>
+											<input type="hidden" class="form-control" id="pt_id" name="pt_id" value="<?php echo $function_rows['pt_id']; ?>" required>
 											<div class="form-group  col-lg-12">
 												<label class="text-dark font-weight-medium">ຫົວຂໍ້</label>
 												<div class="form-group">
 													<select class=" form-control font" name="st_id" id="st_id">
-														
+
 														<?php
 														$stmt5 = $conn->prepare(" SELECT * FROM tbl_sub_title ");
 														$stmt5->execute();
 														if ($stmt5->rowCount() > 0) {
 															while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
 														?> <option value="<?php echo $row5['st_id']; ?>" <?php if ($function_rows['st_id'] == $row5['st_id']) {
-                                                            echo "selected";
-                                                        } ?>> <?php echo $row5['st_name']; ?></option>
+																												echo "selected";
+																											} ?>> <?php echo $row5['st_name']; ?></option>
 														<?php
 															}
 														}
@@ -161,17 +161,17 @@ $pt_id = $_GET['pt_id']
 												<td><?php echo "$ptf_name"; ?></td>
 												<td><?php echo "$st_name"; ?></td>
 												<td>
-                                                    <div class="dropdown">
-                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                        </a>
+													<div class="dropdown">
+														<a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+														</a>
 
-                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="edit-function.php?pt_id=<?php echo $row4['pt_id']; ?>">ແກ້ໄຂ</a>
-                                                            <a class="dropdown-item" type="button" id="deletefunction" data-id='<?php echo $row4['pt_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+														<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+															<a class="dropdown-item" href="edit-function.php?pt_id=<?php echo $row4['pt_id']; ?>">ແກ້ໄຂ</a>
+															<a class="dropdown-item" type="button" id="deletefunction" data-id='<?php echo $row4['pt_id']; ?>' class="btn btn-danger btn-sm">ລືບ</a>
 
-                                                        </div>
-                                                    </div>
-                                                </td>
+														</div>
+													</div>
+												</td>
 
 
 											</tr>
@@ -202,57 +202,64 @@ $pt_id = $_GET['pt_id']
 
 	<script>
 		// edit
-        $(document).on("submit", "#editpagefunction", function() {
-            $.post("../query/update-page-function.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            window.location.href = 'page-function.php';
-                        }, 1000);
-                }
-            }, 'json')
-            return false;
-        });
-		 // delete 
-         $(document).on("click", "#deletefunction", function(e) {
-                    e.preventDefault();
-                    var pt_id = $(this).data("id");
-                    $.ajax({
-                        type: "post",
-                        url: "../query/delete-function.php",
-                        dataType: "json",
-                        data: {
-                            pt_id: pt_id
-                        },
-                        cache: false,
-                        success: function(data) {
-                            if (data.res == "success") {
-                                Swal.fire(
-                                    'ສຳເລັດ',
-                                    'ລືບສຳເລັດ',
-                                    'success'
-                                )
-                                setTimeout(
-                                    function() {
-                                        window.location.href = 'page-function.php';
-                                    }, 1000);
+		$(document).on("submit", "#editpagefunction", function() {
+			$.post("../query/update-page-function.php", $(this).serialize(), function(data) {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ຟັງຊັ້ນນີ້ລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
+					swal.fire(
+						'ສຳເລັດ',
+						'ແກ້ໄຂສຳເລັດ',
+						'success'
+					)
+					setTimeout(
+						function() {
+							window.location.href = 'page-function.php';
+						}, 1000);
+				}
 
-                            }
-                        },
-                        error: function(xhr, ErrorStatus, error) {
-                            console.log(status.error);
-                        }
+			}, 'json')
+			return false;
+		});
+		// delete 
+		$(document).on("click", "#deletefunction", function(e) {
+			e.preventDefault();
+			var pt_id = $(this).data("id");
+			$.ajax({
+				type: "post",
+				url: "../query/delete-function.php",
+				dataType: "json",
+				data: {
+					pt_id: pt_id
+				},
+				cache: false,
+				success: function(data) {
+					if (data.res == "success") {
+						Swal.fire(
+							'ສຳເລັດ',
+							'ລືບສຳເລັດ',
+							'success'
+						)
+						setTimeout(
+							function() {
+								window.location.href = 'page-function.php';
+							}, 1000);
 
-                    });
+					}
+				},
+				error: function(xhr, ErrorStatus, error) {
+					console.log(status.error);
+				}
+
+			});
 
 
-                    return false;
-                });
+			return false;
+		});
 	</script>
 
 	<!--  -->

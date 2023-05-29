@@ -194,7 +194,13 @@ $header_click = "3";
 		// Add staff user 
 		$(document).on("submit", "#addrole", function() {
 			$.post("../query/add-roles.php", $(this).serialize(), function(data) {
-				if (data.res == "success") {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ຊື່ສິດນີ້ໄດ້ລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
 					Swal.fire(
 						'ສຳເລັດ',
 						'ເພິ່ມຜູ້ໃຊ້ສຳເລັດ',

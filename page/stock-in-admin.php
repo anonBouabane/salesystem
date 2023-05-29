@@ -330,6 +330,7 @@ $header_click = "2";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+<<<<<<< HEAD
         $(function() {
             $('a[rel*=facebox]').facebox();
         });
@@ -395,6 +396,30 @@ $header_click = "2";
             return false;
         });
 
+=======
+         $(document).on("submit", "#submittrack", function() {
+            $.post(
+                "../query/confirm-add-stock-out-admin.php",
+                $(this).serialize(),
+                function(data) {
+                    if (data.res == "errorwarehouse") {
+                        Swal.fire(" ແຈ້ງເຕືອນ",
+                            "ບໍ່ມີສິນຄ້າ",
+                            "error");
+                    } else if (data.res == "success") {
+                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    }
+                },
+                "json"
+            );
+
+            return false;
+        });
+>>>>>>> 1c77f9d7b73f4271e9bad7d87c02debe33f80817
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-stock-in-admin.php", $(this).serialize(), function(data) {

@@ -85,14 +85,14 @@ $wh_id = $_GET['wh_id']
                                     <div class="email-body-head mb-5 ">
                                         <h4 class="text-dark">ແກ້ໄຂສາງ</h4>
                                         <?php
-                                        $wh_rows = $conn->query("SELECT * FROM tbl_warehouse where wh_id = '$wh_id' ") ->fetch(PDO::FETCH_ASSOC); 
-                                        
-                                        
+                                        $wh_rows = $conn->query("SELECT * FROM tbl_warehouse where wh_id = '$wh_id' ")->fetch(PDO::FETCH_ASSOC);
+
+
                                         ?>
 
                                     </div>
                                     <form method="post" id="editwarehouse">
-                                    <input type="hidden" class="form-control" id="wh_id" name="wh_id"value="<?php echo $wh_rows['wh_id']; ?>" required>
+                                        <input type="hidden" class="form-control" id="wh_id" name="wh_id" value="<?php echo $wh_rows['wh_id']; ?>" required>
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
@@ -100,7 +100,7 @@ $wh_id = $_GET['wh_id']
                                                     <input type="text" class="form-control" id="wh_name" name="wh_name" value="<?php echo $wh_rows['wh_name']; ?>" required>
                                                 </div>
                                             </div>
-                                            
+
 
 
 
@@ -115,7 +115,7 @@ $wh_id = $_GET['wh_id']
                                                     <div class="form-group">
 
                                                         <select class=" form-control font" name="wh_type" id="wh_type">
-                                                            
+
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse_type ");
                                                             $stmt5->execute();
@@ -123,8 +123,8 @@ $wh_id = $_GET['wh_id']
                                                                 while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                             ?>
                                                                     <option value="<?php echo $row5['wht_id']; ?>" <?php if ($wh_rows['wh_type'] == $row5['wht_id']) {
-                                                                                                                echo "selected";
-                                                                                                            } ?>> <?php echo $row5['wht_name']; ?></option>
+                                                                                                                        echo "selected";
+                                                                                                                    } ?>> <?php echo $row5['wht_name']; ?></option>
                                                             <?php
                                                                 }
                                                             }
@@ -137,7 +137,7 @@ $wh_id = $_GET['wh_id']
                                                     <div class="form-group">
 
                                                         <select class=" form-control font" name="br_id" id="br_id">
-                                                            
+
                                                             <?php
                                                             $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");
                                                             $stmt5->execute();
@@ -145,8 +145,8 @@ $wh_id = $_GET['wh_id']
                                                                 while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
                                                             ?>
                                                                     <option value="<?php echo $row5['br_id']; ?>" <?php if ($wh_rows['br_id'] == $row5['br_id']) {
-                                                                                                                echo "selected";
-                                                                                                            } ?>> <?php echo $row5['br_name']; ?></option>
+                                                                                                                        echo "selected";
+                                                                                                                    } ?>> <?php echo $row5['br_name']; ?></option>
                                                             <?php
                                                                 }
                                                             }
@@ -162,7 +162,7 @@ $wh_id = $_GET['wh_id']
                                             <?php
                                             }
                                             ?>
-                                            
+
                                         </div>
                                         <div class="d-flex justify-content-end mt-6">
                                             <button type="submit" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂຂໍ້ມູນ</button>
@@ -240,7 +240,7 @@ $wh_id = $_GET['wh_id']
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                                             <a class="dropdown-item" href="edit-warehouse.php?wh_id=<?php echo "$wh_id"; ?>">ແກ້ໄຂ</a>
                                                             <a class="dropdown-item" type="button" id="activestaffuser" data-id='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm">ເປິດນຳໃຊ້</a>
-                                                            <a class="dropdown-item" type="button" id="deletewarehouse" data-id='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm" >ລືບ</a>
+                                                            <a class="dropdown-item" type="button" id="deletewarehouse" data-id='<?php echo $row4['wh_id']; ?>' class="btn btn-danger btn-sm">ລືບ</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -279,12 +279,19 @@ $wh_id = $_GET['wh_id']
         // Add staff user 
         $(document).on("submit", "#editwarehouse", function() {
             $.post("../query/update-warehouse.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+                if (data.res == "exist") {
                     Swal.fire(
+                        'ລົງທະບຽນຊ້ຳ',
+                        'ສາງນີ້ລົງທະບຽນແລ້ວ',
+                        'error'
+                    )
+                } else if (data.res == "success") {
+                    swal.fire(
                         'ສຳເລັດ',
-                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
+                        'ແກ້ໄຂສຳເລັດ',
                         'success'
                     )
+
                     setTimeout(
                         function() {
                             window.location.href = 'warehouse.php';
@@ -295,39 +302,39 @@ $wh_id = $_GET['wh_id']
         });
 
         $(document).on("click", "#deletewarehouse", function(e) {
-                    e.preventDefault();
-                    var wh_id = $(this).data("id");
-                    $.ajax({
-                        type: "post",
-                        url: "../query/delete-warehouse.php",
-                        dataType: "json",
-                        data: {
-                            wh_id: wh_id
-                        },
-                        cache: false,
-                        success: function(data) {
-                            if (data.res == "success") {
-                                Swal.fire(
-                                    'ສຳເລັດ',
-                                    'ລືບສຳເລັດ',
-                                    'success'
-                                )
-                                setTimeout(
-                                    function() {
-                                        window.location.href = 'warehouse.php';
-                                    }, 1000);
+            e.preventDefault();
+            var wh_id = $(this).data("id");
+            $.ajax({
+                type: "post",
+                url: "../query/delete-warehouse.php",
+                dataType: "json",
+                data: {
+                    wh_id: wh_id
+                },
+                cache: false,
+                success: function(data) {
+                    if (data.res == "success") {
+                        Swal.fire(
+                            'ສຳເລັດ',
+                            'ລືບສຳເລັດ',
+                            'success'
+                        )
+                        setTimeout(
+                            function() {
+                                window.location.href = 'warehouse.php';
+                            }, 1000);
 
-                            }
-                        },
-                        error: function(xhr, ErrorStatus, error) {
-                            console.log(status.error);
-                        }
+                    }
+                },
+                error: function(xhr, ErrorStatus, error) {
+                    console.log(status.error);
+                }
 
-                    });
+            });
 
 
-                    return false;
-                });
+            return false;
+        });
     </script>
 
     <!--  -->

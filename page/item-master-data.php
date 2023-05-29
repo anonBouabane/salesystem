@@ -426,7 +426,7 @@ $header_click = "2";
                         '<label for="firstName">ຫົວໜ່ວຍ</label>' +
 
 
-                        '<select class="form-control" name="item_unit[]" id="item_unit' + count + '" >' +
+                        '<select class="form-control" name="item_unit[]" id="item_unit' + count + '"required>' +
                         '<option value="">ຫົວໜ່ວຍ</option>';
                     $.each(response, function(index, value) {
                         tr += '<option value="' + value[0] + '">' + value[1] + '</option>';
