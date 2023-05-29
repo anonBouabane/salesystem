@@ -142,7 +142,7 @@ $wh_id = $_POST['wh_id'];
                                         <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
                                     </div>
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " data-simplebar data-simplebar style="height: 550px;">
 
                                         <div class="card-body">
 
@@ -267,6 +267,7 @@ $wh_id = $_POST['wh_id'];
                                                                             </a>
 
                                                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                                <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
 
                                                                                 <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
@@ -429,6 +430,67 @@ $wh_id = $_POST['wh_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+
+        $(document).on("submit", "#updatestockoutpre", function() {
+            $.post("../query/update-item-stock-warehouse-out-pre.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "limnitapprove") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                        'error'
+                    )
+ 
+
+                } else if (data.res == "notenoughtmoney") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ຮັບເງິນບໍ່ພໍ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-stock-out-admin.php", $(this).serialize(), function(data) {
