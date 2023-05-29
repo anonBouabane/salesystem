@@ -202,20 +202,26 @@ $r_id = $_GET['r_id'];
 	<script>
 		 // edit
          $(document).on("submit", "#editrole", function() {
-            $.post("../query/update-roles.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-                    Swal.fire(
-                        'ສຳເລັດ',
-                        'ແກ້ໄຂຂໍ້ມູນສຳເລັດ',
-                        'success'
-                    )
-                    setTimeout(
-                        function() {
-                            window.location.href = 'roles.php';
-                        }, 1000);
-                }
-            }, 'json')
-            return false;
+			$.post("../query/update-roles.php", $(this).serialize(), function(data) {
+				if (data.res == "exist") {
+					Swal.fire(
+						'ລົງທະບຽນຊ້ຳ',
+						'ຊື່ສິດນີ້ລົງທະບຽນແລ້ວ',
+						'error'
+					)
+				} else if (data.res == "success") {
+					Swal.fire(
+						'ສຳເລັດ',
+						'ແກ້ໄຂສຳເລັດ',
+						'success'
+					)
+					setTimeout(
+						function() {
+							location.reload();
+						}, 1000);
+				}
+			}, 'json')
+			return false;
         });
 		 // delete 
          $(document).on("click", "#deleteroles", function(e) {
