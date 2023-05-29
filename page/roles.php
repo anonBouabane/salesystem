@@ -72,7 +72,7 @@ $header_click = "3";
 												<label class="text-dark font-weight-medium">ລະດັບສິດ</label>
 												<div class="form-group">
 
-													<select class=" form-control font" name="role_level" id="role_level">
+													<select class=" form-control font" name="role_level" id="role_level"required>
 														<option value=""> ເລືອກລະດັບ </option>
 														<?php
 														$stmt5 = $conn->prepare(" SELECT * FROM tbl_role_level ");

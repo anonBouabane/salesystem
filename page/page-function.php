@@ -66,7 +66,7 @@ $header_click = "4";
 											<div class="form-group  col-lg-12">
 												<label class="text-dark font-weight-medium">ຫົວຂໍ້</label>
 												<div class="form-group">
-													<select class=" form-control font" name="sub_title" id="sub_title">
+													<select class=" form-control font" name="sub_title" id="sub_title"required>
 														<option value=""> ເລືອກຫົວຂໍ້ </option>
 														<?php
 														$stmt5 = $conn->prepare(" SELECT * FROM tbl_sub_title ");

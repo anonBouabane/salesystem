@@ -66,7 +66,7 @@ $header_click = "4";
                                                 <label class="text-dark font-weight-medium">ປະເພດສາຂາ</label>
                                                 <div class="form-group">
 
-                                                    <select class=" form-control font" name="br_type" id="br_type">
+                                                    <select class=" form-control font" name="br_type" id="br_type"required>
                                                         <option value=""> ເລືອກປະເພດ </option>
                                                         <?php
                                                         $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch_type ");

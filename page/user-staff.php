@@ -91,7 +91,7 @@ $header_click = "3";
 											<div class="form-group  col-lg-12">
 												<label class="text-dark font-weight-medium">ສິດເຂົ້າເຖິງ</label>
 												<div class="form-group">
-													<select class=" form-control font" name="r_id" id="r_id">
+													<select class=" form-control font" name="r_id" id="r_id" required>
 														<option value=""> ເລືອກສິດ </option>
 														<?php
 														$stmt5 = $conn->prepare(" SELECT * FROM tbl_roles $syntax ");
@@ -114,7 +114,7 @@ $header_click = "3";
 													<label class="text-dark font-weight-medium">ພະແນກ</label>
 													<div class="form-group">
 
-														<select class=" form-control font" name="dp_id" id="dp_id">
+														<select class=" form-control font" name="dp_id" id="dp_id"required>
 															<option value=""> ເລືອກພະແນກ </option>
 															<?php
 															$stmt5 = $conn->prepare(" SELECT * FROM tbl_depart ");
@@ -135,7 +135,7 @@ $header_click = "3";
 													<label class="text-dark font-weight-medium">ສາຂາ</label>
 													<div class="form-group">
 
-														<select class=" form-control font" name="br_id" id="br_id">
+														<select class=" form-control font" name="br_id" id="br_id"required>
 															<option value=""> ເລືອກສາຂາ </option>
 															<?php
 															$stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");
