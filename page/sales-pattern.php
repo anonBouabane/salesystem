@@ -49,59 +49,99 @@ $header_click = "6";
 
                 </div>
                 <div class="card-body">
-                  <div class="tab-content">
-                    <table id="dashboardremain" class="table table-product " style="width:100%">
-                      <thead>
-                        <tr>
-                          <th>ລຳດັບ</th>
-                          <th>ຊື່ສາຂາ</th>
-                          <th>ຍອດຂາຍ</th>
-                          
-                        </tr>
-                      </thead>
-                      <tbody>
-                      <?php
-                      $stmt4 = $conn->prepare(" select sum(total_pay) as total_pay ,bs_id , br_name from tbl_bill_sale a
+
+
+                  <form action="" method="post">
+
+
+                    <input type="text" name="para1" />
+                    <div class=" d-flex justify-content-end mt-6">s
+                      <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                    </div>
+
+
+                    <div class="tab-content">
+                      <table id="dashboardremain" class="table table-product " style="width:100%">
+                        <thead>
+                          <tr>
+                            <th>ລຳດັບ</th>
+                            <th>ຊື່ສາຂາ</th>
+                            <th>ຍອດຂາຍ</th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php
+
+                          if ($_POST['btn_search']) {
+                            echo "yes";
+                          } else {
+                            echo "no";
+                          }
+
+
+
+                          $stmt4 = $conn->prepare(" select sum(total_pay) as total_pay ,bs_id , br_name from tbl_bill_sale a
                       LEFT JOIN tbl_branch b on a.br_id = b.br_id 
                       group by a.br_id 
 								 ");
-                                $stmt4->execute();
-                                if ($stmt4->rowCount() > 0) {
-                                    while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
-                                        if (empty($sale_total)) {
-                                            $sale_total = 0;
-                                          } else {
-                                            $sale_total = $row4['total_pay'];
-                                          }
-                                          
-                                          ?>
-                                        
-                            
+                          $stmt4->execute();
+                          if ($stmt4->rowCount() > 0) {
+                            while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+                              if (empty($sale_total)) {
+                                $sale_total = 0;
+                              } else {
+                                $sale_total = $row4['total_pay'];
+                              }
 
-                            <tr>
-                              <td><?php echo $row4['bs_id']; ?></td>
-                              <td><?php echo $row4['br_name']; ?> </td>
-                              <td>     <?php echo $row4['total_pay']; ?>   </td>
-                            </tr>
-                      <?php
-                                    }
-                                }
-                        $conn = null;
-                        include("../setting/conn.php");
-                        ?>
+                          ?>
 
 
- 
 
-                      </tbody>
-                    </table>
-                  </div>
+                              <tr>
+                                <td><?php echo $row4['bs_id']; ?></td>
+                                <td><?php echo $row4['br_name']; ?></td>
+                                <td><?php echo $row4['total_pay'], "."; ?>ກີບ</td>
+                              </tr>
+                          <?php
+                            }
+                          }
+                          $conn = null;
+                          include("../setting/conn.php");
+                          ?>
+
+
+
+
+                        </tbody>
+                        <tfoot>
+                          <?php
+                          $stmt1 = $conn->prepare(" select sum(total_pay) from tbl_bill_sale 
+                                        ");
+                          $stmt1->execute();
+                          if ($stmt1->rowCount() > 0) {
+                            while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
+                          ?>
+                              <tr>
+                                <td>ຍອດລວມ</td>
+                                <td><?php echo $row1['sum(total_pay)'], "."; ?>ກີບ</td>
+                              </tr>
+                          <?php
+                            }
+                          }
+                          ?>
+
+                        </tfoot>
+                      </table>
+                    </div>
+
+                  </form>
                 </div>
               </div>
 
             </div>
 
-            
+
 
 
 
