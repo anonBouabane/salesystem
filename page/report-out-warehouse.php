@@ -50,72 +50,134 @@ $header_click = "6";
                                 </div>
                                 <div class="card-body">
                                     <div class="tab-content">
-                                        <table id="dashboardremain" class="table table-product " style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>ລຳດັບ</th>
-                                                    <th>ຊື່ສິນຄ້າ</th>
-                                                    <th>ເບີກອອກ</th>
-                                                    <th>ຊື່ສາງ</th>
+                                        <form action="" method="post">
+                                            <div class="row">
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                                <div class="form-group  col-lg-12">
+                                                    <label class="text-dark font-weight-medium">ສາຂາ</label>
+                                                    <div class="form-group">
+                                                        <select class=" form-control font" name="wh_name" id="wh_name" required>
+                                                            <option value=""> ເລືອກສາຂາ </option>
+                                                            <?php
+                                                            $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse ");
+                                                            $stmt5->execute();
+                                                            if ($stmt5->rowCount() > 0) {
+                                                                while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
+                                                            ?> <option value="<?php echo $row5['wh_name']; ?>"> <?php echo $row5['wh_name']; ?></option>
+                                                            <?php
+                                                                }
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="firstName">ຈາກວັນທີ</label>
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="firstName">ຫາວັນທີ</label>
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="d-flex justify-content-end mt-6">
+                                                <button type="submit" name="btn_view" class="btn btn-primary mb-2 btn-pill">ສະແດງ</button>
+                                            </div>
+
+                                            <table id="dashboardremain" class="table table-product " style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ລຳດັບ</th>
+                                                        <th>ຊື່ສິນຄ້າ</th>
+                                                        <th>ເບີກອອກ</th>
+                                                        <th>ຊື່ສາງ</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
                                                 <?php
-                                                $stmt2 = $conn->prepare("  
-                      select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_stock_out_warehouse_detail a 
+
+                                                if (isset($_POST['btn_view'])) {
+
+                                                 $date_from = $_POST['date_from'];
+                                                    $date_to = $_POST['date_to'];
+                                          $wh_name = $_POST['wh_name'];
+                                                            
+
+                                       $syntax = "  where b.date_register between '$date_from' and '$date_to' and wh_name like '%$wh_name%'  ";
+                                      echo "$date_from $date_to $wh_name";
+                                    } else {
+                                      $syntax = "";
+                                        }
+
+
+
+                                        $stmt2 = $conn->prepare("  
+                                        select sum(item_values) as item_values,a.item_id ,item_name,wh_name,b.date_register from tbl_stock_out_warehouse_detail a 
                       left join tbl_stock_out_warehouse d on d.sow_id = a.sow_id 
                       left join tbl_warehouse b on d.wh_id = b.wh_id 
-                      left join tbl_item_data c on a.item_id = c.item_id group by a.item_id
+                      left join tbl_item_data c on a.item_id = c.item_id 
+                                        $syntax
+                                        group by a.item_id
 
-                      ");
-                                                $stmt2->execute();
+                                        ");
+                                        $stmt2->execute();
 
-                                                if ($stmt2->rowCount() > 0) {
-                                                    while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                                        if ($stmt2->rowCount() > 0) {
+                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
-                                                ?>
+                                        ?>
 
-                                                        <tr>
-                                                            <td><?php echo $row2['item_id']; ?> </td>
-                                                            <td><?php echo $row2['item_name']; ?> </td>
-                                                            <td><?php echo $row2['item_values']; ?> </td>
-                                                            <td><?php echo $row2['wh_name']; ?> </td>
+                                                    
+
+                                                            <tr>
+                                                                <td><?php echo $row2['item_id']; ?> </td>
+                                                                <td><?php echo $row2['item_name']; ?> </td>
+                                                                <td><?php echo $row2['item_values']; ?> </td>
+                                                                <td><?php echo $row2['wh_name']; ?> </td>
 
 
-                                                        </tr>
-                                                <?php
+                                                            </tr>
+                                                    <?php
+                                                        }
                                                     }
-                                                }
-                                                $conn = null;
-                                                include("../setting/conn.php");
-                                                ?>
+                                                    $conn = null;
+                                                    include("../setting/conn.php");
+                                                    ?>
 
 
 
 
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
 
-                        
 
 
-                        </div>
-
-                        <?php include "footer.php"; ?>
 
                     </div>
+
+                    <?php include "footer.php"; ?>
+
                 </div>
+            </div>
 
 
 
-                <?php include("../setting/calljs.php"); ?>
+            <?php include("../setting/calljs.php"); ?>
 
 
 </body>
