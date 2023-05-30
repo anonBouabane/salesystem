@@ -55,24 +55,7 @@ $header_click = "6";
 
                                             <div class="row">
 
-                                                <div class="form-group  col-lg-12">
-                                                    <label class="text-dark font-weight-medium">ສາຂາ</label>
-                                                    <div class="form-group">
-                                                        <select class=" form-control font" name="wh_name" id="wh_name" required>
-                                                            <option value=""> ເລືອກສາຂາ </option>
-                                                            <?php
-                                                            $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse ");
-                                                            $stmt5->execute();
-                                                            if ($stmt5->rowCount() > 0) {
-                                                                while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
-                                                            ?> <option value="<?php echo $row5['wh_name']; ?>"> <?php echo $row5['wh_name']; ?></option>
-                                                            <?php
-                                                                }
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                               
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
@@ -114,11 +97,11 @@ $header_click = "6";
 
                                                         $date_from = $_POST['date_from'];
                                                         $date_to = $_POST['date_to'];
-                                                        $wh_name = $_POST['wh_name'];
+                                                        
                                                                                                                 
 
-                                                        $syntax = "  where b.date_register between '$date_from' and '$date_to' and wh_name like '%$wh_name%'  ";
-                                                         echo "$date_from $date_to $wh_name";
+                                                        $syntax = "  where d.date_register between '$date_from' and '$date_to'   ";
+                                                         echo "$date_from $date_to ";
                                                     } else {
                                                         $syntax = "";
                                                     }

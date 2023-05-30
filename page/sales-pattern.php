@@ -53,10 +53,46 @@ $header_click = "6";
 
                   <form action="" method="post">
 
+                    <div class="row">
 
-                    <input type="text" name="para1" />
-                    <div class=" d-flex justify-content-end mt-6">s
-                      <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ເພີ່ມຂໍ້ມູນ</button>
+                      <div class="form-group  col-lg-12">
+                        <label class="text-dark font-weight-medium">ສາຂາ</label>
+                        <div class="form-group">
+                          <select class=" form-control font" name="br_name" id="br_name" required>
+                            <option value=""> ເລືອກສາຂາ </option>
+                            <?php
+                            $stmt5 = $conn->prepare(" SELECT * FROM tbl_branch ");
+                            $stmt5->execute();
+                            if ($stmt5->rowCount() > 0) {
+                              while ($row5 = $stmt5->fetch(PDO::FETCH_ASSOC)) {
+                            ?> <option value="<?php echo $row5['br_name']; ?>"> <?php echo $row5['br_name']; ?></option>
+                            <?php
+                              }
+                            }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="firstName">ຈາກວັນທີ</label>
+                          <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="firstName">ຫາວັນທີ</label>
+                          <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-6">
+                      <button type="submit" name="btn_view" class="btn btn-primary mb-2 btn-pill">ສະແດງ</button>
                     </div>
 
 
@@ -73,25 +109,34 @@ $header_click = "6";
                         <tbody>
                           <?php
 
-                          if ($_POST['btn_search']) {
-                            echo "yes";
+                          if (isset($_POST['btn_view'])) {
+
+                            $date_from = $_POST['date_from'];
+                            $date_to = $_POST['date_to'];
+                            $br_name = $_POST['br_name'];
+
+
+                            $syntax = "  where a.date_register between '$date_from' and '$date_to' and br_name like '%$br_name%'  ";
+                            echo "$date_from $date_to $br_name";
                           } else {
-                            echo "no";
+                            $syntax = "";
                           }
 
 
 
-                          $stmt4 = $conn->prepare(" select sum(total_pay) as total_pay ,bs_id , br_name from tbl_bill_sale a
+                          $stmt2 = $conn->prepare("  select sum(total_pay) as total_pay ,bs_id , br_name from tbl_bill_sale a
                       LEFT JOIN tbl_branch b on a.br_id = b.br_id 
-                      group by a.br_id 
-								 ");
-                          $stmt4->execute();
-                          if ($stmt4->rowCount() > 0) {
-                            while ($row4 = $stmt4->fetch(PDO::FETCH_ASSOC)) {
+                      $syntax
+                      group by a.br_id
+                  
+                      ");
+                          $stmt2->execute();
+                          if ($stmt2->rowCount() > 0) {
+                            while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
                               if (empty($sale_total)) {
                                 $sale_total = 0;
                               } else {
-                                $sale_total = $row4['total_pay'];
+                                $sale_total = $row2['total_pay'];
                               }
 
                           ?>
@@ -99,9 +144,9 @@ $header_click = "6";
 
 
                               <tr>
-                                <td><?php echo $row4['bs_id']; ?></td>
-                                <td><?php echo $row4['br_name']; ?></td>
-                                <td><?php echo $row4['total_pay'], "."; ?>ກີບ</td>
+                                <td><?php echo $row2['bs_id']; ?></td>
+                                <td><?php echo $row2['br_name']; ?></td>
+                                <td><?php echo $row2['total_pay'], "."; ?>ກີບ</td>
                               </tr>
                           <?php
                             }
@@ -121,6 +166,11 @@ $header_click = "6";
                           $stmt1->execute();
                           if ($stmt1->rowCount() > 0) {
                             while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
+                              if (empty($sale_total)) {
+                                $sale_total = 0;
+                              } else {
+                                $sale_total = $row1['total_pay'];
+                              }
                           ?>
                               <tr>
                                 <td>ຍອດລວມ</td>
