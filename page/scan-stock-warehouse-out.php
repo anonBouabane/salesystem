@@ -239,8 +239,9 @@ $wh_id = $_POST['wh_id'];
                                                                 ?>
                                                                 <td><?php echo "$i"; ?></td>
                                                                 <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$val_pre"; ?>' class="form-control">
 
+                                                        
                                                                 <td>
                                                                     <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
@@ -251,38 +252,31 @@ $wh_id = $_POST['wh_id'];
                                                                 <td>
 
 
-                                                                    <input type="hidden" name="check_apo[]" id="check_apo<?php echo $x; ?>" value='<?php echo "$check_apo_id"; ?>' class="form-control">
                                                                     <?php
 
                                                                     echo "$item_values / $item_approve";
                                                                     ?>
                                                                 </td>
                                                                 <?php
-                                                                if ($check_apo_id == 0) {
+                                                                if ($val_pre != 0 ) {
 
                                                                 ?>
                                                                     <td>
-                                                                        <?php if ($item_values != 0) {
-                                                                        ?>
-                                                                            <div class="dropdown">
-                                                                                <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                                </a>
 
-                                                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                        <div class="dropdown">
+                                                                            <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                                                            </a>
 
-                                                                                    <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
 
-                                                                                    <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                                <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
 
-                                                                                </div>
-
+                                                                                <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                             </div>
-                                                                        <?php
-                                                                        }
-                                                                        ?>
-
+                                                                        </div>
                                                                     </td>
+
                                                                 <?php
                                                                 } else {
                                                                 ?>
@@ -362,6 +356,7 @@ $wh_id = $_POST['wh_id'];
                                                 from tbl_stock_out_warehouse a
                                                 left join tbl_warehouse b on a.wh_id = b.wh_id
                                                 where  apo_id = '$apo_id'
+                                                order by sow_id desc
                                            ");
                                                 $stmt4->execute();
                                                 if ($stmt4->rowCount() > 0) {
@@ -382,7 +377,7 @@ $wh_id = $_POST['wh_id'];
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_id']; ?></td>
                                                             <td><?php echo $row4['sow_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
@@ -479,7 +474,8 @@ $wh_id = $_POST['wh_id'];
 
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                         'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                     //   'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
                         'error'
                     )
 
@@ -630,12 +626,12 @@ $wh_id = $_POST['wh_id'];
 
 
         // Delete item
-        $(document).on("click", "#delstockin", function(e) {
+        $(document).on("click", "#deleteitem", function(e) {
             e.preventDefault();
             var id = $(this).data("id");
             $.ajax({
                 type: "post",
-                url: "../query/delete-stock-in-admin.php",
+                url: "../query/delete-stock-out-admin.php",
                 dataType: "json",
                 data: {
                     id: id
@@ -650,7 +646,7 @@ $wh_id = $_POST['wh_id'];
                         )
                         setTimeout(
                             function() {
-                                window.location.href = 'stock-in-admin.php';
+                                location.reload();
                             }, 1000);
 
                     } else if (data.res == "used") {

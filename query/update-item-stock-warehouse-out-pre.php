@@ -32,7 +32,7 @@ if ($nostock != 0) {
 } elseif ($remain_value < $item_val) {
     $res = array("res" => "nostock");
 } else {
-    
+
     $rowap = $conn->query("select * from tbl_approve_order_detail where apo_id ='$approve_id' and item_id = '$item_id' ")->fetch(PDO::FETCH_ASSOC);
 
     if (empty($rowap['item_values'])) {
@@ -41,8 +41,28 @@ if ($nostock != 0) {
         $item_approve = $rowap['item_values'];
     }
 
-    if ($item_approve < $item_val) {
-        $res = array("res" => "limnitapprove");
+
+
+    $rowitemid = $conn->query("
+    select sum(item_values) as item_detail
+    from tbl_stock_out_warehouse_detail a
+    left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+    where apo_id ='$approve_id' and item_id = '$item_id'
+    group by item_id  ")->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($rowitemid['item_detail'])) {
+        $item_detail = 0;
+    } else {
+        $item_detail = $rowitemid['item_detail'];
+    }
+
+    $item_out = $item_detail + $item_val;
+
+
+    if ($item_approve < $item_out) {
+         $res = array("res" => "limnitapprove");
+ 
+     //    $res = array("res" => "limnitapprove", "item_name" => "$item_approve > $item_out");
     } else {
         $delete_data = $conn->query(" delete from tbl_stock_out_warehouse_detail_pre where item_id = '$item_id' and add_by = '$id_users' ");
         if ($delete_data) {

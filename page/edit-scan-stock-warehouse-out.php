@@ -146,7 +146,7 @@ $sow_id = $_GET['sow_id'];
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " style="height: 100%;">
 
                                         <div class="card-body">
 
@@ -211,9 +211,23 @@ $sow_id = $_GET['sow_id'];
                                                                         $item_approve = 0;
                                                                     }
 
+                                                                    $rowitemid = $conn->query("
+                                                                    select sum(item_values) as item_detail
+                                                                    from tbl_stock_out_warehouse_detail a
+                                                                    left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+                                                                    where apo_id ='$apo_id' and item_id = '$item_id'
+                                                                    group by item_id  ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                    if (empty($rowitemid['item_detail'])) {
+                                                                        $item_detail = 0;
+                                                                    } else {
+                                                                        $item_detail = $rowitemid['item_detail'];
+                                                                    }
+
+                                                                    $item_out =  $item_detail;
 
 
-                                                                    echo "$item_values / $item_approve";
+                                                                    echo "$item_out / $item_approve";
                                                                     ?>
                                                                     <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
 
@@ -326,7 +340,7 @@ $sow_id = $_GET['sow_id'];
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_id']; ?></td>
                                                             <td><?php echo $row4['sow_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
@@ -347,8 +361,6 @@ $sow_id = $_GET['sow_id'];
                                                                 </div>
                                                             </td>
                                                         </tr>
-
-
                                                 <?php
 
                                                         $i++;
@@ -359,13 +371,7 @@ $sow_id = $_GET['sow_id'];
 
                                             </tbody>
                                         </table>
-
-
-
-
                                     </form>
-
-
                                 </div>
 
 
@@ -375,6 +381,7 @@ $sow_id = $_GET['sow_id'];
                 </div>
 
             </div>
+
 
             <?php include "footer.php"; ?>
         </div>
@@ -423,6 +430,7 @@ $sow_id = $_GET['sow_id'];
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
                         'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                        //  'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
                         'error'
                     )
 
@@ -645,7 +653,7 @@ $sow_id = $_GET['sow_id'];
                         )
                         setTimeout(
                             function() {
-                                window.location.href = ' approval-list.php';
+                                window.location.href = 'select-warehouse-stock-out.php?apo_id=<?php echo "$apo_id"; ?>';
                             }, 1000);
 
                     } else if (data.res == "used") {

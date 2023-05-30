@@ -136,7 +136,7 @@ $apo_id = $_GET['apo_id'];
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " style="height: 100%;">
 
                                         <div class="card-body">
 
@@ -186,25 +186,23 @@ $apo_id = $_GET['apo_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <div class="col-lg-5  ">
+                                                                    <?php
+                                                                    $check_apo = 0;
 
-                                                                        <?php
-                                                                        $check_apo = 0;
-
-                                                                        $rowpre = $conn->query("
+                                                                    $rowpre = $conn->query("
                                                                         select sum(item_values) as item_values
                                                                         from tbl_stock_in_warehouse_detail_pre
                                                                         where add_by = '$id_users' and item_id = '$item_id'
                                                                         group by item_id 
                                                                          ")->fetch(PDO::FETCH_ASSOC);
 
-                                                                        if (empty($rowpre['item_values'])) {
-                                                                            $val_pre = 0;
-                                                                        } else {
-                                                                            $val_pre = $rowpre['item_values'];
-                                                                        }
+                                                                    if (empty($rowpre['item_values'])) {
+                                                                        $val_pre = 0;
+                                                                    } else {
+                                                                        $val_pre = $rowpre['item_values'];
+                                                                    }
 
-                                                                        $row_detail = $conn->query("
+                                                                    $row_detail = $conn->query("
                                                                         select sum(item_values) as item_values ,apo_id
                                                                         from tbl_stock_in_warehouse_detail a
                                                                         left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
@@ -212,20 +210,20 @@ $apo_id = $_GET['apo_id'];
                                                                         group by item_id 
                                                                                      ")->fetch(PDO::FETCH_ASSOC);
 
-                                                                        if (empty($row_detail['item_values'])) {
-                                                                            $val_detail = 0;
-                                                                        } else {
-                                                                            $val_detail = $row_detail['item_values'];
-                                                                            $check_apo = $row_detail['apo_id'];
-                                                                        }
+                                                                    if (empty($row_detail['item_values'])) {
+                                                                        $val_detail = 0;
+                                                                    } else {
+                                                                        $val_detail = $row_detail['item_values'];
+                                                                        $check_apo = $row_detail['apo_id'];
+                                                                    }
 
 
-                                                                        $item_values = $val_pre + $val_detail;
+                                                                    $item_values = $val_pre + $val_detail;
 
 
 
 
-                                                                        $rowap = $conn->query("
+                                                                    $rowap = $conn->query("
                                                                         select sum(item_values) as item_approve
                                                                         from tbl_stock_out_warehouse_detail a
                                                                         left join tbl_stock_out_warehouse b on a.sow_id  = b.sow_id 
@@ -233,30 +231,29 @@ $apo_id = $_GET['apo_id'];
                                                                         group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
 
 
-                                                                        if (!empty($rowap['item_approve'])) {
-                                                                            $item_approve =  $rowap['item_approve'];
-                                                                        } else {
-                                                                            $item_approve = 0;
-                                                                        }
+                                                                    if (!empty($rowap['item_approve'])) {
+                                                                        $item_approve =  $rowap['item_approve'];
+                                                                    } else {
+                                                                        $item_approve = 0;
+                                                                    }
 
 
 
 
-                                                                        if ($item_values == $item_approve) {
-                                                                            $check_done   = "yes";
-                                                                        } else {
-                                                                            $check_done   = "no";
-                                                                        }
+                                                                    if ($item_values == $item_approve) {
+                                                                        $check_done   = "yes";
+                                                                    } else {
+                                                                        $check_done   = "no";
+                                                                    }
 
 
 
-                                                                        echo "$item_values / $item_approve";
-                                                                        ?>
-                                                                        <input type="hidden" name="val_pre[]" id="val_pre<?php echo $x; ?>" value='<?php echo "$val_pre"; ?>' class="form-control">
+                                                                    echo "$item_values / $item_approve";
+                                                                    ?>
+                                                                    <input type="hidden" name="val_pre[]" id="val_pre<?php echo $x; ?>" value='<?php echo "$val_pre"; ?>' class="form-control">
 
 
 
-                                                                    </div>
 
                                                                 </td>
                                                                 <td>
@@ -271,6 +268,8 @@ $apo_id = $_GET['apo_id'];
                                                                             </a>
 
                                                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                                <a rel="facebox" href="../modal/scan-recieve-item-branch-pre.php?id=<?php echo "$item_id"; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                                 <a class="dropdown-item" type="button" id="delstockinpre" data-id='<?php echo "$item_id"; ?>' class="btn btn-danger btn-sm">ຍົກເລີກສະແກນ</a>
                                                                             </div>
                                                                         </div>
@@ -397,6 +396,70 @@ $apo_id = $_GET['apo_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+        $(document).on("submit", "#UpdateRecieveItemBranchPre", function() {
+            $.post("../query/update-recieve-item-branch-pre.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "error") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                        'error'
+                    )
+
+                    setTimeout(
+                        function() {
+                            location.reload();
+                        }, 1000);
+
+                } else if (data.res == "notenoughtmoney") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ຮັບເງິນບໍ່ພໍ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+        
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-recive-item-branch.php", $(this).serialize(), function(data) {

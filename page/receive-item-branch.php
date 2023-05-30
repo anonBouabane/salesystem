@@ -63,7 +63,7 @@ $header_click = "2";
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -71,8 +71,8 @@ $header_click = "2";
                                                     <th>ວັນທີຂໍ</th>
                                                     <th>ວັນທີອານຸມັດ</th>
                                                     <th>ວັນທີ່ອອກສູນ</th>
-                                                    <th>ສະຖານະເບີກ</th>
-                                                    <th>ຈຳນວນເບີກ</th> 
+                                                    <th>ສະຖານະ</th>
+                                                    <th>ຈຳນວນ</th> 
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -98,11 +98,7 @@ $header_click = "2";
 
                                                         $apo_id = $row4['apo_id'];
                                                         
-
-
-
-
-
+ 
                                                 ?>
 
 
@@ -118,38 +114,43 @@ $header_click = "2";
                                                             <?php
 
 
-                                                            $rowap = $conn->query("select    sum(item_values) as item_count
-                                                            from tbl_stock_out_warehouse_detail a
-                                                            left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
-                                                            where apo_id ='$apo_id'
-                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                                            if (!empty($rowap['item_count'])) {
-                                                                $item_approve =  $rowap['item_count'];
-                                                            } else {
-                                                                $item_approve = 0;
-                                                            }
+                                                          
 
                                                             $rowio = $conn->query("
-                                                            select sum(item_values) as item_approve
+                                                            select sum(item_values) as item_recieve
                                                             from tbl_stock_in_warehouse_detail a
                                                             left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
                                                             where apo_id ='$apo_id'
                                                             group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
 
 
-                                                            if (!empty($rowio['item_approve'])) {
-                                                                $item_count =  $rowio['item_approve'];
+                                                            if (!empty($rowio['item_recieve'])) {
+                                                                $item_recieve =  $rowio['item_recieve'];
                                                             } else {
-                                                                $item_count = 0;
+                                                                $item_recieve = 0;
                                                             }
+
+
+                                                            $rowap = $conn->query("select    sum(item_values) as max_item_out
+                                                            from tbl_stock_out_warehouse_detail a
+                                                            left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+                                                            where apo_id ='$apo_id'
+                                                            group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                            if (!empty($rowap['max_item_out'])) {
+                                                                $max_item_out =  $rowap['max_item_out'];
+                                                            } else {
+                                                                $max_item_out = 0;
+                                                            }
+
+
 
                                                             ?>
 
                                                             <td>
                                                                 <?php
-                                                                if ($item_count == $item_approve) {
+                                                                if ($item_recieve == $max_item_out) {
                                                                     echo "ຮັບສິນຄ້າຄົບຖ້ວນ";
                                                                 } else {
                                                                     echo "ຮັບສິນຄ້າບໍ່ຄົບ";
@@ -160,9 +161,9 @@ $header_click = "2";
                                                             </td>
                                                             <td>
                                                                 <?php
-                                                                echo "$item_count";
+                                                                echo "$item_recieve";
                                                                 echo " / ";
-                                                                echo "$item_approve";
+                                                                echo "$max_item_out";
                                                                 ?>
                                                             </td>
 
