@@ -41,8 +41,25 @@ if ($nostock != 0) {
         $item_approve = $rowap['item_values'];
     }
 
-    if ($item_approve < $item_val) {
+    $rowitemid = $conn->query("
+    select sum(item_values) as item_detail
+    from tbl_stock_out_warehouse_detail a
+    left join tbl_stock_out_warehouse b on a.sow_id = b.sow_id
+    where apo_id ='$approve_id' and item_id = '$item_id' and a.sow_id != '$sow_id'
+    group by item_id  ")->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($rowitemid['item_detail'])) {
+        $item_detail = 0;
+    } else {
+        $item_detail = $rowitemid['item_detail'];
+    }
+
+    $item_out = $item_detail + $item_val;
+
+    if ($item_approve < $item_out) {
         $res = array("res" => "limnitapprove");
+
+        // $res = array("res" => "limnitapprove", "item_name" => "$item_approve > $item_out");
     } else {
 
         $update_data = $conn->query(" 

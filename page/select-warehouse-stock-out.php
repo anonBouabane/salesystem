@@ -71,7 +71,7 @@ $apo_id = $_GET['apo_id'];
                                         <div class="form-group  col-lg-12">
                                             <label class="text-dark font-weight-medium">ສາງສິນຄ້າ</label>
                                             <div class="form-group">
-                                                <select class=" form-control font" name="wh_id" id="wh_id"required>
+                                                <select class=" form-control font" name="wh_id" id="wh_id" required>
                                                     <option value=""> ເລືອກສາງ </option>
                                                     <?php
                                                     $stmt5 = $conn->prepare(" SELECT * FROM tbl_warehouse where br_id ='$br_id'  ");
@@ -167,7 +167,7 @@ $apo_id = $_GET['apo_id'];
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_id']; ?></td>
                                                             <td><?php echo $row4['sow_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
