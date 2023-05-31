@@ -117,7 +117,7 @@ $header_click = "6";
                                                         $wh_name = $_POST['wh_name'];
                                                                                                                 
 
-                                                        $syntax = "  where b.date_register between '$date_from' and '$date_to' and wh_name like '%$wh_name%'  ";
+                                                        $syntax = "  where d.date_register between '$date_from' and '$date_to' and wh_name like '%$wh_name%'  ";
                                                          echo "$date_from $date_to $wh_name";
                                                     } else {
                                                         $syntax = "";
