@@ -141,6 +141,7 @@ create or replace table tbl_stock_in_warehouse (
 
 create or replace table tbl_stock_in_warehouse_detail_pre (
     siwdp_id int not null PRIMARY KEY AUTO_INCREMENT, 
+    apo_id int,
     item_id int,
     item_values int, 
     add_by int
