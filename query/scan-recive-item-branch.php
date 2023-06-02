@@ -77,8 +77,8 @@ if (!empty($box_barcode)) {
 
 
             $insertSTI = $conn->query(" insert into tbl_stock_in_warehouse_detail_pre  
-            ( item_id,item_values,add_by)  
-             values ('$item_id','1','$id_users'); ");
+            ( item_id,apo_id,item_values,add_by)  
+             values ('$item_id','$approve_id','1','$id_users'); ");
             $res = array("res" => "success");
 
         }

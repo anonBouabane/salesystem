@@ -145,7 +145,7 @@ $apo_id = $_GET['apo_id'];
                                                     <tr>
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
-                                                        <th>ເພີ່ມເຂົ້າສາງ</th>
+                                                        <th>ຮັບເຂົ້າສາງ</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -321,7 +321,7 @@ $apo_id = $_GET['apo_id'];
 
                         <div class="card-body">
                             <h4 class="text-dark">ລາຍການຮັບສິນຄ້າເຂົ້າຮ້ານ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
+                            <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>ເລກລຳດັບ</th>
@@ -350,7 +350,7 @@ $apo_id = $_GET['apo_id'];
                                     ?>
 
                                             <tr>
-                                                <td><?php echo "$b"; ?></td>
+                                                <td><?php echo $row5['siw_id']; ?></td>
                                                 <td><?php echo $row5['siw_bill_number']; ?></td>
                                                 <td><?php echo $row5['count_item']; ?></td>
                                                 <td><?php echo $row5['date_register']; ?></td>
@@ -431,18 +431,14 @@ $apo_id = $_GET['apo_id'];
                         }
                     })
 
-                } else if (data.res == "error") {
+                } else if (data.res == "overrecieve") {
 
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                        //  'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                        'ຮັບເກີນສິນຄ້າສົ່ງ',
                         'error'
                     )
-
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 1000);
 
                 } else if (data.res == "notenoughtmoney") {
 
@@ -459,7 +455,7 @@ $apo_id = $_GET['apo_id'];
             return false;
         });
 
-        
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-recive-item-branch.php", $(this).serialize(), function(data) {

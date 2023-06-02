@@ -41,7 +41,7 @@ $siw_id = $_GET['siw_id'];
 
         <div class="page-wrapper">
 
-            <?php  include "header.php"; ?>
+            <?php include "header.php"; ?>
             <div class="content-wrapper">
                 <div class="content">
                     <div class="row no-gutters">
@@ -136,7 +136,7 @@ $siw_id = $_GET['siw_id'];
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " style="height: 100%;">
 
                                         <div class="card-body">
 
@@ -145,7 +145,7 @@ $siw_id = $_GET['siw_id'];
                                                     <tr>
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
-                                                        <th>ເພີ່ມເຂົ້າສາງ</th>
+                                                        <th>ຮັບເຂົ້າສາງ</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -187,7 +187,73 @@ $siw_id = $_GET['siw_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <?php
+                                                                    $check_apo = 0;
+
+                                                                    $rowpre = $conn->query("
+                                                                    select sum(item_values) as item_values ,apo_id
+                                                                    from tbl_stock_in_warehouse_detail a
+                                                                    left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+                                                                    where apo_id = '$apo_id' and item_id = '$item_id'  and a.siw_id !='$siw_id'
+                                                                    group by item_id 
+                                                                         ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                    if (empty($rowpre['item_values'])) {
+                                                                        $val_other = 0;
+                                                                    } else {
+                                                                        $val_other = $rowpre['item_values'];
+                                                                    }
+
+                                                                    $row_detail = $conn->query("
+                                                                        select sum(item_values) as item_values ,apo_id
+                                                                        from tbl_stock_in_warehouse_detail a
+                                                                        left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+                                                                        where apo_id = '$apo_id' and item_id = '$item_id' and a.siw_id ='$siw_id'
+                                                                        group by item_id 
+                                                                                     ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                    if (empty($row_detail['item_values'])) {
+                                                                        $val_detail = 0;
+                                                                    } else {
+                                                                        $val_detail = $row_detail['item_values'];
+                                                                        $check_apo = $row_detail['apo_id'];
+                                                                    }
+
+
+
+                                                                    $item_values = $val_other + $val_detail;
+
+
+
+
+                                                                    $rowap = $conn->query("
+                                                                        select sum(item_values) as item_approve
+                                                                        from tbl_stock_out_warehouse_detail a
+                                                                        left join tbl_stock_out_warehouse b on a.sow_id  = b.sow_id 
+                                                                        where apo_id ='$apo_id' and item_id = '$item_id'
+                                                                        group by apo_id  ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                                    if (!empty($rowap['item_approve'])) {
+                                                                        $item_approve =  $rowap['item_approve'];
+                                                                    } else {
+                                                                        $item_approve = 0;
+                                                                    }
+
+
+
+
+                                                                    if ($item_values == $item_approve) {
+                                                                        $check_done   = "yes";
+                                                                    } else {
+                                                                        $check_done   = "no";
+                                                                    }
+
+
+
+                                                                    echo "$item_values / $item_approve";
+                                                                    ?>
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$val_detail"; ?>' class="form-control">
                                                                 </td>
 
                                                                 <td>
@@ -196,6 +262,8 @@ $siw_id = $_GET['siw_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                            <a rel="facebox" href="../modal/scan-recieve-item-branch-detail.php?id=<?php echo $row4['siwd_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                             <a class="dropdown-item" type="button" id="delstockindetail" data-id='<?php echo $row4['siwd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
@@ -243,7 +311,7 @@ $siw_id = $_GET['siw_id'];
 
                         <div class="card-body">
                             <h4 class="text-dark">ລາຍການຮັບສິນຄ້າເຂົ້າຮ້ານ</h4>
-                            <table id="productsTable3" class="table table-hover table-product" style="width:100%">
+                            <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>ເລກລຳດັບ</th>
@@ -272,7 +340,7 @@ $siw_id = $_GET['siw_id'];
                                     ?>
 
                                             <tr>
-                                                <td><?php echo "$b"; ?></td>
+                                                <td><?php echo $row5['siw_id']; ?></td>
                                                 <td><?php echo $row5['siw_bill_number']; ?></td>
                                                 <td><?php echo $row5['count_item']; ?></td>
                                                 <td><?php echo $row5['date_register']; ?></td>
@@ -318,6 +386,67 @@ $siw_id = $_GET['siw_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+
+        $(document).on("submit", "#UpdateRecieveItemBranchDetail", function() {
+            $.post("../query/update-recieve-item-branch-detail.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "overrecieve") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        //  'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                        'ຮັບເກີນສິນຄ້າສົ່ງ',
+                        'error'
+                    )
+
+                } else if (data.res == "notenoughtmoney") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ຮັບເງິນບໍ່ພໍ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/update-scan-recive-item-branch.php", $(this).serialize(), function(data) {
