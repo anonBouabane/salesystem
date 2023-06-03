@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2023 at 08:25 AM
+-- Generation Time: Jun 03, 2023 at 12:01 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -448,6 +448,64 @@ select * from tmp_item_remain  ;
 
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `stp_view_stock_remain_for_deburse_to_shop` (`warehouse_id` INT, `user_add` INT)  BEGIN
+
+create TEMPORARY table tmp_count_stock_in
+
+select item_id,sum(item_values) as item_in_count
+from tbl_stock_in_warehouse_detail a
+left join tbl_stock_in_warehouse b on a.siw_id = b.siw_id
+where wh_id = warehouse_id  
+group by item_id;
+
+create TEMPORARY table tmp_count_stock_out
+
+select item_id,sum(item_values) as item_out_count
+from tbl_stock_out_warehouse_detail a
+left join tbl_stock_out_warehouse b  on a.sow_id = b.sow_id
+where wh_id = warehouse_id  
+group by item_id;
+
+
+create TEMPORARY table tmp_count_stock_pre_out
+
+select item_id,sum(item_values) as item_pre_count
+from tbl_stock_out_warehouse_detail_pre 
+where add_by = user_add and wh_id = warehouse_id  
+group by item_id ;
+
+
+create TEMPORARY table tmp_union_item_out
+
+SELECT item_id, item_out_count
+FROM tmp_count_stock_out  
+union all
+SELECT item_id, item_pre_count
+FROM tmp_count_stock_pre_out ;
+
+
+create TEMPORARY table tmp_caculate_item_out
+
+select item_id, sum(item_out_count) as item_out_count
+from tmp_union_item_out
+group by item_id ;
+
+
+
+create TEMPORARY table tmp_item_remain
+
+select a.item_id, item_name,
+(item_in_count - (case when item_out_count is null then 0 else item_out_count end))as remain_value
+from tmp_count_stock_in a
+left join tmp_caculate_item_out b on a.item_id = b.item_id 
+left join tbl_item_data c on a.item_id = c.item_id;
+ 
+
+select * from tmp_item_remain  order by remain_value desc ;
+
+
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `test` ()  BEGIN
 
 create TEMPORARY table tmp_count_stock_in
@@ -617,7 +675,8 @@ CREATE TABLE `tbl_bill_sale_detail_pre` (
 --
 
 INSERT INTO `tbl_bill_sale_detail_pre` (`bsdp_id`, `item_id`, `item_values`, `br_id`, `add_by`) VALUES
-(175, 2, 4, 1, 3);
+(175, 2, 4, 1, 3),
+(178, 12, 400, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -704,8 +763,9 @@ CREATE TABLE `tbl_deburse_item_pre_sale` (
 --
 
 INSERT INTO `tbl_deburse_item_pre_sale` (`dips_id`, `dips_bill_number`, `sow_id`, `wh_id`, `br_id`, `add_by`, `date_register`) VALUES
-(1, '202305220001', 3, 5, 2, 6, '2023-05-22'),
-(2, '202305220002', 4, 6, 2, 6, '2023-05-22');
+(5, '202306030001', 29, 6, 2, 6, '2023-06-03'),
+(6, '202306030002', 30, 6, 2, 6, '2023-06-03'),
+(7, '202306030003', 31, 6, 2, 6, '2023-06-03');
 
 -- --------------------------------------------------------
 
@@ -725,16 +785,15 @@ CREATE TABLE `tbl_deburse_item_pre_sale_detail` (
 --
 
 INSERT INTO `tbl_deburse_item_pre_sale_detail` (`dipsd_id`, `dips_id`, `item_id`, `item_values`) VALUES
-(1, 1, 6, 11),
-(2, 1, 7, 5),
-(3, 1, 8, 10),
-(4, 1, 9, 2),
-(5, 1, 10, 10),
-(6, 2, 1, 10),
-(7, 2, 2, 10),
-(8, 2, 3, 3),
-(9, 2, 4, 5),
-(10, 2, 5, 10);
+(18, 5, 1, 10),
+(19, 5, 2, 6),
+(20, 5, 3, 3),
+(21, 5, 4, 5),
+(22, 6, 1, 10),
+(23, 6, 2, 4),
+(24, 7, 5, 3),
+(25, 7, 12, 2),
+(26, 7, 13, 5);
 
 -- --------------------------------------------------------
 
@@ -1729,7 +1788,13 @@ INSERT INTO `tbl_stock_in_warehouse` (`siw_id`, `siw_bill_number`, `apo_id`, `bi
 (14, '202305300005', NULL, 1, 1, 1, 3, '2023-05-30'),
 (15, '202305300006', NULL, 1, 1, 1, 3, '2023-05-30'),
 (16, '202305300007', NULL, 1, 1, 1, 3, '2023-05-30'),
-(17, '202305300001', 14, 2, 2, 6, 6, '2023-05-30');
+(18, '202306020001', 14, 2, 2, 6, 6, '2023-06-02'),
+(19, '202306020002', 14, 2, 2, 6, 6, '2023-06-02'),
+(21, '202306020003', 14, 2, 2, 6, 6, '2023-06-02'),
+(23, '202306030002', 12, 2, 2, 7, 6, '2023-06-03'),
+(24, '202306030003', 9, 2, 2, 7, 6, '2023-06-03'),
+(25, '202306030004', 11, 2, 2, 5, 6, '2023-06-03'),
+(26, '202306030005', 13, 2, 2, 6, 6, '2023-06-03');
 
 -- --------------------------------------------------------
 
@@ -1762,8 +1827,23 @@ INSERT INTO `tbl_stock_in_warehouse_detail` (`siwd_id`, `siw_id`, `item_id`, `it
 (58, 14, 14, 30),
 (59, 15, 15, 15),
 (60, 16, 4, 45),
-(61, 17, 13, 1),
-(62, 17, 12, 2);
+(64, 19, 13, 5),
+(75, 18, 12, 33),
+(82, 21, 12, 2),
+(83, 21, 13, 15),
+(89, 23, 15, 10),
+(90, 23, 14, 10),
+(91, 23, 13, 10),
+(92, 23, 12, 10),
+(93, 23, 11, 10),
+(94, 24, 15, 10),
+(95, 24, 12, 3),
+(96, 25, 12, 20),
+(97, 26, 3, 3),
+(98, 26, 2, 10),
+(99, 26, 1, 20),
+(100, 26, 5, 10),
+(101, 26, 4, 5);
 
 -- --------------------------------------------------------
 
@@ -1773,6 +1853,7 @@ INSERT INTO `tbl_stock_in_warehouse_detail` (`siwd_id`, `siw_id`, `item_id`, `it
 
 CREATE TABLE `tbl_stock_in_warehouse_detail_pre` (
   `siwdp_id` int(11) NOT NULL,
+  `apo_id` int(11) DEFAULT NULL,
   `item_id` int(11) DEFAULT NULL,
   `item_values` int(11) DEFAULT NULL,
   `add_by` int(11) DEFAULT NULL
@@ -1800,15 +1881,16 @@ CREATE TABLE `tbl_stock_out_warehouse` (
 --
 
 INSERT INTO `tbl_stock_out_warehouse` (`sow_id`, `sow_bill_number`, `bill_type`, `apo_id`, `br_id`, `wh_id`, `add_by`, `date_register`) VALUES
-(3, '202305290001', 1, 9, 1, 1, 3, '2023-05-29'),
-(4, '202305300001', 1, 11, 1, 1, 3, '2023-05-30'),
 (5, '202305300002', 1, 12, 1, 1, 3, '2023-05-30'),
 (21, '202305300003', 1, 12, 1, 1, 3, '2023-05-30'),
 (22, '202305300004', 1, 12, 1, 1, 3, '2023-05-30'),
 (23, '202305300005', 1, 12, 1, 1, 3, '2023-05-30'),
 (24, '202305300006', 1, 13, 1, 1, 3, '2023-05-30'),
 (25, '202305300007', 1, 14, 1, 1, 3, '2023-05-30'),
-(26, '202305300008', 1, 1, 1, 1, 3, '2023-05-30');
+(26, '202305300008', 1, 1, 1, 1, 3, '2023-05-30'),
+(29, '202306030001', 1, NULL, 2, 6, 6, '2023-06-03'),
+(30, '202306030002', 1, NULL, 2, 6, 6, '2023-06-03'),
+(31, '202306030003', 1, NULL, 2, 6, 6, '2023-06-03');
 
 -- --------------------------------------------------------
 
@@ -1828,9 +1910,6 @@ CREATE TABLE `tbl_stock_out_warehouse_detail` (
 --
 
 INSERT INTO `tbl_stock_out_warehouse_detail` (`sowd_id`, `sow_id`, `item_id`, `item_values`) VALUES
-(8, 3, 12, 3),
-(9, 3, 15, 10),
-(10, 4, 12, 20),
 (11, 5, 11, 10),
 (12, 5, 12, 10),
 (13, 5, 13, 10),
@@ -1848,7 +1927,16 @@ INSERT INTO `tbl_stock_out_warehouse_detail` (`sowd_id`, `sow_id`, `item_id`, `i
 (44, 26, 6, 30),
 (45, 26, 8, 10),
 (46, 26, 9, 2),
-(47, 26, 10, 10);
+(47, 26, 10, 10),
+(55, 29, 1, 10),
+(56, 29, 2, 6),
+(57, 29, 3, 3),
+(58, 29, 4, 5),
+(59, 30, 1, 10),
+(60, 30, 2, 4),
+(61, 31, 5, 3),
+(62, 31, 12, 2),
+(63, 31, 13, 5);
 
 -- --------------------------------------------------------
 
@@ -1864,13 +1952,6 @@ CREATE TABLE `tbl_stock_out_warehouse_detail_pre` (
   `apo_id` int(11) DEFAULT NULL,
   `add_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tbl_stock_out_warehouse_detail_pre`
---
-
-INSERT INTO `tbl_stock_out_warehouse_detail_pre` (`sowdp_id`, `wh_id`, `item_id`, `item_values`, `apo_id`, `add_by`) VALUES
-(138, 6, 13, 1, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -2216,7 +2297,7 @@ ALTER TABLE `tbl_bill_sale_detail`
 -- AUTO_INCREMENT for table `tbl_bill_sale_detail_pre`
 --
 ALTER TABLE `tbl_bill_sale_detail_pre`
-  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
+  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_type`
@@ -2240,13 +2321,13 @@ ALTER TABLE `tbl_branch_type`
 -- AUTO_INCREMENT for table `tbl_deburse_item_pre_sale`
 --
 ALTER TABLE `tbl_deburse_item_pre_sale`
-  MODIFY `dips_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `dips_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_deburse_item_pre_sale_detail`
 --
 ALTER TABLE `tbl_deburse_item_pre_sale_detail`
-  MODIFY `dipsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `dipsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tbl_depart`
@@ -2336,37 +2417,37 @@ ALTER TABLE `tbl_role_page`
 -- AUTO_INCREMENT for table `tbl_stock_in_warehouse`
 --
 ALTER TABLE `tbl_stock_in_warehouse`
-  MODIFY `siw_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `siw_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_in_warehouse_detail`
 --
 ALTER TABLE `tbl_stock_in_warehouse_detail`
-  MODIFY `siwd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `siwd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_in_warehouse_detail_pre`
 --
 ALTER TABLE `tbl_stock_in_warehouse_detail_pre`
-  MODIFY `siwdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=383;
+  MODIFY `siwdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse`
 --
 ALTER TABLE `tbl_stock_out_warehouse`
-  MODIFY `sow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `sow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail`
 --
 ALTER TABLE `tbl_stock_out_warehouse_detail`
-  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail_pre`
 --
 ALTER TABLE `tbl_stock_out_warehouse_detail_pre`
-  MODIFY `sowdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
+  MODIFY `sowdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=247;
 
 --
 -- AUTO_INCREMENT for table `tbl_sub_title`

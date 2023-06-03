@@ -124,7 +124,7 @@ $header_click = "2";
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -166,7 +166,7 @@ $header_click = "2";
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo "$dips_id"; ?></td>
                                                             <td><?php echo $row4['dips_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>

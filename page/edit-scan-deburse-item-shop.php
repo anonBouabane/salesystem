@@ -131,7 +131,7 @@ $sow_id = $_GET['sow_id'];
                                     <h2 class="mt-4 "> ເບີກສິນຄ້າເພື່ອຂາຍ (<?php echo $rowedit['wh_name'] ?>) </h2>
 
                                     <input type="hidden" id="sow_id" name="sow_id" class="form-control" autofocus value='<?php echo "$sow_id" ?>'>
- 
+
                                     <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" autofocus value='<?php echo  $rowedit["wh_id"]; ?>'>
 
                                     <input type="hidden" id="dips_id" name="dips_id" class="form-control" autofocus value='<?php echo "$dips_id" ?>'>
@@ -172,7 +172,7 @@ $sow_id = $_GET['sow_id'];
                                                             $item_name = $row4['item_name'];
                                                             $item_values =  $row4['item_values'];
                                                             $item_values =  $row4['item_values'];
-                                                            
+
                                                             $x = 1;
                                                     ?>
 
@@ -191,7 +191,10 @@ $sow_id = $_GET['sow_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <?php
+                                                                    echo "$item_values  ";
+                                                                    ?>
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
                                                                 </td>
 
                                                                 <td>
@@ -200,6 +203,9 @@ $sow_id = $_GET['sow_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+
+                                                                            <a rel="facebox" href="../modal/edit-item-deburse-shop-detail.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                             <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['sowd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
@@ -250,10 +256,14 @@ $sow_id = $_GET['sow_id'];
                                 <div class="  p-4 p-xl-5">
                                     <div class="email-body-head mb-6 ">
                                         <h4 class="text-dark">ລາຍການເບີກ</h4>
+
+
+
+
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -295,7 +305,7 @@ $sow_id = $_GET['sow_id'];
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_id']; ?></td>
                                                             <td><?php echo $row4['dips_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
@@ -316,6 +326,8 @@ $sow_id = $_GET['sow_id'];
                                                                 </div>
                                                             </td>
                                                         </tr>
+
+
                                                 <?php
 
                                                         $i++;
@@ -326,8 +338,14 @@ $sow_id = $_GET['sow_id'];
 
                                             </tbody>
                                         </table>
+
+
                                     </form>
+
+
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -345,6 +363,11 @@ $sow_id = $_GET['sow_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/update-scan-deburse-item-shop.php", $(this).serialize(), function(data) {

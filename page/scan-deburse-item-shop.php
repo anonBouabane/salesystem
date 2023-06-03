@@ -61,7 +61,7 @@ $wh_id = $_POST['wh_id'];
                                         <?php
                                         $rowedit = $conn->query(" select * from tbl_warehouse where wh_id = '$wh_id'  ")->fetch(PDO::FETCH_ASSOC);
 
-
+                                        $warehouse_id = $rowedit["wh_id"];
 
                                         ?>
 
@@ -132,7 +132,7 @@ $wh_id = $_POST['wh_id'];
 
 
 
-                                    <div class="card-body pb-0 " data-simplebar>
+                                    <div class="card-body pb-0 " data-simplebar style="height: 350px;">
 
                                         <div class="card-body">
 
@@ -141,7 +141,7 @@ $wh_id = $_POST['wh_id'];
                                                     <tr>
                                                         <th>ເລກລຳດັບ</th>
                                                         <th>ຊື່ສິນຄ້າ</th>
-                                                        <th>ຈຳນວນເບີກ</th>
+                                                        <th>ຈຳນວນເບີກ/ຍອດເຫຼືອ</th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -184,7 +184,10 @@ $wh_id = $_POST['wh_id'];
 
                                                                 </td>
                                                                 <td>
-                                                                    <input type="number" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
+                                                                    <?php
+                                                                    echo "$item_values  ";
+                                                                    ?>
+                                                                    <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$item_values"; ?>' class="form-control">
                                                                 </td>
 
                                                                 <td>
@@ -193,6 +196,9 @@ $wh_id = $_POST['wh_id'];
                                                                         </a>
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+
+                                                                            <a rel="facebox" href="../modal/edit-item-deburse-shop-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+
                                                                             <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
                                                                         </div>
@@ -219,11 +225,13 @@ $wh_id = $_POST['wh_id'];
                                             </table>
 
                                         </div>
-
-
                                     </div>
 
+
                                 </div>
+
+
+
                             </form>
                         </div>
                     </div>
@@ -250,7 +258,7 @@ $wh_id = $_POST['wh_id'];
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable2" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable4" class="table table-hover table-product" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -292,7 +300,7 @@ $wh_id = $_POST['wh_id'];
 
                                                         <tr>
 
-                                                            <td><?php echo "$i"; ?></td>
+                                                            <td><?php echo $row4['sow_id']; ?></td>
                                                             <td><?php echo $row4['dips_bill_number']; ?></td>
                                                             <td><?php echo $row4['wh_name']; ?></td>
                                                             <td><?php echo $rowio['item_values']; ?></td>
@@ -352,6 +360,66 @@ $wh_id = $_POST['wh_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
+        $(function() {
+            $('a[rel*=facebox]').facebox();
+        });
+
+        $(document).on("submit", "#updateItemDebursePre", function() {
+            $.post("../query/update-item-deburse-to-shop-pre.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "overstock") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        //  'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                        'ເບີກເກີນສາງ',
+                        'error'
+                    )
+
+                } else if (data.res == "nostock") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ມີສິນຄ້າໃນສາງ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
+        });
+
+
         // add item Data 
         $(document).on("submit", "#scanitemfrom", function() {
             $.post("../query/scan-deburse-item-shop.php", $(this).serialize(), function(data) {
