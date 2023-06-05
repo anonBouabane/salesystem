@@ -570,7 +570,7 @@ $wh_id = $_POST['wh_id'];
                             "ບໍ່ມີສິນຄ້າເບີກ",
                             "error");
                     } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ເພີ່ມເຄື່ອງເຂົ້າສາງສຳເລັດ", "success");
+                        Swal.fire("ສຳເລັດ", "ເບີກເຄື່ອງອອກສາງສຳເລັດ", "success");
 
                         setTimeout(function() {
                             location.reload();
