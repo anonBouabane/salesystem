@@ -204,7 +204,7 @@ $sow_id = $_GET['sow_id'];
 
                                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
 
-                                                                            <a rel="facebox" href="../modal/edit-item-deburse-shop-detail.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                            <a rel="facebox" href="../modal/edit-item-deburse-shop-detail.php?id=<?php echo $row4['sowd_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
 
                                                                             <a class="dropdown-item" type="button" id="delitempre" data-id='<?php echo $row4['sowd_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
 
@@ -365,6 +365,61 @@ $sow_id = $_GET['sow_id'];
     <script>
         $(function() {
             $('a[rel*=facebox]').facebox();
+        });
+
+        $(document).on("submit", "#updateItemDeburseDetail", function() {
+            $.post("../query/update-item-deburse-to-shop-detail.php", $(this).serialize(), function(data) {
+                if (data.res == "success") {
+
+                    let timerInterval
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ສຳເລັດ',
+                        html: 'ແກ້ໄຂສຳເລັດ',
+                        // timer: 10000,
+                        timerProgressBar: true,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        location.reload();
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer')
+                        }
+                    })
+
+                } else if (data.res == "overstock") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        //  'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                        'ເບີກເກີນສາງ',
+                        'error'
+                    )
+
+                } else if (data.res == "nostock") {
+
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ບໍ່ມີສິນຄ້າໃນສາງ',
+                        'error'
+                    )
+
+
+                }
+            }, 'json');
+
+            return false;
         });
 
 

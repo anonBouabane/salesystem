@@ -161,15 +161,15 @@ $header_click = "5";
                                                             </td>
                                                             <td>
 
-                                                                <?php echo number_format("$item_price", 2, ",", ".") ?>
+                                                                <?php echo number_format("$item_price", 0, ",", ".") ?>
                                                             </td>
                                                             <td>
                                                                 <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>" value='<?php echo "$total_price"; ?>' class="form-control">
 
-                                                                <?php echo number_format("$total_price", 2, ",", ".") ?>
+                                                                <?php echo number_format("$total_price", 0, ",", ".") ?>
                                                             </td>
                                                             <td>
-
+                                                        
 
                                                             </td>
                                                             <td>
