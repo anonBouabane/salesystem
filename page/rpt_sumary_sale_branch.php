@@ -126,13 +126,13 @@ $header_click = "6";
 
                                                     $total_bill_price = 0;
                                                     $stmt2 = $conn->prepare("  
-                                                    select sum(item_values) as item_sale,a.item_id ,item_name,br_name,item_total_price from tbl_bill_sale_detail a                     
+                                                    select sum(item_values) as item_sale,a.item_id ,item_name,br_name,item_total_price,payment_type from tbl_bill_sale_detail a                     
                                                     left join tbl_bill_sale b on a.bs_id = b.bs_id 
                                                     left join tbl_item_data c on a.item_id = c.item_id
                                                     left join tbl_branch d on b.br_id = d.br_id
                                                     $syntax
                                                     group by a.item_id
-                                                    order by a.bs_id desc
+                                                    
                                                 ");
                                                     $stmt2->execute();
                                                     $i = 1;
@@ -141,65 +141,72 @@ $header_click = "6";
                                                             $item_total_price = $row2['item_total_price'];
                                                             $item_sale = $row2['item_sale'];
                                                             $item_id = $row2['item_id'];
+                                                            $payment_type = $row2['payment_type'];
+
                                                             $total_price = $item_sale * $item_total_price;
                                                     ?>
 
                                                             <tr>
                                                                 <td><?php echo $row2['item_name']; ?> </td>
+                                                                <td><?php echo $row2['item_total_price']; ?></td>
+                                                                <?php
+
+
+                                                                $rowio = $conn->query("select sum(item_total_price) as payment_type 
+                                                                from tbl_bill_sale_detail a 
+                                                                left join tbl_bill_sale b on a.bs_id = b.bs_id  
+                                                                where payment_type = '1'
+                                                                group by a.item_id ")->fetch(PDO::FETCH_ASSOC);
+
+
+                                                                if (!empty($rowio['payment_type'])) {
+                                                                    $payment_one =  $rowio['payment_type'];
+                                                                } else {
+                                                                    $payment_one = 0;
+                                                                }
+
+
+
+                                                                $rowap = $conn->query("
+                                                                select sum(item_total_price) as payment_type 
+                                                                from tbl_bill_sale_detail a 
+                                                                left join tbl_bill_sale b on a.bs_id = b.bs_id  
+                                                                where payment_type = '2'
+                                                                group by a.item_id")->fetch(PDO::FETCH_ASSOC);
+
+                                                                if (!empty($rowap['payment_type'])) {
+                                                                    $payment_two =  $rowap['payment_type'];
+                                                                } else {
+                                                                    $payment_two = 0;
+                                                                }
+
+                                                                ?>
                                                                 <td>
-                                                                    <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>" value='<?php echo "$total_price"; ?>' class="form-control">
+                                                                <?php
+                                                                if ($payment_type == 1) {
+                                                                    echo "$item_total_price";
+                                                                } else {
+                                                                    echo "-";
+                                                                }
 
-                                                                    <?php echo number_format("$total_price", 2, ",", ".") ?>
+
+                                                                ?>
+
                                                                 </td>
+                                                                <td>
                                                                 <?php
-
-
-                                                            $rowio = $conn->query("select    sum(total_pay) as payment_type
-                                                            from tbl_bill_sale a
-                                                            
-                                                            where payment_type ='1'
-                                                              ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                                            if (!empty($rowio['payment_type'])) {
-                                                                $payment_type =  $rowio['payment_type'];
-                                                            } else {
-                                                                $payment_type = 0;
-                                                            }
-
-                                                            $rowap = $conn->query("
-                                                            select sum(total_pay) as payment_type
-                                                            from tbl_bill_sale 
-                                                            where payment_type ='2'
-                                                              ")->fetch(PDO::FETCH_ASSOC);
-
-
-                                                            if (!empty($rowap['payment_type'])) {
-                                                                $payment_type =  $rowap['payment_type'];
-                                                            } else {
-                                                                $payment_type = 0;
-                                                            }
-
-                                                            ?>
-
-
-                                                            <td>
-                                                                <?php
-                                                                echo "$payment_type";
-                                                                
-                                                                ?>
-                                                            </td>
-                                                            <td>
-                                                                <?php
-                                                                echo "$payment_type";
+                                                                if ($payment_type == 2) {
+                                                                    echo "$item_total_price";
+                                                                } else {
+                                                                    echo "-";
+                                                                }
 
 
                                                                 ?>
-
-
+                                                                </td>
                                                             </tr>
                                                     <?php
-                                                            $total_bill_price += $total_price;
+                                                            $total_bill_price += $item_total_price;
                                                             $i++;
                                                         }
                                                     }
@@ -218,7 +225,7 @@ $header_click = "6";
 
                                                 <div class="row">
                                                     <div class="form-group  col-lg-6">
-                                                        <label class="text-dark font-weight-medium">ລວມຍອດຊາຍທັ້ງຫມົດ</label>
+                                                        <label class="text-dark font-weight-medium">ລວມຍອດຂາຍທັ້ງຫມົດ</label>
                                                         <div class="form-group">
                                                             <input type="hidden" id="bs_total_price" name="bs_total_price" value='<?php echo ""; ?>' class="form-control" autofocus>
 
