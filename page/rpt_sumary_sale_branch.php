@@ -167,7 +167,8 @@ $header_click = "10";
                         <tfoot>
 
                           <tr>
-                            <td><h4>ຍອດລວມ</h4></td>
+                            <th>ຍອດລວມ</th>
+                            <td></td>
                             <td><?php echo $total_bill_price, "."; ?>ກີບ</td>
                           </tr>
                       
