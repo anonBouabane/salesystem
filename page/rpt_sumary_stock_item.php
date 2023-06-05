@@ -3,7 +3,7 @@
     include("../setting/conn.php");
 
     $header_name = "ລາຍງານສາງສິນຄ້າ";
-    $header_click = "6";
+    $header_click = "10";
     ?>
 
 

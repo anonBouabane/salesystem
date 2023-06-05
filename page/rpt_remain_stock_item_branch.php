@@ -3,7 +3,7 @@ include("../setting/checksession.php");
 include("../setting/conn.php");
 
 $header_name = "ລາຍງານສິນຄ້າຫນ້າຮ້ານ";
-$header_click = "6";
+$header_click = "10";
 ?>
 
 

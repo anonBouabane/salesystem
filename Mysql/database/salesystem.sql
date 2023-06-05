@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 03, 2023 at 12:01 PM
+-- Generation Time: Jun 05, 2023 at 05:30 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -618,7 +618,8 @@ INSERT INTO `tbl_bill_sale` (`bs_id`, `sale_bill_number`, `total_pay`, `br_id`, 
 (5, '202305250004', 13000, 2, 2, 1, 6, '2023-05-25'),
 (6, '202305250005', 5000, 2, 2, 1, 6, '2023-05-25'),
 (8, '202305260002', 5000, 2, 2, 1, 6, '2023-05-26'),
-(9, '202305260003', 5000, 2, 2, 1, 6, '2023-05-26');
+(9, '202305260003', 5000, 2, 2, 1, 6, '2023-05-26'),
+(10, '202306050001', 25000, 2, 2, 1, 6, '2023-06-05');
 
 -- --------------------------------------------------------
 
@@ -654,7 +655,8 @@ INSERT INTO `tbl_bill_sale_detail` (`bsd_id`, `bs_id`, `item_id`, `item_values`,
 (76, 5, 1, 2, 1000),
 (77, 5, 3, 1, 1000),
 (78, 5, 6, 1, 4000),
-(79, 5, 9, 1, 7000);
+(79, 5, 9, 1, 7000),
+(80, 10, 12, 5, 25000);
 
 -- --------------------------------------------------------
 
@@ -675,8 +677,7 @@ CREATE TABLE `tbl_bill_sale_detail_pre` (
 --
 
 INSERT INTO `tbl_bill_sale_detail_pre` (`bsdp_id`, `item_id`, `item_values`, `br_id`, `add_by`) VALUES
-(175, 2, 4, 1, 3),
-(178, 12, 400, 2, 6);
+(175, 2, 4, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -765,7 +766,8 @@ CREATE TABLE `tbl_deburse_item_pre_sale` (
 INSERT INTO `tbl_deburse_item_pre_sale` (`dips_id`, `dips_bill_number`, `sow_id`, `wh_id`, `br_id`, `add_by`, `date_register`) VALUES
 (5, '202306030001', 29, 6, 2, 6, '2023-06-03'),
 (6, '202306030002', 30, 6, 2, 6, '2023-06-03'),
-(7, '202306030003', 31, 6, 2, 6, '2023-06-03');
+(7, '202306030003', 31, 6, 2, 6, '2023-06-03'),
+(8, '202306050001', 32, 5, 2, 6, '2023-06-05');
 
 -- --------------------------------------------------------
 
@@ -791,9 +793,10 @@ INSERT INTO `tbl_deburse_item_pre_sale_detail` (`dipsd_id`, `dips_id`, `item_id`
 (21, 5, 4, 5),
 (22, 6, 1, 10),
 (23, 6, 2, 4),
-(24, 7, 5, 3),
-(25, 7, 12, 2),
-(26, 7, 13, 5);
+(30, 7, 12, 2),
+(31, 7, 13, 5),
+(32, 7, 5, 6),
+(33, 8, 12, 3);
 
 -- --------------------------------------------------------
 
@@ -1629,7 +1632,15 @@ INSERT INTO `tbl_page_title` (`pt_id`, `pt_name`, `ptf_name`, `st_id`) VALUES
 (15, 'ຮັບເຄື່ອງເຂົ້າຮ້ານ', 'receive-item-branch.php', 2),
 (16, 'ເບີກສິນຄ້າເພື່ອຂາຍ', 'deburse-item-shop.php', 2),
 (17, 'ຂາຍສິນຄ້າ', 'sale-item-for-customer.php', 5),
-(18, 'ກະດານສັງລວມ', 'index.php', 0);
+(18, 'ກະດານສັງລວມ', 'index.php', 0),
+(25, 'ລາຍງານຍອດຂາຍຂອງສາຂາ', 'rpt_sumary_sale.php', 10),
+(26, 'ລາຍງານຍອດຂາຍ', 'rpt_sumary_sale_branch.php', 10),
+(27, 'ລາຍງານສາງສິນຄ້າ', 'rpt_sumary_stock_item.php', 10),
+(28, 'ລາຍງານສິນຄ້າຫນ້າຮ້ານ', 'rpt_remain_stock_item_branch.php', 10),
+(29, 'ລາຍງານຮັບສິນຄ້າເຂົີ້າສາງ', 'rpt_stock_in.php', 10),
+(30, 'ລາຍງານສິນຄ້າອອກສາງ', 'rpt_stock_out.php', 10),
+(31, 'ລາຍງານຮັບສິນຄ້າເຂົ້າຮ້ານ', 'rpt_recieve_item_to_shop_branch.php', 10),
+(32, 'ລາຍງານເບີກສິນຄ້າໜ້າຮ້ານ', 'rpt_deburse_item_to_shop.php', 10);
 
 -- --------------------------------------------------------
 
@@ -1716,44 +1727,64 @@ CREATE TABLE `tbl_role_page` (
 --
 
 INSERT INTO `tbl_role_page` (`rp_id`, `role_id`, `ht_id`, `st_id`, `pt_id`) VALUES
-(228, 1, 4, 5, 17),
-(227, 1, 3, 4, 7),
-(226, 1, 3, 4, 6),
-(225, 1, 3, 4, 2),
-(224, 1, 3, 4, 1),
-(223, 1, 2, 3, 5),
-(194, 6, 3, 4, 6),
-(21, 7, 2, 3, 4),
-(22, 7, 3, 4, 6),
+(412, 1, 4, 10, 31),
+(411, 1, 4, 10, 30),
+(410, 1, 4, 10, 29),
+(409, 1, 4, 10, 28),
+(408, 1, 4, 10, 27),
+(407, 1, 4, 10, 26),
+(406, 1, 4, 10, 25),
+(439, 6, 4, 10, 31),
+(425, 7, 3, 4, 6),
+(424, 7, 2, 3, 4),
 (23, 4, 2, 3, 4),
 (24, 4, 2, 3, 5),
 (25, 4, 3, 4, 1),
 (26, 4, 3, 4, 2),
 (27, 4, 3, 4, 6),
 (28, 4, 3, 4, 7),
-(222, 1, 2, 3, 4),
-(221, 1, 2, 3, 3),
-(220, 1, 1, 2, 16),
-(219, 1, 1, 2, 15),
-(218, 1, 1, 2, 14),
-(217, 1, 1, 2, 13),
-(216, 1, 1, 2, 12),
-(193, 6, 2, 3, 4),
-(192, 6, 1, 2, 16),
-(191, 6, 1, 2, 15),
-(113, 3, 1, 2, 8),
-(114, 3, 1, 2, 10),
-(115, 3, 1, 2, 12),
-(116, 3, 1, 2, 13),
-(117, 3, 1, 2, 14),
-(118, 3, 2, 3, 4),
-(119, 3, 3, 4, 6),
-(190, 6, 1, 2, 12),
-(189, 6, 1, 2, 11),
-(215, 1, 1, 2, 11),
-(214, 1, 1, 2, 10),
-(195, 6, 4, 5, 17),
-(213, 1, 1, 2, 8);
+(405, 1, 4, 5, 17),
+(404, 1, 3, 4, 7),
+(403, 1, 3, 4, 6),
+(402, 1, 3, 4, 2),
+(401, 1, 3, 4, 1),
+(400, 1, 2, 3, 5),
+(399, 1, 2, 3, 4),
+(438, 6, 4, 10, 28),
+(437, 6, 4, 10, 26),
+(436, 6, 4, 5, 17),
+(447, 3, 3, 4, 6),
+(446, 3, 2, 3, 4),
+(445, 3, 1, 2, 14),
+(444, 3, 1, 2, 13),
+(443, 3, 1, 2, 12),
+(442, 3, 1, 2, 10),
+(441, 3, 1, 2, 8),
+(435, 6, 3, 4, 6),
+(434, 6, 2, 3, 4),
+(398, 1, 2, 3, 3),
+(397, 1, 1, 2, 16),
+(433, 6, 1, 2, 16),
+(396, 1, 1, 2, 15),
+(395, 1, 1, 2, 14),
+(394, 1, 1, 2, 13),
+(393, 1, 1, 2, 12),
+(392, 1, 1, 2, 11),
+(391, 1, 1, 2, 10),
+(390, 1, 1, 2, 8),
+(413, 1, 4, 10, 32),
+(432, 6, 1, 2, 15),
+(431, 6, 1, 2, 12),
+(430, 6, 1, 2, 11),
+(426, 7, 4, 10, 26),
+(427, 7, 4, 10, 28),
+(428, 7, 4, 10, 31),
+(429, 7, 4, 10, 32),
+(440, 6, 4, 10, 32),
+(448, 3, 4, 10, 25),
+(449, 3, 4, 10, 27),
+(450, 3, 4, 10, 29),
+(451, 3, 4, 10, 30);
 
 -- --------------------------------------------------------
 
@@ -1890,7 +1921,8 @@ INSERT INTO `tbl_stock_out_warehouse` (`sow_id`, `sow_bill_number`, `bill_type`,
 (26, '202305300008', 1, 1, 1, 1, 3, '2023-05-30'),
 (29, '202306030001', 1, NULL, 2, 6, 6, '2023-06-03'),
 (30, '202306030002', 1, NULL, 2, 6, 6, '2023-06-03'),
-(31, '202306030003', 1, NULL, 2, 6, 6, '2023-06-03');
+(31, '202306030003', 1, NULL, 2, 6, 6, '2023-06-03'),
+(32, '202306050001', 1, NULL, 2, 5, 6, '2023-06-05');
 
 -- --------------------------------------------------------
 
@@ -1934,9 +1966,10 @@ INSERT INTO `tbl_stock_out_warehouse_detail` (`sowd_id`, `sow_id`, `item_id`, `i
 (58, 29, 4, 5),
 (59, 30, 1, 10),
 (60, 30, 2, 4),
-(61, 31, 5, 3),
-(62, 31, 12, 2),
-(63, 31, 13, 5);
+(68, 31, 12, 2),
+(69, 31, 13, 5),
+(70, 31, 5, 6),
+(71, 32, 12, 3);
 
 -- --------------------------------------------------------
 
@@ -1976,7 +2009,7 @@ INSERT INTO `tbl_sub_title` (`st_id`, `st_name`, `icon_code`, `ht_id`) VALUES
 (3, 'ຜູ້ໃຊ້', 'mdi-account-supervisor', 2),
 (4, 'ຂໍ້ມູນລະບົບ', 'mdi-server', 3),
 (5, 'ການຂາຍ', 'mdi-palette-swatch', 4),
-(6, 'ຢ້ຽມຢາມ', 'mdi-flag-variant', 4);
+(10, 'ລາຍງານ', 'mdi-flag-variant', 4);
 
 -- --------------------------------------------------------
 
@@ -2285,19 +2318,19 @@ ALTER TABLE `tbl_approve_order_detail`
 -- AUTO_INCREMENT for table `tbl_bill_sale`
 --
 ALTER TABLE `tbl_bill_sale`
-  MODIFY `bs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `bs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_sale_detail`
 --
 ALTER TABLE `tbl_bill_sale_detail`
-  MODIFY `bsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `bsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_sale_detail_pre`
 --
 ALTER TABLE `tbl_bill_sale_detail_pre`
-  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
+  MODIFY `bsdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=184;
 
 --
 -- AUTO_INCREMENT for table `tbl_bill_type`
@@ -2321,13 +2354,13 @@ ALTER TABLE `tbl_branch_type`
 -- AUTO_INCREMENT for table `tbl_deburse_item_pre_sale`
 --
 ALTER TABLE `tbl_deburse_item_pre_sale`
-  MODIFY `dips_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `dips_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_deburse_item_pre_sale_detail`
 --
 ALTER TABLE `tbl_deburse_item_pre_sale_detail`
-  MODIFY `dipsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `dipsd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `tbl_depart`
@@ -2387,7 +2420,7 @@ ALTER TABLE `tbl_order_status`
 -- AUTO_INCREMENT for table `tbl_page_title`
 --
 ALTER TABLE `tbl_page_title`
-  MODIFY `pt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `pt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tbl_payment_type`
@@ -2411,7 +2444,7 @@ ALTER TABLE `tbl_role_level`
 -- AUTO_INCREMENT for table `tbl_role_page`
 --
 ALTER TABLE `tbl_role_page`
-  MODIFY `rp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
+  MODIFY `rp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=452;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_in_warehouse`
@@ -2435,25 +2468,25 @@ ALTER TABLE `tbl_stock_in_warehouse_detail_pre`
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse`
 --
 ALTER TABLE `tbl_stock_out_warehouse`
-  MODIFY `sow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `sow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail`
 --
 ALTER TABLE `tbl_stock_out_warehouse_detail`
-  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `sowd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `tbl_stock_out_warehouse_detail_pre`
 --
 ALTER TABLE `tbl_stock_out_warehouse_detail_pre`
-  MODIFY `sowdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=247;
+  MODIFY `sowdp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
 
 --
 -- AUTO_INCREMENT for table `tbl_sub_title`
 --
 ALTER TABLE `tbl_sub_title`
-  MODIFY `st_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `st_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`

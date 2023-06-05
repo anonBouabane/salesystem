@@ -2,8 +2,8 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ລາຍງານຍອດຂາຍສາຂາ";
-$header_click = "6";
+$header_name = "ລາຍງານຍອດຂາຍ";
+$header_click = "10";
 ?>
 
 

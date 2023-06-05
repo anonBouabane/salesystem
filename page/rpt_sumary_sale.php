@@ -2,8 +2,8 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ລາຍງານຍອດຂາຍ";
-$header_click = "6";
+$header_name = "ລາຍງານຍອດຂາຍຂອງສາຂາ";
+$header_click = "10";
 ?>
 
 
@@ -44,7 +44,7 @@ $header_click = "6";
 
               <div class="card card-default">
                 <div class="card-header align-items-center">
-                  <h2 class=""> ລາຍງານຍອດຂາຍ </h2>
+                  <h2 class=""> ລາຍງານຍອດຂາຍຂອງສາຂາ </h2>
 
 
                 </div>
