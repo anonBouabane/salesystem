@@ -2,7 +2,7 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ລາຍງານຍອດຂາຍ";
+$header_name = "ລາຍງານຍອດຂາຍສາຂາ";
 $header_click = "6";
 ?>
 
@@ -54,7 +54,7 @@ $header_click = "6";
                                         <form action="" method="post">
 
                                             <div class="row">
-
+                                            
 
 
                                                 <div class="col-lg-6">
@@ -97,11 +97,11 @@ $header_click = "6";
 
                                                         $date_from = $_POST['date_from'];
                                                         $date_to = $_POST['date_to'];
-                                                        $br_name = $_POST['br_name'];
+                                                        
 
 
-                                                        $syntax = "  where b.date_register between '$date_from' and '$date_to' and br_name like '%$br_name%'  ";
-                                                        echo "$date_from $date_to $br_name";
+                                                        $syntax = "  where b.date_register between '$date_from' and '$date_to'";
+                                                        echo "$date_from $date_to ";
                                                     } else {
                                                         $syntax = "";
                                                     }
@@ -127,7 +127,7 @@ $header_click = "6";
                                                             $item_sale = $row2['item_sale'];
                                                             $item_id = $row2['item_id'];
                                                             $payment_type = $row2['payment_type'];
-
+                                                            
                                                             $total_price = $item_sale * $item_total_price;
                                                     ?>
 
@@ -135,14 +135,14 @@ $header_click = "6";
                                                                 <td><?php echo $row2['item_name']; ?> </td>
                                                                 <td><?php echo $row2['item_total_price']; ?></td>
                                                                 <?php
-                                                                
+
 
                                                                 $rowio = $conn->query("
-                                                                select sum(item_total_price) as payment_type,br_name 
+                                                                select sum(item_total_price) as payment_type,br_name,b.date_register 
                                                                 from tbl_bill_sale_detail a 
                                                                 left join tbl_bill_sale b on a.bs_id = b.bs_id
                                                                 left join tbl_branch c on b.br_id = c.br_id                                                              
-                                                                where payment_type = '1'
+                                                                where payment_type = '1'and b.br_id = '$br_id'
                                                                 group by a.item_id ")->fetch(PDO::FETCH_ASSOC);
 
 
@@ -153,11 +153,11 @@ $header_click = "6";
                                                                 }
 
                                                                 $rowap = $conn->query("
-                                                                select sum(item_total_price) as payment_type,br_name 
+                                                                select sum(item_total_price) as payment_type,br_name,b.date_register 
                                                                 from tbl_bill_sale_detail a 
                                                                 left join tbl_bill_sale b on a.bs_id = b.bs_id
-                                                                left join tbl_branch c on b.br_id = c.br_id
-                                                                where payment_type = '2'
+                                                                left join tbl_branch c on b.br_id = c.br_id                                                              
+                                                                where payment_type = '2'and b.br_id = '$br_id'
                                                                 group by a.item_id")->fetch(PDO::FETCH_ASSOC);
 
                                                                 if (!empty($rowap['payment_type'])) {
