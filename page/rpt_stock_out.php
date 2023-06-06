@@ -4,6 +4,16 @@ include("../setting/conn.php");
 
 $header_name = "ລາຍງານສິນຄ້າອອກສາງ";
 $header_click = "10";
+
+if (isset($_POST['btn_view'])) {
+
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to'];
+} else {
+    $date_from = date("Y-m-d");
+    $date_to = date("Y-m-d");
+}
+
 ?>
 
 
@@ -53,19 +63,19 @@ $header_click = "10";
                                         <form action="" method="post">
                                             <div class="row">
 
-                                                
+
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຈາກວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo "$date_from"; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຫາວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo "$date_to"; ?>" />
                                                     </div>
                                                 </div>
 
@@ -87,40 +97,26 @@ $header_click = "10";
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php
+                                                    <?php
+ 
 
-                                                if (isset($_POST['btn_view'])) {
+                                                    $stmt2 = $conn->prepare("  
+                                                    select sum(item_values) as item_values,a.item_id ,item_name,wh_name 
+                                                    from tbl_stock_out_warehouse_detail a 
+                                                    left join tbl_stock_out_warehouse d on d.sow_id = a.sow_id 
+                                                    left join tbl_warehouse b on d.wh_id = b.wh_id 
+                                                    left join tbl_item_data c on a.item_id = c.item_id 
+                                                    where d.date_register between '$date_from' and '$date_to' and b.br_id = '$br_id'
+                                                    group by a.item_id 
+                                                     ");
+                                                    $stmt2->execute();
 
-                                                 $date_from = $_POST['date_from'];
-                                                    $date_to = $_POST['date_to'];
-                                          
-                                                            
+                                                    if ($stmt2->rowCount() > 0) {
+                                                        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
-                                       $syntax = "  where d.date_register between '$date_from' and '$date_to'  ";
-                                      echo "$date_from $date_to";
-                                    } else {
-                                      $syntax = "";
-                                        }
+                                                    ?>
 
 
-
-                                        $stmt2 = $conn->prepare("  
-                                        select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_stock_out_warehouse_detail a 
-                      left join tbl_stock_out_warehouse d on d.sow_id = a.sow_id 
-                      left join tbl_warehouse b on d.wh_id = b.wh_id 
-                      left join tbl_item_data c on a.item_id = c.item_id 
-                                        $syntax
-                                        group by a.item_id
-
-                                        ");
-                                        $stmt2->execute();
-
-                                        if ($stmt2->rowCount() > 0) {
-                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-
-                                        ?>
-
-                                                    
 
                                                             <tr>
                                                                 <td><?php echo $row2['item_id']; ?> </td>
@@ -142,7 +138,7 @@ $header_click = "10";
 
                                                 </tbody>
                                             </table>
-                                            </form>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

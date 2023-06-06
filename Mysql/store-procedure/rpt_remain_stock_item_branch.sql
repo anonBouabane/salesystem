@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE or replace PROCEDURE rpt_remain_stock_item_branch(date_from date ,date_to date)
+CREATE or replace PROCEDURE rpt_remain_stock_item_branch(date_from date ,date_to date, branch_id int)
 BEGIN
 
 create TEMPORARY table tmp_count_stock_in
@@ -7,7 +7,8 @@ create TEMPORARY table tmp_count_stock_in
 
 select item_id,sum(item_values) as item_in_count
 from tbl_deburse_item_pre_sale_detail a
-left join tbl_deburse_item_pre_sale b on a.dips_id = b.dips_id 
+left join tbl_deburse_item_pre_sale b on a.dips_id = b.dips_id
+where br_id = branch_id and date_register <= date_to
 group by item_id;
 
 create TEMPORARY table tmp_count_stock_out
@@ -15,6 +16,7 @@ create TEMPORARY table tmp_count_stock_out
 select item_id,sum(item_values) as item_out_count
 from tbl_bill_sale_detail a
 left join tbl_bill_sale b  on a.bs_id = b.bs_id
+where br_id = branch_id and date_register <= date_to
 group by item_id;
 
 
@@ -23,7 +25,7 @@ create TEMPORARY table tmp_count_stock_in_day
 select item_id,sum(item_values) as item_in_day
 from tbl_deburse_item_pre_sale_detail a
 left join tbl_deburse_item_pre_sale b on a.dips_id = b.dips_id
-where date_register BETWEEN date_from and date_to
+where date_register BETWEEN date_from and date_to and br_id = branch_id
 group by item_id;
 
 
@@ -32,7 +34,7 @@ create TEMPORARY table tmp_count_stock_out_day
 select item_id,sum(item_values) as item_out_day
 from tbl_bill_sale_detail a
 left join tbl_bill_sale b  on a.bs_id = b.bs_id
-where date_register BETWEEN date_from and date_to
+where date_register BETWEEN date_from and date_to and br_id = branch_id
 group by item_id;
    
 create TEMPORARY table tmp_item_remain

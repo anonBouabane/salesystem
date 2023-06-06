@@ -2,8 +2,19 @@
 include("../setting/checksession.php");
 include("../setting/conn.php");
 
-$header_name = "ລາຍງານຮັບສິນຄ້າເຂົີ້າສາງ";
+$header_name = "ລາຍງານຮັບສິນຄ້າເຂົ້າສາງ";
 $header_click = "10";
+
+if (isset($_POST['btn_view'])) {
+
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to'];
+} else {
+    $date_from = date("Y-m-d");
+    $date_to = date("Y-m-d");
+}
+
+
 ?>
 
 
@@ -55,19 +66,19 @@ $header_click = "10";
 
                                             <div class="row">
 
-                                                
+
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຈາກວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo "$date_from"; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຫາວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo "$date_to"; ?>" />
                                                     </div>
                                                 </div>
 
@@ -93,27 +104,16 @@ $header_click = "10";
 
                                                     <?php
 
-                                                    if (isset($_POST['btn_view'])) {
 
-                                                        $date_from = $_POST['date_from'];
-                                                        $date_to = $_POST['date_to'];
-                                                        $wh_name = $_POST['wh_name'];
-                                                                                                                
-
-                                                        $syntax = "  where d.date_register between '$date_from' and '$date_to' ";
-                                                         echo "$date_from $date_to";
-                                                    } else {
-                                                        $syntax = "";
-                                                    }
-
-
+                                                    $i = 1;
 
                                                     $stmt2 = $conn->prepare("  
-                                                select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_stock_in_warehouse_detail a 
+                                                select sum(item_values) as item_values,a.item_id ,item_name,wh_name 
+                                                from tbl_stock_in_warehouse_detail a 
                                                 left join tbl_stock_in_warehouse d on d.siw_id = a.siw_id 
                                                 left join tbl_warehouse b on d.wh_id = b.wh_id 
                                                 left join tbl_item_data c on a.item_id = c.item_id
-                                                $syntax
+                                                where d.date_register between '$date_from' and '$date_to' and b.br_id = '$br_id'
                                                 group by a.item_id
                                             
                                                 ");
@@ -125,7 +125,7 @@ $header_click = "10";
                                                     ?>
 
                                                             <tr>
-                                                                <td><?php echo $row2['item_id']; ?> </td>
+                                                                <td><?php echo "$i"; ?> </td>
                                                                 <td><?php echo $row2['item_name']; ?> </td>
                                                                 <td><?php echo $row2['item_values']; ?> </td>
                                                                 <td><?php echo $row2['wh_name']; ?> </td>
@@ -133,10 +133,10 @@ $header_click = "10";
 
                                                             </tr>
                                                     <?php
+                                                            $i++;
                                                         }
                                                     }
-                                                    $conn = null;
-                                                    include("../setting/conn.php");
+
                                                     ?>
 
 

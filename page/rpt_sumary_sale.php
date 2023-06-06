@@ -3,7 +3,17 @@ include("../setting/checksession.php");
 include("../setting/conn.php");
 
 $header_name = "ລາຍງານຍອດຂາຍ";
-$header_click = "6";
+$header_click = "10";
+
+if (isset($_POST['btn_view'])) {
+
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to'];
+} else {
+    $date_from = date("Y-m-d");
+    $date_to = date("Y-m-d");
+}
+
 ?>
 
 
@@ -60,14 +70,14 @@ $header_click = "6";
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຈາກວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo "$date_from"; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຫາວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo "$date_to"; ?>" />
                                                     </div>
                                                 </div>
 
@@ -93,96 +103,88 @@ $header_click = "6";
 
                                                     <?php
 
-                                                    if (isset($_POST['btn_view'])) {
 
-                                                        $date_from = $_POST['date_from'];
-                                                        $date_to = $_POST['date_to'];
-                                                        $br_name = $_POST['br_name'];
-
-
-                                                        $syntax = "  where b.date_register between '$date_from' and '$date_to' and br_name like '%$br_name%'  ";
-                                                        echo "$date_from $date_to $br_name";
-                                                    } else {
-                                                        $syntax = "";
-                                                    }
 
 
                                                     $total_bill_price = 0;
+                                                    $total_cash_price  = 0;
+                                                    $total_transfer_price = 0;
 
 
-                                                    $stmt2 = $conn->prepare("  
-                                                    select sum(item_values) as item_sale,a.item_id ,item_name,br_name,item_total_price,payment_type from tbl_bill_sale_detail a                     
+                                                    $stmt1 = $conn->prepare("  
+                                                
+                                                    select    a.item_id ,item_name,payment_type,
+                                                    sum(item_total_price) as total_sale,
+                                                    sum(item_values) as item_sale
+                                                    from tbl_bill_sale_detail a                     
                                                     left join tbl_bill_sale b on a.bs_id = b.bs_id 
-                                                    left join tbl_item_data c on a.item_id = c.item_id
-                                                    left join tbl_branch d on b.br_id = d.br_id
-                                                    $syntax
+                                                    left join tbl_item_data c on a.item_id = c.item_id  
+                                                    where b.date_register between '$date_from' and '$date_to' and br_id = '$br_id' 
                                                     group by a.item_id
-                                                    
-                                                ");
-                                                    $stmt2->execute();
-                                                    $i = 1;
-                                                    if ($stmt2->rowCount() > 0) {
-                                                        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                                            $item_total_price = $row2['item_total_price'];
-                                                            $item_sale = $row2['item_sale'];
-                                                            $item_id = $row2['item_id'];
-                                                            $payment_type = $row2['payment_type'];
 
-                                                            $total_price = $item_sale * $item_total_price;
+
+                                                ");
+                                                    $stmt1->execute();
+                                                    $i = 1;
+                                                    if ($stmt1->rowCount() > 0) {
+                                                        while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) {
+
+                                                            $total_sale = $row1['total_sale'];
+
+                                                            $item_id = $row1['item_id'];
+
+                                                            $payment_type = $row1['payment_type'];
+
                                                     ?>
 
                                                             <tr>
-                                                                <td><?php echo $row2['item_name']; ?> </td>
-                                                                <td><?php echo $row2['item_total_price']; ?></td>
-                                                                <?php
-                                                                
+                                                                <td><?php echo $row1['item_name']; ?> </td>
+                                                                <td>
 
-                                                                $rowio = $conn->query("
-                                                                select sum(item_total_price) as payment_type,br_name 
-                                                                from tbl_bill_sale_detail a 
-                                                                left join tbl_bill_sale b on a.bs_id = b.bs_id
-                                                                left join tbl_branch c on b.br_id = c.br_id                                                              
-                                                                where payment_type = '1'
-                                                                group by a.item_id ")->fetch(PDO::FETCH_ASSOC);
+                                                                    <?php
+                                                                    echo number_format("$total_sale", 0, ",", ".");
+                                                                    ?>
 
-
-                                                                if (!empty($rowio['payment_type'])) {
-                                                                    $payment_one =  $rowio['payment_type'];
-                                                                } else {
-                                                                    $payment_one = 0;
-                                                                }
-
-                                                                $rowap = $conn->query("
-                                                                select sum(item_total_price) as payment_type,br_name 
-                                                                from tbl_bill_sale_detail a 
-                                                                left join tbl_bill_sale b on a.bs_id = b.bs_id
-                                                                left join tbl_branch c on b.br_id = c.br_id
-                                                                where payment_type = '2'
-                                                                group by a.item_id")->fetch(PDO::FETCH_ASSOC);
-
-                                                                if (!empty($rowap['payment_type'])) {
-                                                                    $payment_two =  $rowap['payment_type'];
-                                                                } else {
-                                                                    $payment_two = 0;
-                                                                }
-
-                                                                ?>
+                                                                </td>
                                                                 <td>
                                                                     <?php
-                                                                    if ($payment_type == 1) {
-                                                                        echo "$item_total_price";
+
+                                                                    $row2 = $conn->query("
+                                                                    select sum(item_total_price) as cash_price 
+                                                                    from tbl_bill_sale_detail a 
+                                                                    left join tbl_bill_sale b on a.bs_id = b.bs_id                                                           
+                                                                    where payment_type = '1' and item_id ='$item_id'
+                                                                    and br_id ='$br_id' and date_register between '$date_from' and '$date_to'
+                                                                    group by  item_id ")->fetch(PDO::FETCH_ASSOC);
+                                                                    if (!empty($row2['cash_price'])) {
+                                                                        $cash_price =  $row2['cash_price'];
                                                                     } else {
-                                                                        echo "-";
+                                                                        $cash_price = 0;
                                                                     }
+
+
+                                                                    echo number_format("$cash_price", 0, ",", ".");
                                                                     ?>
                                                                 </td>
                                                                 <td>
                                                                     <?php
-                                                                    if ($payment_type == 2) {
-                                                                        echo "$item_total_price";
+
+                                                                    $row3 = $conn->query("
+                                                                    select sum(item_total_price) as transfer_price 
+                                                                    from tbl_bill_sale_detail a 
+                                                                    left join tbl_bill_sale b on a.bs_id = b.bs_id                                                           
+                                                                    where payment_type = '2'  and item_id ='$item_id'
+                                                                    and br_id ='$br_id' and date_register between '$date_from' and '$date_to'
+                                                                    group by  item_id ")->fetch(PDO::FETCH_ASSOC);
+
+                                                                    if (!empty($row3['transfer_price'])) {
+                                                                        $transfer_price =  $row3['transfer_price'];
                                                                     } else {
-                                                                        echo "-";
+                                                                        $transfer_price = 0;
                                                                     }
+
+                                                                    echo number_format("$transfer_price", 0, ",", ".");
+
                                                                     ?>
                                                                 </td>
                                                             </tr>
@@ -190,7 +192,9 @@ $header_click = "6";
 
                                                     <?php
 
-                                                            $total_bill_price += $item_total_price;
+                                                            $total_bill_price += $total_sale;
+                                                            $total_cash_price += $cash_price;
+                                                            $total_transfer_price += $transfer_price;
 
                                                             $i++;
                                                         }
@@ -199,10 +203,10 @@ $header_click = "6";
                                                     include("../setting/conn.php");
                                                     ?>
                                                     <tr>
-                                                        <td>ລວມ</td>
-                                                        <td><?= $total_bill_price; ?></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td class="text-right "><b>ລວມ </b></td>
+                                                        <td><?php echo number_format("$total_bill_price", 0, ",", ".");   ?></td>
+                                                        <td><?php echo number_format("$total_cash_price", 0, ",", ".");   ?></td>
+                                                        <td><?php echo number_format("$total_transfer_price", 0, ",", ".");   ?></td>
 
                                                     </tr>
 

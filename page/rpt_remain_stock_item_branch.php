@@ -1,10 +1,20 @@
 ົ<?php
-include("../setting/checksession.php");
-include("../setting/conn.php");
+    include("../setting/checksession.php");
+    include("../setting/conn.php");
 
-$header_name = "ລາຍງານສິນຄ້າຫນ້າຮ້ານ";
-$header_click = "10";
-?>
+    $header_name = "ລາຍງານສິນຄ້າຫນ້າຮ້ານ";
+    $header_click = "10";
+
+    if (isset($_POST['btn_view'])) {
+
+        $date_from = $_POST['date_from'];
+        $date_to = $_POST['date_to'];
+    } else {
+        $date_from = date("Y-m-d");
+        $date_to = date("Y-m-d");
+    }
+
+    ?>
 
 
 <!DOCTYPE html>
@@ -42,31 +52,30 @@ $header_click = "10";
                         <div class="col-xl-12">
 
                             <div class="card card-default">
-                                <div class="card-header align-items-center">
-                                    <h2 class=""> ລາຍງານສິນຄ້າຫນ້າຮ້ານ </h2>
-
-
-                                </div>
+                        
 
                                 <div class="card-body">
                                     <div class="tab-content">
                                         <form action="" method="post">
 
                                             <div class="row">
+                                                <div class=" col-lg-12  mb-4  text-center">
+                                                    <h2 class=" "> ລາຍງານສິນຄ້າຫນ້າຮ້ານ </h2>
 
-                                                
+
+                                                </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຈາກວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo "$date_from"; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຫາວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo "$date_to"; ?>" />
                                                     </div>
                                                 </div>
 
@@ -93,36 +102,18 @@ $header_click = "10";
 
                                                     <?php
 
-                                                            
-                                                    if (isset($_POST['btn_view'])) {
-
-                                                        $date_from = $_POST['date_from'];
-                                                        $date_to = $_POST['date_to'];
-
-                                                    
-
-
-                                                     
-                                                        echo "$date_from $date_to ";
-                                                    } else {
-                                                        
-                                                    }
-
-
-
-                                                    $stmt2 = $conn->prepare(" 
-                                                    call rpt_remain_stock_item_branch('$date_from','$date_to');
-                                                    ");
+                                                    $i = 1;
+                                                    $stmt2 = $conn->prepare("   call rpt_remain_stock_item_branch('$date_from','$date_to','$br_id'); ");
                                                     $stmt2->execute();
-                                                    
+
 
                                                     if ($stmt2->rowCount() > 0) {
                                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                                    
+
                                                     ?>
 
                                                             <tr>
-                                                                <td><?php echo $row2['item_id']; ?> </td>
+                                                                <td><?php echo "$i"; ?> </td>
                                                                 <td><?php echo $row2['item_name']; ?> </td>
                                                                 <td><?php echo $row2['remain_value']; ?></td>
                                                                 <td><?php echo $row2['item_in_day']; ?> </td>
@@ -132,9 +123,10 @@ $header_click = "10";
 
                                                             </tr>
                                                     <?php
+                                                            $i++;
                                                         }
                                                     }
-                                                     
+
                                                     ?>
 
 

@@ -1,10 +1,21 @@
-ົ<?php
-    include("../setting/checksession.php");
-    include("../setting/conn.php");
+<?php
+include("../setting/checksession.php");
+include("../setting/conn.php");
 
-    $header_name = "ລາຍງານສາງສິນຄ້າ";
-    $header_click = "10";
-    ?>
+$header_name = "ລາຍງານສາງສິນຄ້າ";
+$header_click = "10";
+
+if (isset($_POST['btn_view'])) {
+
+    $date_from = $_POST['date_from'];
+    $date_to = $_POST['date_to']; 
+} else {
+    $date_from = date("Y-m-d");
+    $date_to = date("Y-m-d"); 
+}
+
+
+?>
 
 
 <!DOCTYPE html>
@@ -56,14 +67,14 @@
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຈາກວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_from" name="date_from" value="<?php echo "$date_from"; ?>" />
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="firstName">ຫາວັນທີ</label>
-                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo date('Y-m-d'); ?>" />
+                                                        <input type="date" class="form-control" id="date_to" name="date_to" value="<?php echo "$date_to"; ?>" />
                                                     </div>
                                                 </div>
 
@@ -91,19 +102,11 @@
                                                     <?php
 
 
-
-                                                    if (isset($_POST['btn_view'])) {
-
-                                                        $date_from = $_POST['date_from'];
-                                                        $date_to = $_POST['date_to'];
-                                                        echo "$date_from $date_to ";
-                                                    } else {
-                                                    }
+ 
 
 
 
-
-                                                    $stmt2 = $conn->prepare("call spt_stock_warehouse('$date_from', '$date_to'); ");
+                                                    $stmt2 = $conn->prepare("call rpt_sumary_stock_out('$date_from', '$date_to','$br_id'); ");
                                                     $stmt2->execute();
                                                     if ($stmt2->rowCount() > 0) {
                                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
