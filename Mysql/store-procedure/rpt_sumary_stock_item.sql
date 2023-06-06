@@ -1,5 +1,5 @@
 DELIMITER $$ 
-create or replace PROCEDURE rpt_sumary_stock_out(date_from date ,date_to date, branch_id int)
+create or replace PROCEDURE rpt_sumary_stock_item(date_from date ,date_to date, branch_id int)
 BEGIN 
 
 create TEMPORARY table tmp_stock_in

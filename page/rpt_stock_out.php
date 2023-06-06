@@ -98,7 +98,7 @@ if (isset($_POST['btn_view'])) {
                                                 </thead>
                                                 <tbody>
                                                     <?php
- 
+                                                    $i = 1;
 
                                                     $stmt2 = $conn->prepare("  
                                                     select sum(item_values) as item_values,a.item_id ,item_name,wh_name 
@@ -119,7 +119,7 @@ if (isset($_POST['btn_view'])) {
 
 
                                                             <tr>
-                                                                <td><?php echo $row2['item_id']; ?> </td>
+                                                                <td><?php echo "$i"; ?> </td>
                                                                 <td><?php echo $row2['item_name']; ?> </td>
                                                                 <td><?php echo $row2['item_values']; ?> </td>
                                                                 <td><?php echo $row2['wh_name']; ?> </td>
@@ -127,10 +127,11 @@ if (isset($_POST['btn_view'])) {
 
                                                             </tr>
                                                     <?php
+
+                                                            $i++;
                                                         }
                                                     }
-                                                    $conn = null;
-                                                    include("../setting/conn.php");
+
                                                     ?>
 
 

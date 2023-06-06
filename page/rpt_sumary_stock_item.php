@@ -8,10 +8,10 @@ $header_click = "10";
 if (isset($_POST['btn_view'])) {
 
     $date_from = $_POST['date_from'];
-    $date_to = $_POST['date_to']; 
+    $date_to = $_POST['date_to'];
 } else {
     $date_from = date("Y-m-d");
-    $date_to = date("Y-m-d"); 
+    $date_to = date("Y-m-d");
 }
 
 
@@ -101,30 +101,30 @@ if (isset($_POST['btn_view'])) {
                                                     <?php
 
 
- 
+                                                    $i = 1;
 
 
 
-                                                    $stmt2 = $conn->prepare("call rpt_sumary_stock_out('$date_from', '$date_to','$br_id'); ");
+                                                    $stmt2 = $conn->prepare("call rpt_sumary_stock_item('$date_from', '$date_to','$br_id'); ");
                                                     $stmt2->execute();
                                                     if ($stmt2->rowCount() > 0) {
                                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
                                                     ?>
-                                                                <tr>
-                                                                    <td><?php echo $row2['item_id'] ?> </td>
-                                                                    <td><?php echo $row2['item_name'] ?> </td>
-                                                                    <td><?php echo $row2['remain_value'] ?></td>
-                                                                    <td><?php echo $row2['item_stock_in_day'] ?> </td>
-                                                                    <td><?php echo $row2['item_stock_out_day'] ?> </td>
-                                                                    <td></td>
-                                                                </tr>
+                                                            <tr>
+                                                                <td><?php echo "$i" ?> </td>
+                                                                <td><?php echo $row2['item_name'] ?> </td>
+                                                                <td><?php echo $row2['remain_value'] ?></td>
+                                                                <td><?php echo $row2['item_stock_in_day'] ?> </td>
+                                                                <td><?php echo $row2['item_stock_out_day'] ?> </td>
+                                                                <td></td>
+                                                            </tr>
                                                     <?php
-                                                            
+
+                                                            $i++;
                                                         }
                                                     }
-                                                    $conn = null;
-                                                    include("../setting/conn.php");
+
                                                     ?>
                                                 </tbody>
                                             </table>
