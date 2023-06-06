@@ -111,7 +111,7 @@ $header_click = "10";
 
 
                                                     $stmt2 = $conn->prepare(" 
-                                                    call deb_item_shop('$date_from','$date_to');
+                                                    call rpt_remain_stock_item_branch('$date_from','$date_to');
                                                     ");
                                                     $stmt2->execute();
                                                     
