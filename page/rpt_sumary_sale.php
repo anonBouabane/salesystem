@@ -64,7 +64,7 @@ if (isset($_POST['btn_view'])) {
                                         <form action="" method="post">
 
                                             <div class="row">
-
+                                            
 
 
                                                 <div class="col-lg-6">

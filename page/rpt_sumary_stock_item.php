@@ -98,7 +98,6 @@ if (isset($_POST['btn_view'])) {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
                                                     <?php
 
 
@@ -112,27 +111,21 @@ if (isset($_POST['btn_view'])) {
                                                         while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
                                                     ?>
-
-                                                            <tr>
-                                                                <td><?php echo $row2['item_id'] ?> </td>
-                                                                <td><?php echo $row2['item_name'] ?> </td>
-                                                                <td><?php echo $row2['remain_value'] ?></td>
-                                                                <td><?php echo $row2['item_stock_in_day'] ?> </td>
-                                                                <td><?php echo $row2['item_stock_out_day'] ?> </td>
-                                                                <td></td>
-
-
-                                                            </tr>
+                                                                <tr>
+                                                                    <td><?php echo $row2['item_id'] ?> </td>
+                                                                    <td><?php echo $row2['item_name'] ?> </td>
+                                                                    <td><?php echo $row2['remain_value'] ?></td>
+                                                                    <td><?php echo $row2['item_stock_in_day'] ?> </td>
+                                                                    <td><?php echo $row2['item_stock_out_day'] ?> </td>
+                                                                    <td></td>
+                                                                </tr>
                                                     <?php
+                                                            
                                                         }
                                                     }
                                                     $conn = null;
                                                     include("../setting/conn.php");
                                                     ?>
-
-
-
-
                                                 </tbody>
                                             </table>
                                         </form>

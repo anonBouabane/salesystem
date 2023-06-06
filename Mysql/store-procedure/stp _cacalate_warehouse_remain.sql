@@ -1,5 +1,5 @@
 DELIMITER $$ 
-create or replace PROCEDURE spt_stock_warehouse(date_from date ,date_to date)
+create or replace PROCEDURE rpt_sumary_stock_item(date_from date ,date_to date)
 BEGIN 
 
 create TEMPORARY table tmp_stock_in
