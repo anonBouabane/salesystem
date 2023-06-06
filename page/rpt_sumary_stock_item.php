@@ -87,49 +87,38 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
                                                     <?php
-
-
-
                                                     if (isset($_POST['btn_view'])) {
 
                                                         $date_from = $_POST['date_from'];
                                                         $date_to = $_POST['date_to'];
-                                                        echo "$date_from $date_to ";
+                                                        echo "$date_from--$date_to";
+                                                        $syntax = "  where d.date_register between '$date_from' and '$date_to'";
                                                     } else {
+                                                        echo  $row2 ;
                                                     }
 
-
-
-
-                                                    $stmt2 = $conn->prepare("call spt_stock_warehouse('$date_from', '$date_to'); ");
-                                                    $stmt2->execute();
-                                                    if ($stmt2->rowCount() > 0) {
-                                                        while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                                                        $stmt2 = $conn->prepare("call rpt_sumary_stock_item('$date_from','$date_to'); ");
+                                                        $stmt2->execute();
+                                                        if ($stmt2->rowCount() > 0) {
+                                                            while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
                                                     ?>
-
-                                                            <tr>
-                                                                <td><?php echo $row2['item_id'] ?> </td>
-                                                                <td><?php echo $row2['item_name'] ?> </td>
-                                                                <td><?php echo $row2['remain_value'] ?></td>
-                                                                <td><?php echo $row2['item_stock_in_day'] ?> </td>
-                                                                <td><?php echo $row2['item_stock_out_day'] ?> </td>
-                                                                <td></td>
-
-
-                                                            </tr>
+                                                                <tr>
+                                                                    <td><?php echo $row2['item_id'] ?> </td>
+                                                                    <td><?php echo $row2['item_name'] ?> </td>
+                                                                    <td><?php echo $row2['remain_value'] ?></td>
+                                                                    <td><?php echo $row2['item_stock_in_day'] ?> </td>
+                                                                    <td><?php echo $row2['item_stock_out_day'] ?> </td>
+                                                                    <td></td>
+                                                                </tr>
                                                     <?php
+                                                            
                                                         }
                                                     }
                                                     $conn = null;
                                                     include("../setting/conn.php");
                                                     ?>
-
-
-
-
                                                 </tbody>
                                             </table>
                                         </form>
