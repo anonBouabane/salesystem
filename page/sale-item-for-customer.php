@@ -169,10 +169,6 @@ $header_click = "5";
                                                                 <?php echo number_format("$total_price", 0, ",", ".") ?>
                                                             </td>
                                                             <td>
-                                                        
-
-                                                            </td>
-                                                            <td>
                                                                 <div class="dropdown">
                                                                     <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                                                     </a>
