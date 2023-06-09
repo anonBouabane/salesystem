@@ -258,7 +258,7 @@ $bs_id = $_GET['bs_id'];
                                                 <div class="form-group">
                                                     <!-- <a rel="facebox" href="../modal/payment-recieve-cash.php?bs_id" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a> -->
 
-                                                    <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ / ພິນບິນ</button>
+                                                    <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ແກ້ໄຂ / ພິມບິນ</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -350,7 +350,7 @@ $bs_id = $_GET['bs_id'];
                                                         </a>
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິນບິນ</a>
+                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິມບິນ</a>
                                                             <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$bs_id"; ?>">ແກ້ໄຂ</a>
 
                                                         </div>
@@ -438,7 +438,7 @@ $bs_id = $_GET['bs_id'];
                         timerProgressBar: true,
                         showConfirmButton: false,
                         showCloseButton: true,
-                        footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php?bs_id='+<?php echo "$bs_id"?>+'" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິນບິນ</a>',
+                        footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php?bs_id='+<?php echo "$bs_id"?>+'" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິມບິນ</a>',
                         didOpen: () => {
                             Swal.showLoading()
                             const b = Swal.getHtmlContainer().querySelector('b')

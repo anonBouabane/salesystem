@@ -363,6 +363,12 @@ $or_id = $_GET['or_id'];
                         'ລາຍການທີ' + data.list_value.toUpperCase() + 'ມີຂໍ້ມູນວ່າງ',
                         'error'
                     )
+                } else if (data.res == "valuesempty") {
+                    Swal.fire(
+                        'ແຈ້ງເຕືອນ',
+                        'ມີຂໍ້ມູນວ່າງ',
+                        'error'
+                    )
                 } else if (data.res == "used") {
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
