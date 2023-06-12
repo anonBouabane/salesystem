@@ -73,13 +73,15 @@ $header_click = "5";
                                             <form method="post" class=" card-header px-4 " id="scanitemfrom">
 
 
-                                                <input type="hidden" id="bill_id" name="bill_id" value='<?php echo ""; ?>' class="form-control" autofocus>
+                                                <input type="hidden" id="bill_id" name="bill_id"
+                                                    value='<?php echo ""; ?>' class="form-control" autofocus>
 
                                                 <div class="input-group px-5">
                                                     <label class="text-dark font-weight-medium">ລະຫັດສິນຄ້າ</label>
                                                 </div>
                                                 <div class="input-group px-5 p-4">
-                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
+                                                    <input type="text" id="box_barcode" name="box_barcode"
+                                                        class="form-control" autofocus>
                                                 </div>
 
 
@@ -87,7 +89,8 @@ $header_click = "5";
 
                                                 <div class="form-group  col-lg-12">
                                                     <label class="text-dark font-weight-medium">
-                                                        <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ສະແກນ</button>
+                                                        <button type="submit" name="btn_search"
+                                                            class="btn btn-primary mb-2 btn-pill">ສະແກນ</button>
                                                     </label>
 
                                                 </div>
@@ -132,8 +135,7 @@ $header_click = "5";
                                                 left join tbl_item_data b on a.item_id = b.item_id
                                                 left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id
                                                 where a.add_by = '$id_users' and a.br_id = '$br_id'
-                                                group by a.item_id
-                                                order by bsdp_id desc");
+                                                group by a.item_id ");
 
                                                 $stmt4->execute();
                                                 $i = 1;
@@ -147,40 +149,53 @@ $header_click = "5";
                                                         $total_price = $item_sale * $item_price;
 
                                                 ?>
-                                                        <tr>
-                                                            <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                            <td>
-                                                                <?php
+                                                <tr>
+                                                    <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>"
+                                                        value='<?php echo "$item_id"; ?>' class="form-control">
+                                                    <td>
+                                                        <?php
                                                                 echo mb_strimwidth("$item_name", 0, 50, "...");
                                                                 ?>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" name="item_value[]" id="item_value<?php echo $x; ?>" value='<?php echo "$item_sale"; ?>' class="form-control">
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" name="item_value[]"
+                                                            id="item_value<?php echo $x; ?>"
+                                                            value='<?php echo "$item_sale"; ?>' class="form-control">
 
-                                                                <?php echo "$item_sale"; ?>
-                                                            </td>
-                                                            <td>
+                                                        <?php echo "$item_sale"; ?>
+                                                    </td>
+                                                    <td>
 
-                                                                <?php echo number_format("$item_price", 0, ",", ".") ?>
-                                                            </td>
-                                                            <td>
-                                                                <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>" value='<?php echo "$total_price"; ?>' class="form-control">
+                                                        <?php echo number_format("$item_price", 0, ",", ".") ?>
+                                                    </td>
+                                                    <td>
+                                                        <input type="hidden" name="total_price[]"
+                                                            id="item_price_total<?php echo $x; ?>"
+                                                            value='<?php echo "$total_price"; ?>' class="form-control">
 
-                                                                <?php echo number_format("$total_price", 0, ",", ".") ?>
-                                                            </td>
-                                                            <td>
-                                                                <div class="dropdown">
-                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                    </a>
+                                                        <?php echo number_format("$total_price", 0, ",", ".") ?>
+                                                    </td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a class="dropdown-toggle icon-burger-mini" href="#"
+                                                                role="button" id="dropdownMenuLink"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false" data-display="static">
+                                                            </a>
 
-                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a rel="facebox" href="../modal/edit-sale-item-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
-                                                                        <a class="dropdown-item" type="button" id="delitemlist" data-id='<?php echo $row4['item_id']; ?>' class="btn btn-danger btn-sm">ຍົກເລີກ</a>
+                                                            <div class="dropdown-menu dropdown-menu-right"
+                                                                aria-labelledby="dropdownMenuLink">
+                                                                <a rel="facebox"
+                                                                    href="../modal/edit-sale-item-pre.php?id=<?php echo $row4['item_id']; ?>"
+                                                                    class="dropdown-item">ແກ້ໄຂ</a>
+                                                                <a class="dropdown-item" type="button" id="delitemlist"
+                                                                    data-id='<?php echo $row4['item_id']; ?>'
+                                                                    class="btn btn-danger btn-sm">ຍົກເລີກ</a>
 
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                                 <?php
                                                         $total_bill_price += $total_price;
                                                         $i++;
@@ -204,10 +219,12 @@ $header_click = "5";
                                             <div class="form-group  col-lg-6">
                                                 <label class="text-dark font-weight-medium">ມູນຄ່າທັງໝົດ</label>
                                                 <div class="form-group">
-                                                    <input type="hidden" id="bs_total_price" name="bs_total_price" value='<?php echo ""; ?>' class="form-control" autofocus>
+                                                    <input type="hidden" id="bs_total_price" name="bs_total_price"
+                                                        value='<?php echo ""; ?>' class="form-control" autofocus>
 
                                                     <label class="text-dark font-weight-medium">
-                                                        <td><?php echo number_format("$total_bill_price", 0, ",", ".") ?> ກີບ</td>
+                                                        <td><?php echo number_format("$total_bill_price", 0, ",", ".") ?>
+                                                            ກີບ</td>
                                                     </label>
 
                                                 </div>
@@ -216,7 +233,8 @@ $header_click = "5";
                                             <div class="form-group  col-lg-6">
                                                 <label class="text-dark font-weight-medium"></label>
                                                 <div class="form-group">
-                                                    <a rel="facebox" href="../modal/payment-recieve-cash.php" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a>
+                                                    <a rel="facebox" href="../modal/payment-recieve-cash.php"
+                                                        class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</a>
 
                                                     <!-- <button type="submit" name="btn_search" class="btn btn-primary mb-2 btn-pill">ຊຳລະເງິນ</button> -->
                                                 </div>
@@ -281,11 +299,11 @@ $header_click = "5";
 
 
 
-                                            <tr>
-                                                <td><?php echo "$tbs_id"; ?></td>
-                                                <td><?php echo "$bs_number"; ?></td>
-                                                <td>
-                                                    <?php
+                                    <tr>
+                                        <td><?php echo "$tbs_id"; ?></td>
+                                        <td><?php echo "$bs_number"; ?></td>
+                                        <td>
+                                            <?php
                                                     $row_values = $conn->query(" 
                                                     select count(bsd_id) as item_values 
                                                     from tbl_bill_sale_detail 
@@ -294,29 +312,35 @@ $header_click = "5";
 
                                                     echo $row_values['item_values'];
                                                     ?>
-                                                </td>
-                                                <td><?php echo "$payment_name"; ?></td>
+                                        </td>
+                                        <td><?php echo "$payment_name"; ?></td>
 
-                                                <td>
-                                                    <?php echo number_format("$price_total", 2, ",", ".") ?>
-                                                </td>
-                                                <td><?php echo "$date_sale"; ?></td>
+                                        <td>
+                                            <?php echo number_format("$price_total", 2, ",", ".") ?>
+                                        </td>
+                                        <td><?php echo "$date_sale"; ?></td>
 
 
 
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                        </a>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a class="dropdown-toggle icon-burger-mini" href="#" role="button"
+                                                    id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false" data-display="static">
+                                                </a>
 
-                                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                            <a class="dropdown-item" href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>" target="_blank">ພິມບິນ</a>
-                                                            <a class="dropdown-item" href="edit-sale-item-for-customer.php?bs_id=<?php echo "$tbs_id"; ?>">ແກ້ໄຂ</a>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdownMenuLink">
+                                                    <a class="dropdown-item"
+                                                        href="../pdf/print-bill-sale-customer-pdf.php?bs_id=<?php echo "$tbs_id"; ?>"
+                                                        target="_blank">ພິມບິນ</a>
+                                                    <a class="dropdown-item"
+                                                        href="edit-sale-item-for-customer.php?bs_id=<?php echo "$tbs_id"; ?>">ແກ້ໄຂ</a>
 
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     <?php
                                         }
                                     }
@@ -343,184 +367,184 @@ $header_click = "5";
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        // add item Data 
-        $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-item-to-sale.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+    // add item Data 
+    $(document).on("submit", "#scanitemfrom", function() {
+        $.post("../query/scan-item-to-sale.php", $(this).serialize(), function(data) {
+            if (data.res == "success") {
 
-                    location.reload();
-                } else if (data.res == "nofound") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນລະບົບ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "nostock") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນສາງ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "noprice") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີການຕັ້ງລາຄາ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                }
-            }, 'json');
-
-            return false;
-        });
-
-        $(document).on("submit", "#confirmpay", function() {
-            $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-
-                    let timerInterval
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ສຳເລັດ',
-                        html: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
-                        // timer: 10000,
-                        timerProgressBar: true,
-                        showConfirmButton: false,
-                        showCloseButton: true,
-                        footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິມບິນ</a>',
-                        didOpen: () => {
-                            Swal.showLoading()
-                            const b = Swal.getHtmlContainer().querySelector('b')
-                            timerInterval = setInterval(() => {
-                                b.textContent = Swal.getTimerLeft()
-                            }, 100)
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval)
-                        }
-                    }).then((result) => {
+                location.reload();
+            } else if (data.res == "nofound") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນລະບົບ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
                         location.reload();
-                        /* Read more about handling dismissals below */
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            console.log('I was closed by the timer')
-                        }
-                    })
+                    }, 2000);
+            } else if (data.res == "nostock") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນສາງ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "noprice") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີການຕັ້ງລາຄາ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            }
+        }, 'json');
 
-                } else if (data.res == "error") {
+        return false;
+    });
 
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
-                        'error'
-                    )
+    $(document).on("submit", "#confirmpay", function() {
+        $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
+            if (data.res == "success") {
 
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 1000);
-
-                } else if (data.res == "notenoughtmoney") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ຮັບເງິນບໍ່ພໍ',
-                        'error'
-                    )
-
-
-                }
-            }, 'json');
-
-            return false;
-        });
-
-
-
-        // Delete item
-        $(document).on("click", "#delitemlist", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-item-sale-pre.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບສິນຄ້າສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                location.reload();
-                            }, 1000);
+                let timerInterval
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ສຳເລັດ',
+                    html: 'ກະລຸນາທອນເງິນ ' + data.cash_back + ' ໃຫ້ຖືກຕ້ອງ',
+                    // timer: 10000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    footer: ' <a rel="facebox" href="../pdf/print-bill-sale-customer-pdf.php" target="_blank" class="btn btn-primary mb-2 btn-pill">ກົດເພິ່ອພິມບິນ</a>',
+                    didOpen: () => {
+                        Swal.showLoading()
+                        const b = Swal.getHtmlContainer().querySelector('b')
+                        timerInterval = setInterval(() => {
+                            b.textContent = Swal.getTimerLeft()
+                        }, 100)
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval)
                     }
+                }).then((result) => {
+                    location.reload();
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer')
+                    }
+                })
 
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
+            } else if (data.res == "error") {
 
-            });
-            return false;
-        });
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                    'error'
+                )
+
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 1000);
+
+            } else if (data.res == "notenoughtmoney") {
+
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ຮັບເງິນບໍ່ພໍ',
+                    'error'
+                )
 
 
-        $(function() {
-            $('a[rel*=facebox]').facebox();
-        });
+            }
+        }, 'json');
+
+        return false;
+    });
 
 
-        // Update Examinee
-        $(document).on("submit", "#updatePreFrm", function() {
-            $.post("../query/update-sale-item-pre.php", $(this).serialize(), function(data) {
+
+    // Delete item
+    $(document).on("click", "#delitemlist", function(e) {
+        e.preventDefault();
+        var id = $(this).data("id");
+        $.ajax({
+            type: "post",
+            url: "../query/delete-item-sale-pre.php",
+            dataType: "json",
+            data: {
+                id: id
+            },
+            cache: false,
+            success: function(data) {
                 if (data.res == "success") {
                     Swal.fire(
                         'ສຳເລັດ',
-                        data.item_name + ' <br> ແກ້ໄຂສຳເລັດ',
+                        'ລຶບສິນຄ້າສຳເລັດ',
                         'success'
                     )
-                    refreshDiv();
                     setTimeout(
                         function() {
                             location.reload();
                         }, 1000);
-                } else if (data.res == "failed") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາດເບີກເກີນສາງໄດ້',
-                        'error'
-                    )
-
                 }
-            }, 'json')
-            return false;
+
+            },
+            error: function(xhr, ErrorStatus, error) {
+                console.log(status.error);
+            }
+
         });
+        return false;
+    });
+
+
+    $(function() {
+        $('a[rel*=facebox]').facebox();
+    });
+
+
+    // Update Examinee
+    $(document).on("submit", "#updatePreFrm", function() {
+        $.post("../query/update-sale-item-pre.php", $(this).serialize(), function(data) {
+            if (data.res == "success") {
+                Swal.fire(
+                    'ສຳເລັດ',
+                    data.item_name + ' <br> ແກ້ໄຂສຳເລັດ',
+                    'success'
+                )
+                refreshDiv();
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 1000);
+            } else if (data.res == "failed") {
+
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ບໍ່ສາມາດເບີກເກີນສາງໄດ້',
+                    'error'
+                )
+
+            }
+        }, 'json')
+        return false;
+    });
 
 
 
-        function refreshDiv() {
-            $('#tableList').load(document.URL + ' #tableList');
-            $('#refreshData').load(document.URL + ' #refreshData');
+    function refreshDiv() {
+        $('#tableList').load(document.URL + ' #tableList');
+        $('#refreshData').load(document.URL + ' #refreshData');
 
-        }
+    }
     </script>
 
 
