@@ -158,7 +158,7 @@ $apo_id = $_GET['apo_id'];
                                                     left join tbl_item_data b on a.item_id = b.item_id 
                                                     left join tbl_stock_out_warehouse c on a.sow_id = c.sow_id
                                                     where apo_id = '$apo_id'
-                                                    group by item_name,a.item_id
+                                                    group by item_name,a.item_id,a.sow_id
                                                     order by a.sow_id  desc ");
                                                     $stmt4->execute();
                                                     $i = 1;
