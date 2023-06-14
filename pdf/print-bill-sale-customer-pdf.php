@@ -11,13 +11,14 @@ $date_report = date("d/m/Y");
 if (empty($_GET['bs_id'])) {
 
 	$cusrows = $conn->query("
-	SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
+
+    SELECT  max(bs_id) as bs_id,sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
 	FROM tbl_bill_sale a
 	left join tbl_branch b on a.br_id = b.br_id
 	left join tbl_payment_type c on a.payment_type = c.pt_id 
 	left join tbl_user d on a.sale_by = d.usid 
-	where sale_by ='$id_users' 
-	")->fetch(PDO::FETCH_ASSOC);
+	where  bs_id = (SELECT  max(bs_id) from tbl_bill_sale where sale_by ='$id_users'  )
+	group by sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name ")->fetch(PDO::FETCH_ASSOC);
 
 } else {
 
@@ -31,6 +32,7 @@ if (empty($_GET['bs_id'])) {
 	left join tbl_payment_type c on a.payment_type = c.pt_id 
 	left join tbl_user d on a.sale_by = d.usid 
 	where bs_id ='$bill_id' 
+	group by sale_bill_number,total_pay,br_name,payment_name,a.date_register,full_name
 	")->fetch(PDO::FETCH_ASSOC);
 
 
@@ -39,55 +41,55 @@ if (empty($_GET['bs_id'])) {
 ?>
 
 <style>
-	.center {
-		text-align: center;
-	}
+.center {
+    text-align: center;
+}
 
-	.left {
-		text-align: left;
-	}
+.left {
+    text-align: left;
+}
 
-	.right {
-		text-align: right;
-	}
+.right {
+    text-align: right;
+}
 
-	.fs-25 {
-		font-size: 25px;
-	}
+.fs-25 {
+    font-size: 25px;
+}
 
-	.fs-30 {
-		font-size: 30px;
-	}
+.fs-30 {
+    font-size: 30px;
+}
 
-	.fs-35 {
-		font-size: 35px;
-	}
+.fs-35 {
+    font-size: 35px;
+}
 
-	.header {
+.header {
 
-		text-decoration: underline;
+    text-decoration: underline;
 
-	}
+}
 
-	.line-hr {
-		height: 2px;
-		width: 100%;
-		border-width: 0;
-		color: black;
-		background-color: black
-	}
+.line-hr {
+    height: 2px;
+    width: 100%;
+    border-width: 0;
+    color: black;
+    background-color: black
+}
 </style>
 
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 
 <body onload="printdiv('divname')">
-	<!-- <div class="page-wrapper"> -->
-	<div class="row" id="divname" style="font-family: phetsarath OT;">
+    <!-- <div class="page-wrapper"> -->
+    <div class="row" id="divname" style="font-family: phetsarath OT;">
 
-		<?php
+        <?php
 
 	
 
@@ -98,46 +100,46 @@ if (empty($_GET['bs_id'])) {
 
 		?>
 
-		<div class="">
+        <div class="">
 
-			<div class="center">
+            <div class="center">
 
-				<img src='../images/logologin.png' width='35%'>
+                <img src='../images/logologin.png' width='35%'>
 
-			</div>
-			<div class="center fs-35">
-				ສາຂາ: <?php echo $cusrows['br_name']; ?>
-			</div>
-			<div class="center fs-35">
-				ບິນເລກທີ: <?php echo $cusrows['sale_bill_number']; ?>
-			</div>
-			<div class="center fs-35">
-				ເບີໂທ: 020 55609011
-			</div>
+            </div>
+            <div class="center fs-35">
+                ສາຂາ: <?php echo $cusrows['br_name']; ?>
+            </div>
+            <div class="center fs-35">
+                ບິນເລກທີ: <?php echo $cusrows['sale_bill_number']; ?>
+            </div>
+            <div class="center fs-35">
+                ເບີໂທ: 020 55609011
+            </div>
 
-			<br>
+            <br>
 
-			<div class="center fs-35">
-				ບິນເກັບເງິນ
-			</div>
+            <div class="center fs-35">
+                ບິນເກັບເງິນ
+            </div>
 
-			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
+            <table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
 
-				<tr>
-					<th class="left" style="font-size: 35px;">ຊື່ສິນຄ້າ</th>
-					<th class="right" style="font-size: 35px;">ຈຳນວນ / ລາຄາ</th>
-				</tr>
+                <tr>
+                    <th class="left" style="font-size: 35px;">ຊື່ສິນຄ້າ</th>
+                    <th class="right" style="font-size: 35px;">ຈຳນວນ / ລາຄາ</th>
+                </tr>
 
-			</table>
+            </table>
 
-			<hr class="line-hr">
+            <hr class="line-hr">
 
-			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
-
-
+            <table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
 
 
-				<?php
+
+
+                <?php
 
 				$total_bill_price = 0;
 				$total_item = 0;
@@ -158,26 +160,26 @@ if (empty($_GET['bs_id'])) {
 
 
 				?>
-						<tr>
-							<td class="left fs-25">
-								<?php
+                <tr>
+                    <td class="left fs-25">
+                        <?php
 								echo mb_strimwidth("$item_name", 0, 50, "...");
 								?>
-							</td>
+                    </td>
 
 
-							<td class="right fs-25">
+                    <td class="right fs-25">
 
-								<?php
+                        <?php
 								echo  "$item_values / ";
 								echo number_format("$total_price", 0, ",", ".")
 
 								?>
-							</td>
+                    </td>
 
-						</tr>
+                </tr>
 
-				<?php
+                <?php
 						$total_bill_price += $total_price;
 
 						$total_item += $item_values;
@@ -190,51 +192,51 @@ if (empty($_GET['bs_id'])) {
 
 
 
-			</table>
+            </table>
 
-			<hr class="line-hr">
-			<table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
+            <hr class="line-hr">
+            <table class="align-middle mb-0 table table-borderless" id="tableList" width="100%">
 
-				<tr>
-					<th class="right" style="font-size: 35px;">ຈຳນວນສິນຄ້າ: <?php echo "$total_item"; ?></th>
-					<th class="right" style="font-size: 35px;">
-						<?php
+                <tr>
+                    <th class="right" style="font-size: 35px;">ຈຳນວນສິນຄ້າ: <?php echo "$total_item"; ?></th>
+                    <th class="right" style="font-size: 35px;">
+                        <?php
 						echo number_format("$total_bill_price", 0, ",", ".")
 						?>
-					</th>
-				</tr>
+                    </th>
+                </tr>
 
-			</table>
+            </table>
 
-			<br>
-			<div style="font-size: 35px;" class="center">
-				ຜູ້ຂາຍ: <?php echo "$sale_name"; ?>
-			</div>
-			<div style="font-size: 35px;" class="center">
-				ຂອບໃຈທິດອຸດໜູນ
-			</div>
-		</div>
+            <br>
+            <div style="font-size: 35px;" class="center">
+                ຜູ້ຂາຍ: <?php echo "$sale_name"; ?>
+            </div>
+            <div style="font-size: 35px;" class="center">
+                ຂອບໃຈທິດອຸດໜູນ
+            </div>
+        </div>
 
-		</b>
+        </b>
 
-	</div>
-	<!-- /row -->
-	<!-- </div> -->
-	<!-- </div> -->
-	<script type="text/javascript">
-		// window.print();
-		function printdiv(divname) {
-			var printContents = document.getElementById('divname').innerHTML;
-			var roiginalContents = document.body.innerHTML;
-			setTimeout(function() {
-				this.close();
-			}, 1000);
+    </div>
+    <!-- /row -->
+    <!-- </div> -->
+    <!-- </div> -->
+    <script type="text/javascript">
+    // window.print();
+    function printdiv(divname) {
+        var printContents = document.getElementById('divname').innerHTML;
+        var roiginalContents = document.body.innerHTML;
+        setTimeout(function() {
+            this.close();
+        }, 1000);
 
-			window.print();
-			document.body.innerHTML = roiginalContents;
-		}
-	</script>
-	<!-- <script>
+        window.print();
+        document.body.innerHTML = roiginalContents;
+    }
+    </script>
+    <!-- <script>
 		
 		 window.close()
 		 

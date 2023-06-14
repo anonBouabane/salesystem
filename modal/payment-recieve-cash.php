@@ -97,8 +97,7 @@ if (empty($row_price['total_price'])) {
                     left join tbl_item_data b on a.item_id = b.item_id
                     left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id
                     where a.add_by = '$id_users' and a.br_id = '$br_id'
-                    group by a.item_id
-                    order by bsdp_id desc ");
+                    group by a.item_id,item_name,item_price ");
 
                     $stmt4->execute();
                     $i = 1;
@@ -112,30 +111,33 @@ if (empty($row_price['total_price'])) {
                             $total_price = $item_sale * $item_price;
 
                     ?>
-                            <tr>
-                                <input type="hidden" name="item_id_modal[]" id="item_id_modal<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                <td>
-                                    <?php
+                    <tr>
+                        <input type="hidden" name="item_id_modal[]" id="item_id_modal<?php echo $x; ?>"
+                            value='<?php echo "$item_id"; ?>' class="form-control">
+                        <td>
+                            <?php
                                     echo mb_strimwidth("$item_name", 0, 50, "...");
                                     ?>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="item_value[]" id="item_value<?php echo $x; ?>" value='<?php echo "$item_sale"; ?>' class="form-control">
+                        </td>
+                        <td>
+                            <input type="hidden" name="item_value[]" id="item_value<?php echo $x; ?>"
+                                value='<?php echo "$item_sale"; ?>' class="form-control">
 
-                                    <?php echo "$item_sale"; ?>
-                                </td>
-                                <td>
+                            <?php echo "$item_sale"; ?>
+                        </td>
+                        <td>
 
-                                    <?php echo number_format("$item_price", 0, ",", ".") ?>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>" value='<?php echo "$total_price"; ?>' class="form-control">
+                            <?php echo number_format("$item_price", 0, ",", ".") ?>
+                        </td>
+                        <td>
+                            <input type="hidden" name="total_price[]" id="item_price_total<?php echo $x; ?>"
+                                value='<?php echo "$total_price"; ?>' class="form-control">
 
-                                    <?php echo number_format("$total_price", 0, ",", ".") ?>
-                                </td>
-                         
+                            <?php echo number_format("$total_price", 0, ",", ".") ?>
+                        </td>
 
-                            </tr>
+
+                    </tr>
                     <?php
                             $total_bill_price += $total_price;
                             $i++;
@@ -154,14 +156,17 @@ if (empty($row_price['total_price'])) {
 
 
 <script type="text/javascript">
-    function calculateTotal() {
+function calculateTotal() {
 
-        var nairaRate = document.pricecalculator.nairaRateToday.value; //get NGN rate today from admin and assign to nairaRate
-
-
-        dollarValue = eval(document.pricecalculator.monney_recieve.value - nairaRate); //multiply nairaInput by nairaRate to get dollarValue
+    var nairaRate = document.pricecalculator.nairaRateToday
+    .value; //get NGN rate today from admin and assign to nairaRate
 
 
-        document.getElementById('dollar').innerHTML = dollarValue; //pass dollarValue to dollar to show auto-calculation onscreen
-    }
+    dollarValue = eval(document.pricecalculator.monney_recieve.value -
+    nairaRate); //multiply nairaInput by nairaRate to get dollarValue
+
+
+    document.getElementById('dollar').innerHTML =
+    dollarValue; //pass dollarValue to dollar to show auto-calculation onscreen
+}
 </script>

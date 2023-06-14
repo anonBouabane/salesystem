@@ -135,7 +135,7 @@ $header_click = "5";
                                                 left join tbl_item_data b on a.item_id = b.item_id
                                                 left join tbl_item_price c on a.item_id = c.item_id and a.br_id = c.br_id
                                                 where a.add_by = '$id_users' and a.br_id = '$br_id'
-                                                group by a.item_id ");
+                                                group by a.item_id,item_name,item_price ");
 
                                                 $stmt4->execute();
                                                 $i = 1;
@@ -372,50 +372,50 @@ $header_click = "5";
         $.post("../query/scan-item-to-sale.php", $(this).serialize(), function(data) {
             if (data.res == "success") {
 
-                    location.reload();
-                } else if (data.res == "nofound") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນລະບົບ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "nostock") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນສາງ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "noprice") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີການຕັ້ງລາຄາ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                }
-            }, 'json');
+                location.reload();
+            } else if (data.res == "nofound") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນລະບົບ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "nostock") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນສາງ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "noprice") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີການຕັ້ງລາຄາ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            }
+        }, 'json');
 
-            return false;
-        });
+        return false;
+    });
 
-      
 
- 
+
+
     $(document).on("submit", "#confirmpaymodal", function() {
         $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
             if (data.res == "success") {
- 
+
 
                 let timerInterval
                 Swal.fire({
