@@ -34,7 +34,7 @@ if (empty($row_price['total_price'])) {
         </i>
     </legend>
     <div class="col-md-12 mt-4">
-        <form method="post" id="confirmpay" name="pricecalculator">
+        <form method="post" id="confirmpaymodal" name="pricecalculator">
 
             <div class="form-group">
                 <div class="row">
@@ -113,7 +113,7 @@ if (empty($row_price['total_price'])) {
 
                     ?>
                             <tr>
-                                <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
+                                <input type="hidden" name="item_id_modal[]" id="item_id_modal<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
                                 <td>
                                     <?php
                                     echo mb_strimwidth("$item_name", 0, 50, "...");

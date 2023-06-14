@@ -9,14 +9,10 @@ extract($_POST);
 $sum_total = 0;
 
 $cash_back = 0;
-
-if (empty($_POST['item_id'])) {
-
-    $res = array("res" => "error");
-} else if ($monney_recieve < $monney_pay) {
+ if ($monney_recieve < $monney_pay) {
     $res = array("res" => "notenoughtmoney");
 } else {
-    $countbox = count($_POST['item_id']);
+   
 
     $countrow = $conn->query(" SELECT max(sale_bill_number)+1 as last_number 
     FROM tbl_bill_sale
@@ -44,13 +40,13 @@ values ('$ref_bill','$monney_pay','$br_id','2','$paytype','$id_users',CURDATE())
 
     if ($insert_bill) {
 
-
+        $countbox = count($_POST['item_id_modal']);
 
         for ($i = 0; $i < ($countbox); $i++) {
             extract($_POST);
 
             $insert_detail = $conn->query(" insert into tbl_bill_sale_detail (bs_id,item_id,item_values,item_total_price)
-             values ('$lastid','$item_id[$i]','$item_value[$i]','$total_price[$i]') ");
+             values ('$lastid','$item_id_modal[$i]','$item_value[$i]','$total_price[$i]') ");
 
             $sum_total += $total_price[$i];
         }

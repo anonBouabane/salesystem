@@ -385,7 +385,7 @@ $header_click = "5";
             return false;
         });
 
-        $(document).on("submit", "#confirmpay", function() {
+        $(document).on("submit", "#confirmpaymodal", function() {
             $.post("../query/confirm-pay-bill-sale.php", $(this).serialize(), function(data) {
                 if (data.res == "success") {
 
@@ -421,7 +421,7 @@ $header_click = "5";
 
                     Swal.fire(
                         'ແຈ້ງເຕືອນ',
-                        'ບໍ່ສາມາເຮັດລາຍການໄດ້',
+                        'ບໍ່ສາມາດເຮັດລາຍການໄດ້',
                         'error'
                     )
 
