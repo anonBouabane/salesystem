@@ -73,7 +73,8 @@ $wh_id = $_POST['wh_id'];
 
 
 
-                                            <form method="post" class="contact-form card-header px-0  text-center" id="scanitemfrom">
+                                            <form method="post" class="contact-form card-header px-0  text-center"
+                                                id="scanitemfrom">
 
 
 
@@ -85,13 +86,16 @@ $wh_id = $_POST['wh_id'];
 
 
 
-                                                <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
+                                                <input type="hidden" id="warehouse_id" name="warehouse_id"
+                                                    class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
 
 
-                                                <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
+                                                <input type="hidden" id="approve_id" name="approve_id"
+                                                    class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
 
                                                 <div class="input-group px-5 p-4">
-                                                    <input type="text" id="box_barcode" name="box_barcode" class="form-control" autofocus>
+                                                    <input type="text" id="box_barcode" name="box_barcode"
+                                                        class="form-control" autofocus>
                                                 </div>
 
 
@@ -99,7 +103,8 @@ $wh_id = $_POST['wh_id'];
 
                                                 <div class="form-group  col-lg-12">
                                                     <label class="text-dark font-weight-medium">
-                                                        <button type="submit" name="btn_add" id="btn_add" class="btn btn-primary mb-2 btn-pill">ສະແກນ </button>
+                                                        <button type="submit" name="btn_add" id="btn_add"
+                                                            class="btn btn-primary mb-2 btn-pill">ສະແກນ </button>
                                                     </label>
 
                                                 </div>
@@ -134,9 +139,11 @@ $wh_id = $_POST['wh_id'];
 
 
 
-                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control" value='<?php echo "$wh_id"; ?>' autofocus>
+                                    <input type="hidden" id="warehouse_id" name="warehouse_id" class="form-control"
+                                        value='<?php echo "$wh_id"; ?>' autofocus>
 
-                                    <input type="hidden" id="approve_id" name="approve_id" class="form-control" autofocus value='<?php echo "$apo_id"; ?>'>
+                                    <input type="hidden" id="approve_id" name="approve_id" class="form-control"
+                                        autofocus value='<?php echo "$apo_id"; ?>'>
 
                                     <div class="d-flex justify-content-center mt-6">
                                         <button type="submit" class="btn btn-primary mb-2 btn-pill">ເບີກສິນຄ້າ</button>
@@ -167,8 +174,7 @@ $wh_id = $_POST['wh_id'];
                                                     from tbl_approve_order_detail a
                                                     left join tbl_item_data b on a.item_id = b.item_id
                                                     where apo_id='$apo_id' 
-                                                    group by item_name,a.item_id
-                                                    order by apod_id  desc ");
+                                                    group by item_name,a.item_id ");
                                                     $stmt4->execute();
                                                     $i = 1;
                                                     if ($stmt4->rowCount() > 0) {
@@ -180,10 +186,10 @@ $wh_id = $_POST['wh_id'];
                                                             $x = 1;
                                                     ?>
 
-                                                            <tr>
+                                                    <tr>
 
 
-                                                                <?php
+                                                        <?php
 
                                                                 $check_apo_id = 0;
 
@@ -237,56 +243,69 @@ $wh_id = $_POST['wh_id'];
 
 
                                                                 ?>
-                                                                <td><?php echo "$i"; ?></td>
-                                                                <input type="hidden" name="item_id[]" id="item_id<?php echo $x; ?>" value='<?php echo "$item_id"; ?>' class="form-control">
-                                                                <input type="hidden" name="item_values[]" id="item_values<?php echo $x; ?>" value='<?php echo "$val_pre"; ?>' class="form-control">
+                                                        <td><?php echo "$i"; ?></td>
+                                                        <input type="hidden" name="item_id[]"
+                                                            id="item_id<?php echo $x; ?>"
+                                                            value='<?php echo "$item_id"; ?>' class="form-control">
+                                                        <input type="hidden" name="item_values[]"
+                                                            id="item_values<?php echo $x; ?>"
+                                                            value='<?php echo "$val_pre"; ?>' class="form-control">
 
-                                                        
-                                                                <td>
-                                                                    <?php
+
+                                                        <td>
+                                                            <?php
                                                                     echo mb_strimwidth("$item_name", 0, 50, "...");
 
                                                                     ?>
 
-                                                                </td>
-                                                                <td>
+                                                        </td>
+                                                        <td>
 
 
-                                                                    <?php
+                                                            <?php
 
                                                                     echo "$item_values / $item_approve";
                                                                     ?>
-                                                                </td>
-                                                                <?php
+                                                        </td>
+                                                        <?php
                                                                 if ($val_pre != 0 ) {
 
                                                                 ?>
-                                                                    <td>
+                                                        <td>
 
-                                                                        <div class="dropdown">
-                                                                            <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                            </a>
+                                                            <div class="dropdown">
+                                                                <a class="dropdown-toggle icon-burger-mini" href="#"
+                                                                    role="button" id="dropdownMenuLink"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false" data-display="static">
+                                                                </a>
 
-                                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                                <div class="dropdown-menu dropdown-menu-right"
+                                                                    aria-labelledby="dropdownMenuLink">
 
-                                                                                <a rel="facebox" href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>" class="dropdown-item">ແກ້ໄຂ</a>
+                                                                    <a rel="facebox"
+                                                                        href="../modal/edit-stock-warehouse-out-pre.php?id=<?php echo $row4['item_id']; ?>"
+                                                                        class="dropdown-item">ແກ້ໄຂ</a>
 
-                                                                                <a class="dropdown-item" type="button" id="delstockoutpre" data-id='<?php echo $rowpre['item_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                                    <a class="dropdown-item" type="button"
+                                                                        id="delstockoutpre"
+                                                                        data-id='<?php echo $rowpre['item_id']; ?>'
+                                                                        class="btn btn-danger btn-sm">ລຶບ</a>
 
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
+                                                                </div>
+                                                            </div>
+                                                        </td>
 
-                                                                <?php
+                                                        <?php
                                                                 } else {
                                                                 ?>
-                                                                    <td>
-                                                                    </td>
-                                                                <?php
+                                                        <td>
+                                                        </td>
+                                                        <?php
                                                                 }
                                                                 ?>
 
-                                                            </tr>
+                                                    </tr>
 
 
 
@@ -335,7 +354,8 @@ $wh_id = $_POST['wh_id'];
                                     </div>
                                     <form method="post" id="additemorderfrm">
 
-                                        <table id="productsTable4" class="table table-hover table-product" style="width:100%">
+                                        <table id="productsTable4" class="table table-hover table-product"
+                                            style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th>ເລກລຳດັບ</th>
@@ -375,29 +395,36 @@ $wh_id = $_POST['wh_id'];
 
 
 
-                                                        <tr>
+                                                <tr>
 
-                                                            <td><?php echo $row4['sow_id']; ?></td>
-                                                            <td><?php echo $row4['sow_bill_number']; ?></td>
-                                                            <td><?php echo $row4['wh_name']; ?></td>
-                                                            <td><?php echo $rowio['item_values']; ?></td>
-                                                            <td><?php echo $row4['date_register']; ?></td>
+                                                    <td><?php echo $row4['sow_id']; ?></td>
+                                                    <td><?php echo $row4['sow_bill_number']; ?></td>
+                                                    <td><?php echo $row4['wh_name']; ?></td>
+                                                    <td><?php echo $rowio['item_values']; ?></td>
+                                                    <td><?php echo $row4['date_register']; ?></td>
 
 
 
-                                                            <td>
-                                                                <div class="dropdown">
-                                                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                                                                    </a>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a class="dropdown-toggle icon-burger-mini" href="#"
+                                                                role="button" id="dropdownMenuLink"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false" data-display="static">
+                                                            </a>
 
-                                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
-                                                                        <a class="dropdown-item" type="button" id="deleteitem" data-id='<?php echo $row4['sow_id']; ?>' class="btn btn-danger btn-sm">ລຶບ</a>
+                                                            <div class="dropdown-menu dropdown-menu-right"
+                                                                aria-labelledby="dropdownMenuLink">
+                                                                <a class="dropdown-item"
+                                                                    href="edit-scan-stock-warehouse-out.php?sow_id=<?php echo $row4['sow_id']; ?>">ແກ້ໄຂ</a>
+                                                                <a class="dropdown-item" type="button" id="deleteitem"
+                                                                    data-id='<?php echo $row4['sow_id']; ?>'
+                                                                    class="btn btn-danger btn-sm">ລຶບ</a>
 
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
 
 
                                                 <?php
@@ -434,237 +461,237 @@ $wh_id = $_POST['wh_id'];
     <?php include("../setting/calljs.php"); ?>
 
     <script>
-        $(function() {
-            $('a[rel*=facebox]').facebox();
-        });
+    $(function() {
+        $('a[rel*=facebox]').facebox();
+    });
 
 
-        $(document).on("submit", "#updatestockoutpre", function() {
-            $.post("../query/update-item-stock-warehouse-out-pre.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
+    $(document).on("submit", "#updatestockoutpre", function() {
+        $.post("../query/update-item-stock-warehouse-out-pre.php", $(this).serialize(), function(data) {
+            if (data.res == "success") {
 
-                    let timerInterval
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ສຳເລັດ',
-                        html: 'ແກ້ໄຂສຳເລັດ',
-                        // timer: 10000,
-                        timerProgressBar: true,
-                        showConfirmButton: true,
-                        showCloseButton: true,
-                        didOpen: () => {
-                            Swal.showLoading()
-                            const b = Swal.getHtmlContainer().querySelector('b')
-                            timerInterval = setInterval(() => {
-                                b.textContent = Swal.getTimerLeft()
-                            }, 100)
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval)
-                        }
-                    }).then((result) => {
-                        location.reload();
-                        /* Read more about handling dismissals below */
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            console.log('I was closed by the timer')
-                        }
-                    })
-
-                } else if (data.res == "limnitapprove") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                         'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
-                     //   'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
-                        'error'
-                    )
-
-
-                } else if (data.res == "nostock") {
-
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ເບີກສິນຄ້າເກີນສາງ',
-                        'error'
-                    )
-
-
-                }
-            }, 'json');
-
-            return false;
-        });
-
-
-        // add item Data 
-        $(document).on("submit", "#scanitemfrom", function() {
-            $.post("../query/scan-stock-out-admin.php", $(this).serialize(), function(data) {
-                if (data.res == "success") {
-
+                let timerInterval
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ສຳເລັດ',
+                    html: 'ແກ້ໄຂສຳເລັດ',
+                    // timer: 10000,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    showCloseButton: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                        const b = Swal.getHtmlContainer().querySelector('b')
+                        timerInterval = setInterval(() => {
+                            b.textContent = Swal.getTimerLeft()
+                        }, 100)
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval)
+                    }
+                }).then((result) => {
                     location.reload();
-                } else if (data.res == "limit") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ສິນຄ້າ ' + data.limit_item.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "nofound") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນບິນຂໍ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "nostock") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "noitem") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
-                } else if (data.res == "orverorder") {
-                    Swal.fire(
-                        'ແຈ້ງເຕືອນ',
-                        'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',
-                        'error'
-                    )
-                    setTimeout(
-                        function() {
-                            location.reload();
-                        }, 2000);
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer')
+                    }
+                })
+
+            } else if (data.res == "limnitapprove") {
+
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ບໍ່ສາມາດເບີກເກີນຈຳນວນອານຸຍາດໄດ້',
+                    //   'ສິນຄ້າ ' + data.item_name.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                    'error'
+                )
+
+
+            } else if (data.res == "nostock") {
+
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ເບີກສິນຄ້າເກີນສາງ',
+                    'error'
+                )
+
+
+            }
+        }, 'json');
+
+        return false;
+    });
+
+
+    // add item Data 
+    $(document).on("submit", "#scanitemfrom", function() {
+        $.post("../query/scan-stock-out-admin.php", $(this).serialize(), function(data) {
+            if (data.res == "success") {
+
+                location.reload();
+            } else if (data.res == "limit") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ສິນຄ້າ ' + data.limit_item.toUpperCase() + ' ບໍ່ສາມາດເພິ່ມເກີນໃບບິນ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "nofound") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນບິນຂໍ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "nostock") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ພຽງພໍ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "noitem") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ບໍ່ມີໃນສາງ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            } else if (data.res == "orverorder") {
+                Swal.fire(
+                    'ແຈ້ງເຕືອນ',
+                    'ລະຫັດສິນຄ້າ ' + data.item_code.toUpperCase() + ' ເບີກເກີນບິນຂໍ',
+                    'error'
+                )
+                setTimeout(
+                    function() {
+                        location.reload();
+                    }, 2000);
+            }
+        }, 'json');
+
+        return false;
+    });
+
+
+    // add track check Data
+    $(document).on("submit", "#submittrack", function() {
+        $.post(
+            "../query/confirm-add-stock-out-admin.php",
+            $(this).serialize(),
+            function(data) {
+                if (data.res == "errorwarehouse") {
+                    Swal.fire(" ແຈ້ງເຕືອນ",
+                        "ບໍ່ມີສິນຄ້າເບີກ",
+                        "error");
+                } else if (data.res == "success") {
+                    Swal.fire("ສຳເລັດ", "ເບີກເຄື່ອງອອກສາງສຳເລັດ", "success");
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 }
-            }, 'json');
+            },
+            "json"
+        );
 
-            return false;
-        });
+        return false;
+    });
 
-
-        // add track check Data
-        $(document).on("submit", "#submittrack", function() {
-            $.post(
-                "../query/confirm-add-stock-out-admin.php",
-                $(this).serialize(),
-                function(data) {
-                    if (data.res == "errorwarehouse") {
-                        Swal.fire(" ແຈ້ງເຕືອນ",
-                            "ບໍ່ມີສິນຄ້າເບີກ",
-                            "error");
-                    } else if (data.res == "success") {
-                        Swal.fire("ສຳເລັດ", "ເບີກເຄື່ອງອອກສາງສຳເລັດ", "success");
-
-                        setTimeout(function() {
+    // Delete item
+    $(document).on("click", "#delstockoutpre", function(e) {
+        e.preventDefault();
+        var id = $(this).data("id");
+        $.ajax({
+            type: "post",
+            url: "../query/delete-detail-stock-out-pre-admin.php",
+            dataType: "json",
+            data: {
+                id: id
+            },
+            cache: false,
+            success: function(data) {
+                if (data.res == "success") {
+                    Swal.fire(
+                        'ສຳເລັດ',
+                        'ລຶບຂໍ້ມູນສຳເລັດ',
+                        'success'
+                    )
+                    setTimeout(
+                        function() {
                             location.reload();
-                        }, 1500);
-                    }
-                },
-                "json"
-            );
+                        }, 1000);
 
-            return false;
-        });
-
-        // Delete item
-        $(document).on("click", "#delstockoutpre", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-detail-stock-out-pre-admin.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                location.reload();
-                            }, 1000);
-
-                    } else if (data.res == "used") {
-                        Swal.fire(
-                            'ນຳໃຊ້ແລ້ວ',
-                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
-                            'error'
-                        )
-                    }
-
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
-                }
-
-            });
-            return false;
-        });
-
-
-        // Delete item
-        $(document).on("click", "#deleteitem", function(e) {
-            e.preventDefault();
-            var id = $(this).data("id");
-            $.ajax({
-                type: "post",
-                url: "../query/delete-stock-out-admin.php",
-                dataType: "json",
-                data: {
-                    id: id
-                },
-                cache: false,
-                success: function(data) {
-                    if (data.res == "success") {
-                        Swal.fire(
-                            'ສຳເລັດ',
-                            'ລຶບຂໍ້ມູນສຳເລັດ',
-                            'success'
-                        )
-                        setTimeout(
-                            function() {
-                                location.reload();
-                            }, 1000);
-
-                    } else if (data.res == "used") {
-                        Swal.fire(
-                            'ນຳໃຊ້ແລ້ວ',
-                            'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
-                            'error'
-                        )
-                    }
-
-                },
-                error: function(xhr, ErrorStatus, error) {
-                    console.log(status.error);
+                } else if (data.res == "used") {
+                    Swal.fire(
+                        'ນຳໃຊ້ແລ້ວ',
+                        'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                        'error'
+                    )
                 }
 
-            });
-            return false;
+            },
+            error: function(xhr, ErrorStatus, error) {
+                console.log(status.error);
+            }
+
         });
+        return false;
+    });
+
+
+    // Delete item
+    $(document).on("click", "#deleteitem", function(e) {
+        e.preventDefault();
+        var id = $(this).data("id");
+        $.ajax({
+            type: "post",
+            url: "../query/delete-stock-out-admin.php",
+            dataType: "json",
+            data: {
+                id: id
+            },
+            cache: false,
+            success: function(data) {
+                if (data.res == "success") {
+                    Swal.fire(
+                        'ສຳເລັດ',
+                        'ລຶບຂໍ້ມູນສຳເລັດ',
+                        'success'
+                    )
+                    setTimeout(
+                        function() {
+                            location.reload();
+                        }, 1000);
+
+                } else if (data.res == "used") {
+                    Swal.fire(
+                        'ນຳໃຊ້ແລ້ວ',
+                        'ບໍ່ສາມາດລຶບໄດ້ເນື່ອງຈາກນຳໃຊ້ໄປແລ້ວ',
+                        'error'
+                    )
+                }
+
+            },
+            error: function(xhr, ErrorStatus, error) {
+                console.log(status.error);
+            }
+
+        });
+        return false;
+    });
     </script>
 
     <!--  -->
