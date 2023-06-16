@@ -107,12 +107,13 @@ if (isset($_POST['btn_view'])) {
 
 
                                                     $stmt2 = $conn->prepare("  
-                                                select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_stock_in_warehouse_detail a 
+                                                select sum(item_values) as item_values,a.item_id ,item_name,wh_name 
+                                                from tbl_stock_in_warehouse_detail a 
                                                 left join tbl_stock_in_warehouse d on d.siw_id = a.siw_id 
                                                 left join tbl_warehouse b on d.wh_id = b.wh_id 
                                                 left join tbl_item_data c on a.item_id = c.item_id
                                                 where d.date_register between '$date_from' and '$date_to' 
-                                                group by a.item_id
+                                                group by a.item_id,item_name,wh_name
                                             
                                                 ");
                                                     $stmt2->execute();

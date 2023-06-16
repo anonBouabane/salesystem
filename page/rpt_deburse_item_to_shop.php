@@ -104,14 +104,14 @@ if (isset($_POST['btn_view'])) {
                                                     <?php
 
                                                     $stmt2 = $conn->prepare("    
-                                select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_deburse_item_pre_sale_detail a 
-                                left join tbl_deburse_item_pre_sale d on d.dips_id = a.dips_id 
-                                left join tbl_warehouse b on d.wh_id = b.wh_id 
-                                left join tbl_item_data c on a.item_id = c.item_id 
-                                where d.date_register between '$date_from' and '$date_to' 
-                                group by a.item_id
+                                                    select sum(item_values) as item_values,a.item_id ,item_name,wh_name from tbl_deburse_item_pre_sale_detail a 
+                                                    left join tbl_deburse_item_pre_sale d on d.dips_id = a.dips_id 
+                                                    left join tbl_warehouse b on d.wh_id = b.wh_id 
+                                                    left join tbl_item_data c on a.item_id = c.item_id 
+                                                    where d.date_register between '$date_from' and '$date_to' 
+                                                    group by a.item_id,item_name,wh_name
 
-                      ");
+                                                    ");
                                                     $stmt2->execute();
 
                                                     if ($stmt2->rowCount() > 0) {

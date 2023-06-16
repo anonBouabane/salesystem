@@ -120,7 +120,7 @@ if (isset($_POST['btn_view'])) {
                                                     left join tbl_bill_sale b on a.bs_id = b.bs_id 
                                                     left join tbl_item_data c on a.item_id = c.item_id  
                                                     where b.date_register between '$date_from' and '$date_to' and br_id = '$br_id' 
-                                                    group by a.item_id
+                                                    group by a.item_id,item_name,payment_type
 
 
                                                 ");

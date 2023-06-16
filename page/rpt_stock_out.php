@@ -107,7 +107,7 @@ if (isset($_POST['btn_view'])) {
                                                     left join tbl_warehouse b on d.wh_id = b.wh_id 
                                                     left join tbl_item_data c on a.item_id = c.item_id 
                                                     where d.date_register between '$date_from' and '$date_to' and b.br_id = '$br_id'
-                                                    group by a.item_id 
+                                                    group by a.item_id,item_name,wh_name
                                                      ");
                                                     $stmt2->execute();
 

@@ -132,7 +132,7 @@ if (isset($_POST['btn_view'])) {
                           from tbl_bill_sale a
                           LEFT JOIN tbl_branch b on a.br_id = b.br_id 
                           where a.date_register between '$date_from' and '$date_to' and br_name like '%$br_name%'
-                          group by a.br_id
+                          group by a.br_id,br_name,bs_id
                   
                       ");
                           $stmt2->execute();
